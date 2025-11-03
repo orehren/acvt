@@ -1,0 +1,4 @@
+execute:
+  echo: false
+  warning: false
+  error: false

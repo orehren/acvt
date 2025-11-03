@@ -141,6 +141,57 @@
       "Maintainer": "Hadley Wickham <hadley@posit.co>",
       "Repository": "CRAN"
     },
+    "academicCVtools": {
+      "Package": "academicCVtools",
+      "Version": "0.1.0",
+      "Source": "GitHub",
+      "Type": "Package",
+      "Title": "Tools to Generate Academic CV Sections from Google Sheets for Typst/Quarto",
+      "Authors@R": "person(given = \"Oliver\", family = \"Rehren\", role = c(\"aut\", \"cre\"),  email = \"o.rehren@gmail.com\", comment = c(ORCID = \"0000-0001-7602-8219\"))",
+      "Description": "Provides functions to read structured data for academic CVs  (like publications, work experience, education) from individual sheets  within a Google Sheets document. Handles potentially variable sheet and  column names. Includes tools to transform this data into Typst function  calls, suitable for integration into Quarto documents using a Typst template  workflow. Facilitates the creation of automated, data-driven academic CVs.",
+      "License": "GPL-3 | file LICENSE",
+      "Encoding": "UTF-8",
+      "LazyData": "true",
+      "ByteCompile": "true",
+      "RoxygenNote": "7.3.3",
+      "Imports": [
+        "cli",
+        "dplyr",
+        "googledrive",
+        "googlesheets4 (>= 1.1.0)",
+        "purrr",
+        "processx",
+        "rlang",
+        "stringr",
+        "tidyr",
+        "tibble",
+        "jsonlite",
+        "tidyselect",
+        "checkmate"
+      ],
+      "Suggests": [
+        "knitr",
+        "rmarkdown",
+        "testthat (>= 3.0.0)",
+        "mockery"
+      ],
+      "Depends": [
+        "R (>= 4.0)"
+      ],
+      "URL": "https://github.com/orehren/academicCVtools",
+      "BugReports": "https://github.com/orehren/academicCVtools/issues",
+      "Config/testthat/edition": "3",
+      "VignetteBuilder": "knitr",
+      "Roxygen": "list(markdown = TRUE)",
+      "Author": "Oliver Rehren [aut, cre] (ORCID: <https://orcid.org/0000-0001-7602-8219>)",
+      "Maintainer": "Oliver Rehren <o.rehren@gmail.com>",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "orehren",
+      "RemoteRepo": "academicCVtools",
+      "RemoteRef": "master",
+      "RemoteSha": "68a27d07a9504f311c8f9f30b696cf34f767782c"
+    },
     "askpass": {
       "Package": "askpass",
       "Version": "1.2.1",

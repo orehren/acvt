@@ -12,35 +12,37 @@ title: "Documents of Application"
 author:
   firstname: "Your Firstname"
   lastname: "Your Lastname"
+  contact:
+    - icon: fa address-card
+      text: "Your Address"
+    - icon: fa mobile-screen
+      text: "Your Phone Number"
+    - icon: fa envelope
+      text: "Your E-Mail-Address"
+      url: "mailto:your.email@gmail.com"
+  socialmedia:
+    - icon: fa house
+      text: example.com
+      url: https://example.com
+    - icon: fa orcid
+      text: "Your Orcid Number"
+      url: "Link To Your Orcid Page"
+    - icon: fa github
+      text: "Your GitHub Page"
+      url: "Link To Your GitHub Page"
+    - icon: fa linkedin
+      text: LinkedIn
+      url: "Link To Your LinkedIn Account"
 
-# -- Contact & Social Media ----------------------------------------
-# This information is used by the Typst template to build the
-# sidebar/header. It expects a list of key-value pairs (maps).
-#
-# - icon: FontAwesome icon name (e.g., fa-envelope)
-# - text: The text to display
-# - url:  (Optional) A URL to link to (e.g., "mailto:..." or "https://...")
-contact:
-  - icon: fa address-card
-    text: "Your Address"
-  - icon: fa mobile-screen
-    text: "Your Phone Number"
-  - icon: fa envelope
-    text: "Your E-Mail-Address"
-    url: "mailto:your.email@gmail.com"
-socialmedia: 
-  - icon: fa house 
-    text: example.com
-    url: https://example.com
-  - icon: fa orcid
-    text: "Your Orcid Number"
-    url: "Link To Your Orcid Page"
-  - icon: fa github
-    text: "Your GitHub Page"
-    url: "Link To Your GitHub Page"
-  - icon: fa linkedin
-    text: LinkedIn
-    url: "Link To Your LinkedIn Account"
+# -- Cover Letter Information --------------------------------------
+recipient:
+  name: "A Name"
+  salutation: "Salutation"
+  address: "Oxmoron Street"
+  city: "The City"
+  zip: "66696"
+date: "1. March 2025"
+subject: "The subject of the cover letter"
 
 # -- Core CV Content -----------------------------------------------
 # These fields provide main content blocks to the template.
@@ -61,11 +63,18 @@ style:
   font-header: "Lato"
   font-text: "Roboto"
 
+# -- Output Options ------------------------------------------------
+render-output: "combined" # "cv-only", "letter-only", or "combined"
+
 # -- Format Activation ---------------------------------------------
 # This is the most important line:
 # It tells Quarto to use your custom Typst format.
 format: academiccvtemplate-typst
 ---
+
+## Coverletter
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
 
 ```{r}
 #| label: lst-setup
@@ -210,7 +219,7 @@ create_publication_list(
   # Order of the groups in the final document
   group_order = c("Journal Article", "Book Chapter", "Conference Paper", "Miscellaneous"),
   # --- Typst Highlighting ---
-  # This inserts raw Typst code to highlight your name
+  # This inserts raw Typst code to highlight your.name
   author_highlight_markup = '#text(fill: rgb("516db0"), weight: "bold")[%s]'
 ) |> cat()
 ```

@@ -14,7 +14,7 @@
     columns: (1fr, 1fr),
     gutter: 2em,
     [
-      #text(weight: "bold", author.firstname + " " + author.lastname) \
+      #text(fill: color-accent, weight: "bold", author.firstname + " " + author.lastname) \
       #author.contact.at(0).text \
       #author.contact.at(1).text \
       #link("mailto:" + author.contact.at(2).text, author.contact.at(2).text)
@@ -30,7 +30,16 @@
   v(2em)
   align(right)[#date]
   v(2em)
-  text(weight: "bold")[#subject]
+  block(
+    width: 100%,
+    [
+      #set text(..text-style-header)
+      #align(left)[
+          #strong[#text(fill: color-accent)[#subject.slice(0, 3)]#text()[#subject.slice(3)]]
+          #box(width: 1fr, line(length: 99%))
+      ]
+    ]
+  )
   v(2em)
 
   // --- Salutation ---

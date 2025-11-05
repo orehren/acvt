@@ -6,7 +6,8 @@
   recipient,
   date,
   subject,
-  cover_letter_content
+  cover_letter_content,
+  color-accent
 ) = {
   // --- Header ---
   // Using a grid to align sender and recipient information.

@@ -2,7 +2,7 @@ project:
   type: default
   output-dir: _output
 output-file: "Curriculum_Vitae"
-keep-typ: false
+keep-typ: true
 execute:
   echo: false
   warning: false

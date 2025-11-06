@@ -28,7 +28,7 @@
     header: align(right)[
         #box(width: 1fr, line(length: 100%))
         #set text(..text-style-header)
-        #text(fill: color-accent)[Doc]uments of Application
+        #text(fill: color-accent)[#title.slice(0, 3)]#title.slice(3)
     ],
 )
 
@@ -58,13 +58,13 @@
 
     // 1. Render Cover Letter (if requested)
     if render-output == "letter-only" or render-output == "combined" {
-      render-cover-letter(author, recipient, date, subject, cover_letter_content, color-accent, text-style-header)
+      render-cover-letter(author, recipient, date, subject, cover_letter_content, color-accent, text-style-aboutme)
     }
 
     // 2. Render CV (if requested)
     if render-output == "cv-only" or render-output == "combined" {
       // Render the Title Page
-      title-page(author, profile-photo)
+      title-page(author, profile-photo: profile-photo)
 
       // Set up page settings for the rest of document (page numbering + footer)
       set page(footer: create-footer(author), numbering: "1")

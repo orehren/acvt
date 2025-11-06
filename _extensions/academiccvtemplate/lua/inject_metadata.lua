@@ -1,101 +1,131 @@
 --- inject_metadata.lua - a Lua filter to automatically inject document metadata
 --- into a Typst template.
 ---
---- This filter reads all metadata from the YAML header of a .qmd file,
---- converts the key-value pairs into Typst variable definitions
---- (e.g., `#let my_variable = "my_value"`), and writes them to the
---- `typst/metadata.typ` partial file. This makes all YAML metadata
---- available as variables within the Typst templates.
----
---- This process is fully automated, allowing users to add new keys to the
---- YAML header without needing to modify any other code.
----
---- Copyright: © 2025 Oliver Rehren
---- License:   MIT – see LICENSE file for details
+--- REFACTORED VERSION (FINAL FIX):
+--- - Reverts the core logic check to 'type(val) == "table"',
+---   which was the original (and correct) way to catch
+---   all table-like structures (MetaList, MetaMap, raw tables).
+---   My previous "fix" (meta_type == 'table') was the source of the bug.
 
 local M = {}
 
-local to_typst_value
-local stringify_pandoc_object
+-- ---
+-- 1. KONFIGURATION & HELPER
+-- ---
 
--- Converts any Pandoc object to a string.
-stringify_pandoc_object = function(obj)
-  if obj == nil then return nil end
-  if pandoc and pandoc.utils and pandoc.utils.stringify then
-    return pandoc.utils.stringify(obj)
-  else
-    if type(obj) == 'table' and obj.t == 'Str' and type(obj.c) == 'string' then return obj.c end
-    if type(obj) == 'table' and #obj == 1 and type(obj[1]) == 'table' and obj[1].t == 'Str' and type(obj[1].c) == 'string' then return obj[1].c end
-    return tostring(obj)
-  end
+local TYPST_METADATA_FILE = "_extensions/academiccvtemplate/typst/metadata.typ"
+
+---
+-- Escapes a Lua string for use as a Typst string literal.
+---
+local function escape_typst_string(s)
+  if s == nil then return '""' end
+  return '"' .. s:gsub("\\", "\\\\"):gsub('"', '\\"') .. '"'
 end
 
--- Recursively converts a Lua object (from Pandoc metadata) into a Typst value string.
-to_typst_value = function(val)
+---
+-- Recursively converts a Pandoc Meta value or raw Lua table
+-- into a Typst value string.
+---
+local function to_typ_value(val)
+
   if val == nil then
     return "none"
   end
 
-  local val_type = pandoc.utils.type(val)
+  local meta_type = pandoc.utils.type(val)
 
-  if val_type == 'string' then
-    return '"' .. val:gsub("\\", "\\\\"):gsub('"', '\\"') .. '"'
-  elseif val_type == 'number' or val_type == 'boolean' then
+  if meta_type == 'string' then
+    return escape_typst_string(val)
+
+  elseif meta_type == 'number' or meta_type == 'boolean' then
     return tostring(val)
-  elseif val_type == 'Inlines' or val_type == 'Blocks' or (type(val) == 'table' and (val.t or (#val > 0 and type(val[1]) == 'table' and val[1].t))) then
-    local str_val = stringify_pandoc_object(val)
-    return '"' .. str_val:gsub("\\", "\\\\"):gsub('"', '\\"') .. '"'
+
+  elseif meta_type == 'Inlines' or meta_type == 'Blocks' then
+    return escape_typst_string(pandoc.utils.stringify(val))
+
+  -- *** DER ENTSCHEIDENDE FIX ***
+  -- Wir MÜSSEN den rohen Lua-Typ 'table' prüfen, so wie es
+  -- im Original-Code war. 'meta_type' ('List', 'Map')
+  -- funktioniert hier nicht.
   elseif type(val) == 'table' then
+
+    -- Manuelle Array-vs-Map-Erkennung (wie im Original)
     local parts = {}
     local is_array = true
     local i = 1
     for k, _ in pairs(val) do
-      if k ~= i then is_array = false; break end
+      if k ~= i then
+        is_array = false
+        break
+      end
       i = i + 1
     end
-    if #val == 0 and next(val) ~= nil then is_array = false end
+    if #val == 0 and next(val) ~= nil then
+      is_array = false
+    end
 
     if is_array then
+      -- Convert to Typst Array
       for _, item in ipairs(val) do
-        table.insert(parts, to_typst_value(item))
+        table.insert(parts, to_typ_value(item))
       end
-      return '(' .. table.concat(parts, ", ") .. ( #parts > 0 and "," or "" ) .. ')'
+      return '(' .. table.concat(parts, ", ") .. (#parts > 0 and "," or "") .. ')'
+
     else
+      -- Convert to Typst Dictionary
       for key, item in pairs(val) do
-        local typst_dict_key_str = tostring(key)
-        table.insert(parts, typst_dict_key_str .. ": " .. to_typst_value(item))
+        local typst_key = tostring(key)
+        table.insert(parts, typst_key .. ": " .. to_typ_value(item))
       end
       return '(' .. table.concat(parts, ", ") .. ')'
     end
+
   else
-    return "(/* Unhandled Lua type: " .. type(val) .. " */)"
+    return "(/* Unhandled Pandoc Meta type: " .. meta_type .. " */)"
   end
 end
+
+-- ---
+-- 2. HAUPTFUNKTION (PANDOC FILTER)
+-- ---
 
 function M.Pandoc(doc)
   local quarto_meta = doc.meta or {}
   local typst_definitions = {}
 
   for key, value in pairs(quarto_meta) do
-    local typst_var_name = key
-    local typst_val_str = to_typst_value(value)
 
-    if type(typst_var_name) == 'string' and typst_var_name ~= "" and
-       typst_val_str and typst_val_str ~= "" and typst_val_str ~= "none" and
-       not typst_val_str:match("^%(%s*%/%*%s*Unhandled") then
-        -- table.insert(typst_definitions, "#let " .. typst_var_name .. " = " .. typst_val_str)
-        table.insert(typst_definitions, "#let " .. typst_var_name .. " = (" .. typst_val_str .. ")")
+    if not (type(key) == 'string' and key ~= "") then
+      goto continue
     end
+
+    local typst_val_str = to_typ_value(value)
+
+    if not typst_val_str or
+       typst_val_str == "none" or
+       (typst_val_str == '""' and pandoc.utils.type(value) == 'string') or
+       typst_val_str:match("^%(%s*%/%*") then
+      goto continue
+    end
+
+    table.insert(typst_definitions, "#let " .. key .. " = " .. typst_val_str)
+
+    ::continue::
   end
 
   local typst_definitions_string = table.concat(typst_definitions, "\n") .. "\n"
 
-  local generated_filename = "_extensions/academiccvtemplate/typst/metadata.typ"
-  local file = io.open(generated_filename, "w")
+  local file, err = io.open(TYPST_METADATA_FILE, "w")
   if file then
     file:write(typst_definitions_string)
     file:close()
+  else
+    pandoc.stderr:write(
+      string.format("WARNING (inject_metadata.lua): Could not write to '%s': %s\n", TYPST_METADATA_FILE, err)
+    )
   end
+
   return doc
 end
 

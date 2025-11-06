@@ -3,34 +3,85 @@ extract-cover-letter.lua – move the "Coverletter" section into document metada
 and append it to the metadata.typ file.
 ]]
 
-local stringify = (require 'pandoc.utils').stringify
 local section_identifiers = {
   coverletter = true,
 }
 local collected = {}
 local toplevel = 6
 
+local TYPST_METADATA_FILE = "_extensions/academiccvtemplate/typst/metadata.typ"
+
+
+---
+-- Handles the side-effect of writing collected blocks to a file.
+---
+local function write_coverletter_to_typst(content_blocks)
+  if not content_blocks or #content_blocks == 0 then
+    return
+  end
+
+  local content_as_string = pandoc.write(pandoc.Pandoc(content_blocks), 'typst')
+  local typst_definition = '#let cover_letter_content = [' .. content_as_string .. ']\n'
+
+  -- "a" = append mode
+  local file, err = io.open(TYPST_METADATA_FILE, "a")
+
+  if not file then
+    -- 'pandoc.stderr' is used because it's the correct channel
+    -- for filter warnings, unlike 'print()'.
+    pandoc.stderr:write(
+      string.format("WARNING (Lua Filter): Could not open '%s': %s\n", TYPST_METADATA_FILE, err)
+    )
+    return
+  end
+
+  file:write(typst_definition)
+  file:close()
+end
+
+
+---
+-- Main state-machine to separate section content from body content.
+-- Populates the global 'collected' table as a side-effect.
+---
 local function extract_section_content (blocks)
   local body_blocks = {}
   local looking_at_section = false
 
+  local function process_header(block)
+    if block.level > toplevel then
+      body_blocks[#body_blocks + 1] = block
+      return looking_at_section
+    end
+
+    toplevel = block.level
+
+    if section_identifiers[block.identifier] then
+      collected[block.identifier] = {}
+      return block.identifier -- New state: collecting
+    else
+      body_blocks[#body_blocks + 1] = block
+      return false -- New state: not collecting
+    end
+  end
+
+  local function process_section_block(block)
+    -- A 'HorizontalRule' (---) signals the end of the special section
+    if block.t == 'HorizontalRule' then
+      return false -- New state: not collecting
+    end
+
+    local collect = collected[looking_at_section]
+    collect[#collect + 1] = block
+    return looking_at_section
+  end
+
+
   for _, block in ipairs(blocks) do
-    if block.t == 'Header' and block.level <= toplevel then
-      toplevel = block.level
-      if section_identifiers[block.identifier] then
-        looking_at_section = block.identifier
-        collected[looking_at_section] = {}
-      else
-        looking_at_section = false
-        body_blocks[#body_blocks + 1] = block
-      end
+    if block.t == 'Header' then
+      looking_at_section = process_header(block)
     elseif looking_at_section then
-      if block.t == 'HorizontalRule' then
-        looking_at_section = false
-      else
-        local collect = collected[looking_at_section]
-        collect[#collect + 1] = block
-      end
+      looking_at_section = process_section_block(block)
     else
       body_blocks[#body_blocks + 1] = block
     end
@@ -39,30 +90,17 @@ local function extract_section_content (blocks)
   return body_blocks
 end
 
+
+---
+-- PANDOC FILTER DEFINITIONS
+---
+
 Pandoc = function (doc)
-  -- This function is a placeholder to satisfy the filter interface.
-  -- The main logic is in the Blocks filter.
   return doc
 end
 
 Blocks = function (blocks)
   local body_blocks = extract_section_content(blocks)
-
-  for metakey in pairs(section_identifiers) do
-    metakey = stringify(metakey)
-    local section_content = collected[metakey]
-    if section_content and #section_content > 0 then
-      local content_as_string = pandoc.write(pandoc.Pandoc(section_content), 'typst')
-      local typst_definition = '#let cover_letter_content = [' .. content_as_string .. ']\n'
-
-      local generated_filename = "_extensions/academiccvtemplate/typst/metadata.typ"
-      local file = io.open(generated_filename, "a") -- Append mode
-      if file then
-        file:write(typst_definition)
-        file:close()
-      end
-    end
-  end
-
+  write_coverletter_to_typst(collected["coverletter"])
   return body_blocks
 end

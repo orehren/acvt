@@ -24,7 +24,7 @@
 // -------------------------
 
 // Creates the title page layout.
-#let title-page(author, profile-photo) = {
+#let title-page(author, profile-photo: none) = {
     set page(footer: none)
     v(1fr)
 

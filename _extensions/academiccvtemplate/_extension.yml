@@ -17,6 +17,8 @@ contributes:
       #bibliography: "assets/bib/bibliography.bib"
       #bibliographystyle: "assets/bib/apa-cv.csl"
       profile-photo: "assets/images/picture.jpg"
+      format-resources:
+        - "assets/bib/apa-cv.csl"
     typst:
       filters:
         - path: lua/correct-path.lua

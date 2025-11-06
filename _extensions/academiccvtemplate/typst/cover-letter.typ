@@ -1,5 +1,6 @@
 // typst/cover-letter.typ
 // This file contains the logic for rendering the cover letter.
+#import "helper-functions.typ": find_contact
 
 #let render-cover-letter(
   author,
@@ -10,19 +11,6 @@
   color-accent,
   text-style-header
 ) = {
-  // --- Helper function to find contact info by icon ---
-  let find_contact(icon_name) = {
-    let item = author.contact.find(item => item.icon == icon_name)
-    if item != none {
-      if "url" in item {
-        link(item.url, item.text)
-      } else {
-        item.text
-      }
-    } else {
-      ""
-    }
-  }
 
   // --- Header ---
   // Using a grid to align sender and recipient information.
@@ -31,9 +19,9 @@
     gutter: 2em,
     [
       #text(fill: color-accent, weight: "bold", author.firstname + " " + author.lastname) \
-      #find_contact("fa address-card") \
-      #find_contact("fa mobile-screen") \
-      #find_contact("fa envelope")
+      #find_contact(author, "fa address-card") \
+      #find_contact(author, "fa mobile-screen") \
+      #find_contact(author, "fa envelope")
     ],
     [
       #recipient.name \
@@ -51,7 +39,7 @@
     [
       #set text(..text-style-header)
       #align(left)[
-          #strong[#text(fill: color-accent)[#subject.slice(0, 3)]#text()[#subject.slice(3)]]
+          #strong[#text(fill: color-accent)[#subject.slice(0, 3)]#subject.slice(3)]
           #box(width: 1fr, line(length: 99%))
       ]
     ]

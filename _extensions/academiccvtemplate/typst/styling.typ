@@ -22,8 +22,8 @@
 
 // -- 3. Typography Definition --
 // ------------------------------
-#let font-header = style.at("font-header", default: ("Roboto", "Arial", "Dejavu Sans") ) 
-#let font-text = style.at("font-text", default: ("Source Sans Pro", "Arial", "Dejavu Sans") ) 
+#let font-header = style.at("font-header", default: ("Roboto", "Arial", "Dejavu Sans") )
+#let font-text = style.at("font-text", default: ("Source Sans Pro", "Arial", "Dejavu Sans") )
 
 // -- Font Sizes --
 #let font-size-xl = 22pt

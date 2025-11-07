@@ -45,7 +45,7 @@ local function to_typ_value(val)
 
   elseif type(val) == 'table' then
 
-    -- Manuelle Array-vs-Map-Erkennung (wie im Original)
+    -- Manually detect if the table should be treated as a Typst array or a dictionary.
     local parts = {}
     local is_array = true
     local i = 1

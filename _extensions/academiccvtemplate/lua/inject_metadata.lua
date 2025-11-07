@@ -68,13 +68,13 @@ local function to_typ_value(val)
     local parts = {}
 
     if is_typst_array(val) then
-      -- Convert to Typst Array
+      -- Format the Lua table as a Typst array string literal
       for _, item in ipairs(val) do
         table.insert(parts, to_typ_value(item))
       end
       return '(' .. table.concat(parts, ", ") .. (#parts > 0 and "," or "") .. ')'
     else
-      -- Convert to Typst Dictionary
+      -- Format the Lua table as a Typst dictionary string literal
       for key, item in pairs(val) do
         local typst_key = tostring(key)
         table.insert(parts, typst_key .. ": " .. to_typ_value(item))

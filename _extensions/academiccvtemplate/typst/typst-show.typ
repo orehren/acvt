@@ -1,7 +1,6 @@
 // typst/typst-show.typ
 // forwards yaml metadata to typst template
 
-
 #show heading: set text(..text-style-header)
 #show heading.where(level: 1): it => [
     #set block(above: 1.5em, below: 1em)
@@ -24,6 +23,5 @@
 }
 
 #show: resume.with(
-
 
 )

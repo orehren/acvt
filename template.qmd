@@ -63,6 +63,13 @@ style:
   font-text: "Roboto"
 
 profile-photo: ""
+
+attachments:
+  - name: "First Document"
+    file: "_extensions/academiccvtemplate/assets/images/first_document.png"
+  - name: "Second Document"
+    file: "_extensions/academiccvtemplate/assets/images/second_document.png"
+  
 # -- Output Options ------------------------------------------------
 render-output: "combined" # "cv-only", "letter-only", or "combined"
 

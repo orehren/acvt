@@ -15,7 +15,6 @@ local M = {}
 
 local TYPST_METADATA_FILE = "_extensions/academiccvtemplate/typst/metadata.typ"
 
----
 -- Escapes a Lua string for use as a Typst string literal.
 ---
 local function escape_typst_string(s)
@@ -44,10 +43,6 @@ local function to_typ_value(val)
   elseif meta_type == 'Inlines' or meta_type == 'Blocks' then
     return escape_typst_string(pandoc.utils.stringify(val))
 
-  -- *** DER ENTSCHEIDENDE FIX ***
-  -- Wir MÜSSEN den rohen Lua-Typ 'table' prüfen, so wie es
-  -- im Original-Code war. 'meta_type' ('List', 'Map')
-  -- funktioniert hier nicht.
   elseif type(val) == 'table' then
 
     -- Manuelle Array-vs-Map-Erkennung (wie im Original)

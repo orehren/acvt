@@ -10,7 +10,7 @@
 local M = {}
 
 -- ---
--- 1. KONFIGURATION & HELPER
+-- 1. CONFIGURATION & HELPER
 -- ---
 
 local TYPST_METADATA_FILE = "_extensions/academiccvtemplate/typst/metadata.typ"
@@ -82,7 +82,7 @@ local function to_typ_value(val)
 end
 
 -- ---
--- 2. HAUPTFUNKTION (PANDOC FILTER)
+-- 2. MAIN FUNCTION (PANDOC FILTER)
 -- ---
 
 function M.Pandoc(doc)

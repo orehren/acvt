@@ -43,11 +43,36 @@ local function is_typst_array(tbl)
   return true -- All keys were sequential integers.
 end
 
+local to_typ_value -- Pre-declaration for circular dependency
+
+---
+-- Formats a Lua table (structured as an array) into a Typst array string literal.
+---
+local function format_typst_array(tbl)
+  local parts = {}
+  for _, item in ipairs(tbl) do
+    table.insert(parts, to_typ_value(item))
+  end
+  return '(' .. table.concat(parts, ", ") .. (#parts > 0 and "," or "") .. ')'
+end
+
+---
+-- Formats a Lua table (structured as a dictionary) into a Typst dictionary string literal.
+---
+local function format_typst_dictionary(tbl)
+  local parts = {}
+  for key, item in pairs(tbl) do
+    local typst_key = tostring(key)
+    table.insert(parts, typst_key .. ": " .. to_typ_value(item))
+  end
+  return '(' .. table.concat(parts, ", ") .. ')'
+end
+
 ---
 -- Recursively converts a Pandoc Meta value or raw Lua table
 -- into a Typst value string.
 ---
-local function to_typ_value(val)
+to_typ_value = function(val)
 
   if val == nil then
     return "none"
@@ -65,21 +90,10 @@ local function to_typ_value(val)
     return escape_typst_string(pandoc.utils.stringify(val))
 
   elseif type(val) == 'table' then
-    local parts = {}
-
     if is_typst_array(val) then
-      -- Format the Lua table as a Typst array string literal
-      for _, item in ipairs(val) do
-        table.insert(parts, to_typ_value(item))
-      end
-      return '(' .. table.concat(parts, ", ") .. (#parts > 0 and "," or "") .. ')'
+      return format_typst_array(val)
     else
-      -- Format the Lua table as a Typst dictionary string literal
-      for key, item in pairs(val) do
-        local typst_key = tostring(key)
-        table.insert(parts, typst_key .. ": " .. to_typ_value(item))
-      end
-      return '(' .. table.concat(parts, ", ") .. ')'
+      return format_typst_dictionary(val)
     end
 
   else

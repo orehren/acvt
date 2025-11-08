@@ -64,10 +64,7 @@
     // 2. Render CV (if requested)
     if render-output == "cv-only" or render-output == "combined" {
       // Render the Title Page
-      title-page(
-          author,
-          profile-photo: doc.at("profile-photo", default: none)
-      )
+      title-page(author, profile-photo: profile-photo)
 
       // Set up page settings for the rest of document (page numbering + footer)
       set page(footer: create-footer(author), numbering: "1")

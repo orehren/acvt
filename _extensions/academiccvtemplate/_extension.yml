@@ -1,6 +1,6 @@
 title: academicCVTemplate
 author: Oliver Rehren
-version: 0.9.0
+version: 0.1.0
 description: "A Quarto extension for creating academic CVs and cover letters using Typst."
 license: MIT
 contributes:
@@ -16,9 +16,12 @@ contributes:
       surpress-bibliography: true
       bibfile: "assets/bib/bibliography.bib"
       bibstyle: "assets/bib/apa-cv.csl"
-      profile-photo: "../assets/images/picture.jpg"
+      profile-photo: "assets/images/picture.jpg"
+      # format-resources:
+      #   - "assets/bib/apa-cv.csl"
     typst:
       filters:
+        - path: lua/correct-path.lua
         - path: lua/inject_metadata.lua
         - path: lua/extract-cover-letter.lua
         - path: lua/embed-attachments.lua

@@ -18,7 +18,9 @@ jobs:
         uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Render Documentation Website
-        run: quarto render doc_src
+        run: |
+          quarto render doc_src
+          cp doc_src/*.md docs/
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v4

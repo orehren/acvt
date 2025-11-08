@@ -55,7 +55,7 @@ By default, the template includes a placeholder image. To use your own photo, re
 If you prefer not to have a profile photo, you can disable it in the YAML header:
 
 ```yaml
-profile-photo: ""
+profile-photo: null
 ```
 
 ## 3. The Cover Letter

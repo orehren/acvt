@@ -34,8 +34,8 @@ jobs:
       # 4. Move MD files to offline directory
       - name: Move intermediate Markdown files
         run: |
-          mkdir -p _extensions/academiccvtemplate/docs
-          find docs/_site -type f -name "*.md" -exec mv {} _extensions/academiccvtemplate/docs/ \;
+          mkdir -p _extensions/academicCVTemplate/docs
+          find docs/_site -type f -name "*.md" -exec mv {} _extensions/academicCVTemplate/docs/ \;
         shell: bash
 
       # 5. Commit changed MD files back to 'master'

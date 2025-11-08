@@ -11,9 +11,8 @@ To use the `academicCVTemplate`, you need to install the Quarto extension itself
 The first step is to add the extension to your Quarto project. Open your terminal or command prompt, navigate to your project's root directory, and run the following command:
 
 ```bash
-quarto use template YourGitHubUsername/academicCVTemplate
+quarto use template orehren/academicCVTemplate
 ```
-*(Note: Replace `YourGitHubUsername/academicCVTemplate` with the actual repository path once it is public.)*
 
 This will download the extension files into a `_extensions` directory within your project.
 
@@ -32,9 +31,8 @@ if (!requireNamespace("remotes", quietly = TRUE)) {
 }
 
 # Now, install the tools package from GitHub
-remotes::install_github("YourGitHubUsername/academicCVtools")
+remotes::install_github("orehren/academicCVtools")
 ```
-*(Note: Replace `YourGitHubUsername/academicCVtools` with the actual repository path.)*
 
 ### 2.2. Restore Project Dependencies
 

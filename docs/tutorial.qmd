@@ -100,7 +100,7 @@ For each section of your CV, there is a small R chunk that takes the data and fo
 ```r
 ## Working Experiences
 
-```{r}
+```r
 #| output: asis
 cv_sheets$`Working Experiences` |>
   format_typst_section(

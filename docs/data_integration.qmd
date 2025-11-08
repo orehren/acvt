@@ -52,13 +52,14 @@ To render the "Education" section, you would add the following to your `.qmd` fi
 
 ```markdown
 ## Education
-```
-` ` ` `r
-#| output: asis
-cv_sheets$Education |>
-  format_typst_section(
-    typst_func = "#resume-entry"
-  ) |> cat()
+
+  ````r
+  #| output: asis
+  cv_sheets$Education |>
+    format_typst_section(
+      typst_func = "#resume-entry"
+    ) |> cat()
+  ````
 ```
 
 ### How it Works

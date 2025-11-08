@@ -69,6 +69,20 @@ local function format_typst_dictionary(tbl)
 end
 
 ---
+-- Checks if a given Typst value string should be considered "clutter"
+-- and filtered out from the final metadata file.
+---
+local function is_metadata_clutter(typst_str)
+  if not typst_str then return true end
+  if typst_str == "none" then return true end
+  if typst_str == '()' then return true end
+  if typst_str == '""' then return true end
+  if typst_str:match("^%(%s*%/%*") then return true end
+
+  return false
+end
+
+---
 -- Recursively converts a Pandoc Meta value or raw Lua table
 -- into a Typst value string.
 ---
@@ -117,11 +131,7 @@ function M.Pandoc(doc)
 
     local typst_val_str = to_typ_value(value)
 
-    if not typst_val_str or
-       typst_val_str == "none" or
-       typst_val_str == '""' or
-       typst_val_str == '()' or
-       typst_val_str:match("^%(%s*%/%*") then
+    if is_metadata_clutter(typst_val_str) then
       goto continue
     end
 

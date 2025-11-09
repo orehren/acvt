@@ -2,7 +2,7 @@
 
 This is a [Quarto](https://quarto.org/) extension for creating beautiful, modern, and professional academic CVs and cover letters using the [Typst](https://typst.app/) typesetting system.
 
-![Template Screenshot](https://via.placeholder.com/600x400.png?text=Template+Screenshot+Here)
+![Template Screenshot](https://github.com/orehren/academicCVTemplate/blob/main/screenshot.png)
 *(Note: A screenshot of the final PDF output should be added here.)*
 
 ## Features

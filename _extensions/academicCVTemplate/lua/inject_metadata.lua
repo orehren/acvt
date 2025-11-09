@@ -1,19 +1,13 @@
 --- inject_metadata.lua - a Lua filter to automatically inject document metadata
 --- into a Typst template.
----
---- REFACTORED VERSION (FINAL FIX):
---- - Reverts the core logic check to 'type(val) == "table"',
----   which was the original (and correct) way to catch
----   all table-like structures (MetaList, MetaMap, raw tables).
----   My previous "fix" (meta_type == 'table') was the source of the bug.
 
 local M = {}
 
 -- ---
--- 1. KONFIGURATION & HELPER
+-- 1. CONFIGURATION & HELPER
 -- ---
 
-local TYPST_METADATA_FILE = "_extensions/academiccvtemplate/typst/metadata.typ"
+local TYPST_METADATA_FILE = "_extensions/academicCVTemplate/typst/metadata.typ"
 
 -- Escapes a Lua string for use as a Typst string literal.
 ---
@@ -23,10 +17,70 @@ local function escape_typst_string(s)
 end
 
 ---
+-- Checks if a Lua table should be treated as a Typst array
+-- (i.e., has sequential integer keys starting from 1).
+---
+local function is_typst_array(tbl)
+  -- An empty table is considered an array.
+  if next(tbl) == nil then
+    return true
+  end
+
+  local i = 1
+  for k, _ in pairs(tbl) do
+    if k ~= i then
+      return false -- Found a non-sequential or non-integer key.
+    end
+    i = i + 1
+  end
+
+  return true -- All keys were sequential integers.
+end
+
+local to_typ_value -- Pre-declaration for circular dependency
+
+---
+-- Formats a Lua table (structured as an array) into a Typst array string literal.
+---
+local function format_typst_array(tbl)
+  local parts = {}
+  for _, item in ipairs(tbl) do
+    table.insert(parts, to_typ_value(item))
+  end
+  return '(' .. table.concat(parts, ", ") .. (#parts > 0 and "," or "") .. ')'
+end
+
+---
+-- Formats a Lua table (structured as a dictionary) into a Typst dictionary string literal.
+---
+local function format_typst_dictionary(tbl)
+  local parts = {}
+  for key, item in pairs(tbl) do
+    local typst_key = tostring(key)
+    table.insert(parts, typst_key .. ": " .. to_typ_value(item))
+  end
+  return '(' .. table.concat(parts, ", ") .. ')'
+end
+
+---
+-- Checks if a given Typst value string should be considered "clutter"
+-- and filtered out from the final metadata file.
+---
+local function is_metadata_clutter(typst_str)
+  if not typst_str then return true end
+  if typst_str == "none" then return true end
+  if typst_str == '()' then return true end
+  if typst_str == '""' then return true end
+  if typst_str:match("^%(%s*%/%*") then return true end
+
+  return false
+end
+
+---
 -- Recursively converts a Pandoc Meta value or raw Lua table
 -- into a Typst value string.
 ---
-local function to_typ_value(val)
+to_typ_value = function(val)
 
   if val == nil then
     return "none"
@@ -44,36 +98,10 @@ local function to_typ_value(val)
     return escape_typst_string(pandoc.utils.stringify(val))
 
   elseif type(val) == 'table' then
-
-    -- Manuelle Array-vs-Map-Erkennung (wie im Original)
-    local parts = {}
-    local is_array = true
-    local i = 1
-    for k, _ in pairs(val) do
-      if k ~= i then
-        is_array = false
-        break
-      end
-      i = i + 1
-    end
-    if #val == 0 and next(val) ~= nil then
-      is_array = false
-    end
-
-    if is_array then
-      -- Convert to Typst Array
-      for _, item in ipairs(val) do
-        table.insert(parts, to_typ_value(item))
-      end
-      return '(' .. table.concat(parts, ", ") .. (#parts > 0 and "," or "") .. ')'
-
+    if is_typst_array(val) then
+      return format_typst_array(val)
     else
-      -- Convert to Typst Dictionary
-      for key, item in pairs(val) do
-        local typst_key = tostring(key)
-        table.insert(parts, typst_key .. ": " .. to_typ_value(item))
-      end
-      return '(' .. table.concat(parts, ", ") .. ')'
+      return format_typst_dictionary(val)
     end
 
   else
@@ -82,7 +110,7 @@ local function to_typ_value(val)
 end
 
 -- ---
--- 2. HAUPTFUNKTION (PANDOC FILTER)
+-- 2. MAIN FUNCTION (PANDOC FILTER)
 -- ---
 
 function M.Pandoc(doc)
@@ -97,10 +125,7 @@ function M.Pandoc(doc)
 
     local typst_val_str = to_typ_value(value)
 
-    if not typst_val_str or
-       typst_val_str == "none" or
-       (typst_val_str == '""' and pandoc.utils.type(value) == 'string') or
-       typst_val_str:match("^%(%s*%/%*") then
+    if is_metadata_clutter(typst_val_str) then
       goto continue
     end
 

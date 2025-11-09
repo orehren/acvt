@@ -6,7 +6,6 @@
     #set block(above: 1.5em, below: 1em)
     #set text(..text-style-header)
     #align(left)[
-        //#strong[#text(fill: color-accent)[#it.body.text.slice(0, 3)]#text()[#it.body.text.slice(3)]]
         #strong[#text(fill: color-accent)[#it.body.text.slice(0, 3)]#it.body.text.slice(3)]
         #box(width: 1fr, line(length: 99%))
     ]

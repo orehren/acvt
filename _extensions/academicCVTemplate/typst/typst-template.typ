@@ -11,11 +11,11 @@
 
 // -- 1. Imports --
 // ----------------
-#import "_extensions/academiccvtemplate/typst/helper-functions.typ": *
-#import "_extensions/academiccvtemplate/typst/metadata.typ": *
-#import "_extensions/academiccvtemplate/typst/styling.typ": *
-#import "_extensions/academiccvtemplate/typst/partial-functions.typ": *
-#import "_extensions/academiccvtemplate/typst/cover-letter.typ": *
+#import "_extensions/academicCVTemplate/typst/helper-functions.typ": *
+#import "_extensions/academicCVTemplate/typst/metadata.typ": *
+#import "_extensions/academicCVTemplate/typst/styling.typ": *
+#import "_extensions/academicCVTemplate/typst/partial-functions.typ": *
+#import "_extensions/academicCVTemplate/typst/cover-letter.typ": *
 
 #set text(..text-style-default)
 #set grid(..grid-style-default)
@@ -64,7 +64,10 @@
     // 2. Render CV (if requested)
     if render-output == "cv-only" or render-output == "combined" {
       // Render the Title Page
-      title-page(author, profile-photo: profile-photo)
+      title-page(
+        author,
+        profile-photo: doc.at("profile-photo", default: none)
+      )
 
       // Set up page settings for the rest of document (page numbering + footer)
       set page(footer: create-footer(author), numbering: "1")

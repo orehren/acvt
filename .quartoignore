@@ -1,0 +1,6 @@
+scripts/
+docs/
+_quarto.yml
+*.Rproj
+renv/
+renv.lock

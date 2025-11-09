@@ -1,11 +1,10 @@
 # Filename: .github/workflows/publish.yml
-# UPDATED FOR 'main' BRANCH
 
 name: Render, Commit MDs, and Deploy Website
 
 on:
   push:
-    branches: [ main ] # <-- Changed from main to main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -22,8 +21,6 @@ jobs:
       # 2. Set up Quarto and R (if R code is present)
       - name: Set up Quarto and R
         uses: quarto-dev/quarto-actions/setup@v2
-        with:
-          use-r: false # Set to 'false' or remove if no R code
 
       # 3. Render Quarto Website
       - name: Render Quarto Website
@@ -31,27 +28,28 @@ jobs:
         with:
           path: docs
 
-      # DEBUGGING
-      - name: "DEBUG: List files in _site directory"
-        run: |
-          echo "--- Listing contents of docs/_site ---"
-          ls -R docs/_site
-        shell: bash
-
       # 4. Move MD files to offline directory
       - name: Move intermediate Markdown files
         run: |
+          # 1. Handle Offline Documentation
           mkdir -p _extensions/academicCVTemplate/docs
           find docs/ -type f -name "*.md" -exec mv {} _extensions/academicCVTemplate/docs/ \;
+
+          # 2. Handle renv project files
+          mkdir -p _extensions/academicCVTemplate/project-files
+          cp -r renv _extensions/academicCVTemplate/project-files/
+          cp renv.lock _extensions/academicCVTemplate/project-files/
         shell: bash
 
       # 5. Commit changed MD files back to 'main'
       - name: Commit offline MD docs back to main
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "Docs: Update offline markdown documentation [skip ci]"
-          branch: main # <-- Changed from main to main
-          file_pattern: _extensions/academicCVTemplate/docs/*.md
+          commit_message: "Docs: Update offline markdown documentation and project files[skip ci]"
+          branch: main
+          file_pattern: |
+            _extensions/academicCVTemplate/docs/*.md
+            _extensions/academicCVTemplate/project-files/**
           repository: .
           commit_user_name: 'github-actions[bot]'
           commit_user_email: 'github-actions[bot]@users.noreply.github.com'

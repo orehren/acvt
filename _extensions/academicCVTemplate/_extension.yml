@@ -5,9 +5,14 @@ description: "A Quarto extension for creating academic CVs and cover letters usi
 quarto-required: ">=1.8.0"
 license: MIT
 contributes:
-  echo: false
-  warning: false
-  error: false
+  project:
+    type: default
+    output-dir: _output
+    output-file: "Application_Documents"
+  execute:
+    echo: false
+    warning: false
+    error: false
   format:
     common:
       style:
@@ -27,3 +32,8 @@ contributes:
       template-partials:
         - typst/typst-template.typ
         - typst/typst-show.typ
+      format-resources:
+        - academicCV-template.qmd
+        - project-files/renv.lock
+        - project-files/renv
+        - project-files/.Rprofile

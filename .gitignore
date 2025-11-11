@@ -14,7 +14,7 @@
 .Rhistory
 
 # personal developement clutter
-_extensions/academiccvtemplate/typst/metadata.typ
+_extensions/acvt/typst/02-definitions-metadata.typ
 _src/
 template.typ
 _output/

@@ -35,4 +35,3 @@ contributes:
         - typst/typst-show.typ
         - typst/styling.typ
         - typst/partial-functions.typ
-        - typst/cover-letter.typ

@@ -1,10 +1,5 @@
 // typst/helper-functions.typ
 // Defines helper functions for the template
-
-// Checks, if a variable is in the global scope and sets a default value if not
-#let get-optional(value, default) = {
-  if value == none { default } else { value }
-}
 #import "@preview/fontawesome:0.5.0": *
 
 

@@ -8,7 +8,6 @@ contributes:
   format:
     common:
       output-file: "Application_Documents"
-      pre-render: scripts/pre-render.R
       execute:
         echo: false
         warning: false
@@ -23,6 +22,7 @@ contributes:
         bibstyle: "assets/bib/apa-cv.csl"
       profile-photo: "assets/images/picture.jpg"
     typst:
+      pre-render: scripts/pre-render.R
       keep-typ: false
       filters:
         - path: lua/inject_metadata.lua

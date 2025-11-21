@@ -1,7 +1,2 @@
-# This file defines the directory as a Quarto project.
-# This project context can influence how extensions and scripts are run.
 project:
-  type: default
-  pre-render: _extensions/acvt/_fetch_cv_data.R
-metadata-files:
-  - _cv_data.yml
+  type: acvt

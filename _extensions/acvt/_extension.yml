@@ -5,9 +5,21 @@ description: "A Quarto extension for creating academic CVs and cover letters usi
 quarto-required: ">=1.8.0"
 license: MIT
 contributes:
+  output-file: "CV_Application"
+  # metadata-files:
+  #   - _cv_data.yml
+  project:
+    metadata-files:
+      - _cv_data.yml
+    project:
+      type: default
+      output-dir: _output
+      pre-render: _extensions/acvt/_fetch_cv_data.R
+    format: acvt-typst
   formats:
     common:
-      output-file: "Application_Documents"
+      shortcodes:
+        - cv-section.lua
       execute:
         echo: false
         warning: false

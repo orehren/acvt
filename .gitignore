@@ -1,6 +1,7 @@
 # Quarto specific files and directories
 /.quarto/
 **/*.quarto_ipynb
+.gitignore
 
 # RStudio project file
 *.Rproj
@@ -19,3 +20,6 @@ _src/
 template.typ
 _output/
 R/
+.cv_cache.rds
+_quarto.yml
+_cv_data.yml

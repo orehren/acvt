@@ -6,7 +6,6 @@
 # create a data-driven CV. All metadata and styling is set
 # here in the YAML header, and the content is loaded from R.
 # ------------------------------------------------------------------
-
 # -- Basic Document Information ------------------------------------
 title: "Documents of Application"
 author:
@@ -109,7 +108,7 @@ library(academicCVtools) # The extension's R helper package
 # The pre-render script `pre-render.R` has already fetched the Google Sheet
 # data and injected it into the document's metadata. We now simply
 # assign it to a variable for use in subsequent R chunks.
-cv_data <- rmarkdown::metadata$cv_data
+# cv_data <- rmarkdown::metadata$cv_data
 ```
 
 ## Research Interests
@@ -124,8 +123,10 @@ cv_data <- rmarkdown::metadata$cv_data
 #     typst_func = "#research-interests"
 #   ) |>
 #   cat()
-cv_data
+# cv_data
 ```
+
+{{< cv-section sheet="interests" func="research-interests" combine_cols="details_6, details_7" exclude_cols="label_7" column_order="label_2=5, details_2=1" >}}
 
 
 ## Publications
@@ -138,11 +139,11 @@ cv_data
 # This function reads all its configuration from the `publication-list`
 # key in the YAML header.
 #render_publication_list()
-library(jsonlite)
+# library(jsonlite)
 
-info_file <- Sys.getenv("QUARTO_EXECUTE_INFO")
-info <- fromJSON(info_file)
+# info_file <- Sys.getenv("QUARTO_EXECUTE_INFO")
+# info <- jsonlite::fromJSON(info_file)$format$metadata$cv_data
 
 # Access format information
-# info$format$metadata
+# info
 ```

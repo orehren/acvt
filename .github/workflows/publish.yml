@@ -36,8 +36,8 @@ jobs:
         uses: richardrigutins/replace-in-files@v2
         with:
           files: '_extensions/acvt/_extension.yml'
-          search-text: '_extensions/acvt'
-          replacement-text: '_extensions/orehren/acvt'
+          search-text: '      pre-render: _extensions/acvt/R/_fetch_cv_data.R'
+          replacement-text: '      pre-render: _extensions/orehren/acvt/R/_fetch_cv_data.R'
 
       - name: Render Quarto Website
         uses: quarto-dev/quarto-actions/render@v2

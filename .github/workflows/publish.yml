@@ -20,17 +20,24 @@ jobs:
       - name: Set up Quarto and R
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Prepare Source Files (Patch Config & Clear Metadata)
-        run: |
-          sed -i -E 's|^( *pre-render: +).*_fetch_cv_data\.R|\1_extensions/orehren/acvt/R/_fetch_cv_data.R|' _extensions/acvt/_extension.yml
-          #sed -i 's|_extensions/acvt|_extensions/orehren/acvt|g' _extensions/acvt/_extension.yml
-          if [ -f "_extensions/acvt/typst/02-definitions-metadata.typ" ]; then
-            truncate -s 0 _extensions/acvt/typst/02-definitions-metadata.typ
-            echo "File _extensions/acvt/typst/02-definitions-metadata.typ cleared."
-          else
-            echo "Warning: _extensions/acvt/typst/02-definitions-metadata.typ not found, skipping clear."
-          fi
-        shell: bash
+      # - name: Prepare Source Files (Patch Config & Clear Metadata)
+      #   run: |
+      #     sed -i -E 's|^( *pre-render: +).*_fetch_cv_data\.R|\1_extensions/orehren/acvt/R/_fetch_cv_data.R|' _extensions/acvt/_extension.yml
+      #     #sed -i 's|_extensions/acvt|_extensions/orehren/acvt|g' _extensions/acvt/_extension.yml
+      #     if [ -f "_extensions/acvt/typst/02-definitions-metadata.typ" ]; then
+      #       truncate -s 0 _extensions/acvt/typst/02-definitions-metadata.typ
+      #       echo "File _extensions/acvt/typst/02-definitions-metadata.typ cleared."
+      #     else
+      #       echo "Warning: _extensions/acvt/typst/02-definitions-metadata.typ not found, skipping clear."
+      #     fi
+      #   shell: bash
+
+      - name: Replace single file
+        uses: richardrigutins/replace-in-files@v2
+        with:
+          files: '_extensions/acvt/_extension.yml'
+          search-text: '_extensions/acvt'
+          replacement-text: '_extensions/orehren/acvt'
 
       - name: Render Quarto Website
         uses: quarto-dev/quarto-actions/render@v2

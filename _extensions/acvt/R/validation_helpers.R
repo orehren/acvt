@@ -2,18 +2,21 @@
 
 #' Validate arguments for create_publication_list
 #'
-#' @param bib_file Path to the .bib file.
-#' @param author_name Author's full name.
-#' @param csl_file Path to the .csl file.
-#' @param group_labels Named character vector for group labels.
-#' @param default_label Default label string.
-#' @param group_order Optional character vector for sort order.
-#' @param pandoc_path Optional path to Pandoc executable.
-#' @param author_highlight_markup Typst markup string.
-#' @param typst_func_name Typst function name.
+#' This helper ensures that all inputs required for generating the publication list
+#' are present and valid before the main logic attempts to process them.
+#' This prevents downstream errors in the complex citation processing pipeline.
 #'
-#' @return `TRUE` (invisibly) if all checks pass.
-#' @importFrom checkmate assert_file_exists assert_string assert_character assert_named
+#' @param bib_file Path to the bibliography file.
+#' @param author_name Name of the author to highlight.
+#' @param csl_file Path to the citation style language file.
+#' @param group_labels Mapping of type codes to display labels.
+#' @param default_label Fallback label for uncategorized items.
+#' @param group_order Explicit ordering of the groups.
+#' @param pandoc_path Custom path to the pandoc executable.
+#' @param author_highlight_markup Typst template string for highlighting.
+#' @param typst_func_name Name of the typst function to generate.
+#'
+#' @return `TRUE` invisibly on success.
 #' @noRd
 .validate_create_publication_list_args <- function(
     bib_file, author_name, csl_file, group_labels, default_label,
@@ -42,19 +45,21 @@
 
 #' Validate arguments for format_typst_section
 #'
-#' @param data A data frame or tibble.
-#' @param typst_func The name of the Typst function.
-#' @param combine_cols Tidyselect expression.
-#' @param combine_as Name of the new combined column.
-#' @param combine_sep Separator for combined columns.
-#' @param combine_prefix Prefix for combined column values.
-#' @param exclude_cols Tidyselect expression.
-#' @param na_action How to handle `NA` values.
-#' @param output_mode Output structure.
+#' This helper validates the data frame and formatting parameters before they are used
+#' to generate Typst code. It ensures that column selection and string formatting options
+#' are consistent with the expected output structure.
 #'
-#' @return `TRUE` (invisibly) if all checks pass.
-#' @importFrom checkmate assert_data_frame assert_string assert_character assert_choice
-#' @importFrom rlang quo_is_null
+#' @param data Input data frame.
+#' @param typst_func Target Typst function name.
+#' @param combine_cols Columns to merge.
+#' @param combine_as Resulting column name.
+#' @param combine_sep Separator for merged values.
+#' @param combine_prefix Prefix for merged values.
+#' @param exclude_cols Columns to remove.
+#' @param na_action NA handling strategy.
+#' @param output_mode Output format (rowwise vs array).
+#'
+#' @return `TRUE` invisibly on success.
 #' @noRd
 .validate_format_typst_section_args <- function(
     data, typst_func, combine_cols, combine_as, combine_sep,
@@ -70,12 +75,14 @@
 }
 
 #' Validate arguments for load_cv_sheets
+#'
+#' Checks the structural integrity of the sheet loading configuration.
+#' It ensures the document ID and sheet list are in a valid format before any API calls are made.
+#'
 #' @noRd
 .validate_load_cv_sheets_args <- function(doc_identifier, sheets_to_load, ...) {
-  # Validate doc_identifier
   checkmate::assert_string(doc_identifier, min.chars = 1)
 
-  # Validate sheets_to_load
   if (is.character(sheets_to_load)) {
     checkmate::assert_character(sheets_to_load, min.chars = 1, min.len = 1)
   } else if (rlang::is_named(sheets_to_load)) {
@@ -86,6 +93,9 @@
 }
 
 #' Validate arguments for read_cv_sheet
+#'
+#' Validates the parameters for reading a single sheet, including the name, type specs, and NA handling options.
+#'
 #' @noRd
 .validate_read_cv_sheet_args <- function(
     doc_identifier, sheet_name, na_strings, col_types, trim_ws) {
@@ -100,13 +110,14 @@
 
 #' Find and validate an executable, returning its path
 #'
-#' @param exec_name The name of the executable (e.g., "pandoc").
-#' @param path_arg An optional user-provided path to the executable.
-#' @param arg_name The name of the argument providing `path_arg` (for error messages).
+#' This helper verifies that a required external tool (like Pandoc) exists on the system.
+#' It prioritizes a user-provided path but falls back to the system PATH, failing fast if the tool is missing.
 #'
-#' @return The validated, absolute path to the executable.
-#' @importFrom cli cli_abort
-#' @importFrom checkmate assert_string test_file_exists
+#' @param exec_name Executable name.
+#' @param path_arg Optional explicit path.
+#' @param arg_name Name of the argument for error reporting.
+#'
+#' @return The absolute path to the executable.
 #' @noRd
 .validate_executable_found <- function(exec_name, path_arg = NULL, arg_name = "path_arg") {
   if (!is.null(path_arg)) {
@@ -138,12 +149,13 @@
 
 #' Validate the corrected column_order argument
 #'
-#' @param column_order A list for reordering, e.g., `list("col_a" = 1)`.
-#' @param data The data frame to check against.
+#' Checks that the user-supplied column ordering is valid: existing columns, unique positions, and positive integers.
+#' This ensures reordering operations don't fail silently or produce corrupted data.
 #'
-#' @return `TRUE` (invisibly) if checks pass.
-#' @importFrom checkmate assert_list assert_numeric
-#' @importFrom cli cli_abort
+#' @param column_order Reordering list.
+#' @param data Target dataframe.
+#'
+#' @return `TRUE` invisibly on success.
 #' @noRd
 .validate_column_order_corrected <- function(column_order, data) {
   if (is.null(column_order)) {
@@ -152,7 +164,6 @@
 
   checkmate::assert_list(column_order, names = "unique")
 
-  # Check that names (column names) exist in the data
   specified_cols <- names(column_order)
   missing_cols <- setdiff(specified_cols, colnames(data))
   if (length(missing_cols) > 0) {
@@ -165,7 +176,6 @@
     )
   }
 
-  # Check that values (positions) are unique positive integers
   order_indices <- unlist(column_order)
   checkmate::assert_numeric(order_indices, lower = 1, unique = TRUE, any.missing = FALSE)
   if (any(order_indices %% 1 != 0)) {

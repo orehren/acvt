@@ -1,14 +1,12 @@
 // typst/03-definitions-styling.typ
-// defines color palett, typography and styles
+// This module centralizes all visual design definitions.
+// It defines the color palette (based on Nord), typography settings, and reusable style dictionaries.
+// Keeping these separate allows for easy theming changes without touching the layout logic.
 
-
-
-// -- 2. Color Palett Definition --
-// ----------------
-
+// -- Color Palette --
+// We map the user-defined accent color and define a static Nord-based palette for consistency.
 #let color-accent = rgb( unescape_text( style.at("color-accent", default: "#dc3522") ) )
 
-// -- Colors (using the nord color palett) --
 #let color-nord0 = rgb("#2e3440")
 #let color-nord1 = rgb("#3b4252")
 #let color-nord2 = rgb("#434c5e")
@@ -16,12 +14,11 @@
 #let color-nord4 = rgb("#d8dee9")
 
 
-// -- 3. Typography Definition --
-// ------------------------------
+// -- Typography --
+// Font families are retrieved from metadata with fallbacks to standard system fonts.
 #let font-header = style.at("font-header", default: ("Roboto", "Arial", "Dejavu Sans") )
 #let font-text = style.at("font-text", default: ("Source Sans Pro", "Arial", "Dejavu Sans") )
 
-// -- Font Sizes --
 #let font-size-xl = 22pt
 #let font-size-large = 16pt
 #let font-size-middle = 12pt
@@ -32,10 +29,10 @@
 #let font-size-skill = 7pt
 
 
-// -- 4. Styles Definition --
-// ------------------------------
+// -- Style Dictionaries --
+// These dictionaries bundle font properties together for easy application via the splat operator (..).
 
-// Global Styles
+// Standard body text
 #let text-style-default = (
 	font: font-text,
 	size: font-size-normal,
@@ -52,13 +49,12 @@
 	fill: color-nord1,
 )
 
-// Styles for Page Partials (Header and Footer)
+// Header/Footer specific styles
 #let text-style-header = (
 	font: font-header,
 	size: font-size-large,
 	weight: "bold",
 	style: "normal",
-	// fill: style.color-accent
 	fill: color-nord1
 )
 
@@ -70,7 +66,6 @@
 	fill: color-accent
 )
 
-// Style for Tables
 #let text-style-table = (
   font: font-text,
   size: font-size-label,
@@ -79,7 +74,7 @@
   fill: color-nord2
 )
 
-// Styles for Title Page Partials
+// Title Page Elements
 #let text-style-title-name = (
 	font: font-header,
 	size: font-size-xl,
@@ -104,7 +99,7 @@
   fill: color-nord3
 )
 
-// Style for Famous Quote Partial
+// Content Section Styles
 #let text-style-quote = (
   font: font-header,
   size: font-size-middle,
@@ -113,7 +108,6 @@
   fill: color-accent
 )
 
-// Style for About Me Partial
 #let text-style-aboutme = (
   font: font-text,
   size: font-size-small,
@@ -122,7 +116,6 @@
   fill: color-nord0
 )
 
-// Style for Publication List Entries
 #let text-style-publication = (
   font: font-text,
   size: font-size-small,
@@ -131,7 +124,7 @@
   fill: color-nord1
 )
 
-// Style for Labels (left grid pane)
+// Grid/Layout specific styles (Labels vs Details)
 #let text-style-label = (
 	font: font-header,
 	size: font-size-label,
@@ -148,7 +141,6 @@
 	fill: color-accent
 )
 
-// Style for Skills
 #let text-style-skill-name = (
 	font: font-header,
 	size: font-size-skill,
@@ -172,6 +164,8 @@
   style: "normal",
   fill: color-nord1
 )
+
+// -- Layout Presets --
 
 #let grid-style-default = (
   align: center + horizon,
@@ -201,4 +195,3 @@
   align: left + horizon,
   stroke: none
 )
-

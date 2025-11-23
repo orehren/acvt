@@ -1,0 +1,83 @@
+---
+title: "Configuration"
+---
+
+# YAML Reference
+
+The core configuration of your CV happens in the YAML frontmatter of your `.qmd` file. Below is a comprehensive reference of the available options.
+
+## Basic Information
+
+Define your personal details and contact information here.
+
+```yaml
+author:
+  firstname: "Arthur"
+  lastname: "Author"
+  contact:
+    - icon: fa address-card
+      text: "123 Academic Way, Oxford"
+    - icon: fa envelope
+      text: "arthur@example.edu"
+      url: "mailto:arthur@example.edu"
+  socialmedia:
+    - icon: fa github
+      text: "github.com/arthur"
+      url: "https://github.com/arthur"
+    - icon: fa orcid
+      text: "0000-0000-0000-0000"
+```
+
+## Styling
+
+Override the default visual style (Nord theme) with your own colors and fonts.
+
+```yaml
+style:
+  color-accent: "5e81ac"  # Hex code for the primary accent color
+  font-header: "Lato"     # Font for headings
+  font-text: "Roboto"     # Font for body text
+```
+
+## Output Options
+
+Control which parts of the document are generated.
+
+```yaml
+render-output: "combined" # Options: "cv-only", "letter-only", "combined"
+```
+
+## Cover Letter
+
+If you are generating a cover letter, provide the recipient and content details.
+
+```yaml
+recipient:
+  name: "Dr. Hiring Manager"
+  salutation: "Dr. Manager"
+  address: "University of Science"
+  city: "Science City"
+  zip: "12345"
+
+date: "1. March 2025"
+subject: "Application for Assistant Professor Position"
+```
+
+*Note: The body of the cover letter is written in the Markdown document under the `## Coverletter` heading.*
+
+## Google Sheets Integration
+
+Configure the connection to your data source.
+
+```yaml
+google-document:
+  auth-email: "your.email@gmail.com"
+  document-identifier: "YOUR_GOOGLE_SHEET_ID"
+  sheets-to-load:
+    - name: "Working Experiences"
+      shortname: "working"
+    - name: "Research Interests"
+      shortname: "interests"
+```
+
+See [Data Integration](./data_integration.qmd) for more details.

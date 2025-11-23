@@ -3,6 +3,7 @@
 -- =============================================================================
 local utils = {}
 
+-- Safely convert any object to a string.
 function utils.safe_string(obj)
   if obj == nil then return "" end
   local status, res = pcall(pandoc.utils.stringify, obj)
@@ -15,6 +16,7 @@ function utils.trim(s)
   return s:match("^%s*(.-)%s*$")
 end
 
+-- Normalize quotation marks to standard ASCII double/single quotes.
 function utils.fix_quotes(s)
   if not s then return nil end
   s = tostring(s)
@@ -28,6 +30,7 @@ function utils.file_exists(path)
   if f then io.close(f); return true else return false end
 end
 
+-- Parse "key=value, key2=value2" strings into a table.
 function utils.parse_key_val(str)
   local res = {}
   local s = utils.safe_string(str)
@@ -38,6 +41,7 @@ function utils.parse_key_val(str)
   return res
 end
 
+-- Parse comma-separated lists into a Lua table.
 function utils.parse_list_string(str)
   local res = {}
   local s = utils.safe_string(str)
@@ -52,6 +56,8 @@ end
 -- =============================================================================
 local config = {}
 
+-- Load configuration from multiple sources: kwargs, project YAML, or defaults.
+-- This ensures the shortcode is flexible and respects global settings.
 function config.get(kwargs)
   local env_conf = {}
   local global_meta = {}
@@ -158,18 +164,16 @@ function config.get(kwargs)
     highlight_markup = utils.fix_quotes(hl_style)
   end
 
-  -- KORREKTE CSL TYPEN:
   local standard_group_labels = {
-    article = "Journal Article",     -- CSL: article-journal -> article
-    conference = "Conference Paper", -- CSL: paper-conference -> conference
-    chapter = "Book Chapter",        -- CSL: chapter
-    book = "Book",                   -- CSL: book
-    thesis = "Thesis",               -- CSL: thesis
-    report = "Technical Report",     -- CSL: report
+    article = "Journal Article",
+    conference = "Conference Paper",
+    chapter = "Book Chapter",
+    book = "Book",
+    thesis = "Thesis",
+    report = "Technical Report",
     misc = "Miscellaneous"
   }
 
-  -- Merge-Logik: Erst Standards, dann User-Überschreibungen
   local user_labels = fetch_complex("group_labels", utils.parse_key_val, {})
   local final_group_labels = {}
   for k, v in pairs(standard_group_labels) do final_group_labels[k] = v end
@@ -192,13 +196,14 @@ end
 -- =============================================================================
 local core = {}
 
+-- Parse bibliography files into a Lua table, handling various formats via Pandoc.
 function core.read_bib_file(path)
   if not utils.file_exists(path) then return {} end
 
   local ext = path:match("^.+(%..+)$")
   if ext then ext = ext:lower() end
 
-  -- LOGIK FÜR YAML/YML
+  -- Handle YAML/YML directly or wrap it if needed.
   if ext == ".yaml" or ext == ".yml" then
     local f = io.open(path, "r")
     if not f then return {} end
@@ -209,7 +214,6 @@ function core.read_bib_file(path)
 
     local args = {"-f", "markdown", "-t", "csljson"}
     local input_data = content
-    -- Wrapper, falls nur Liste ohne Header
     if not content:match("^%-%-%-") and not content:match("^references:") then
        input_data = "---\nreferences:\n" .. content .. "\n---\n"
     end
@@ -222,7 +226,7 @@ function core.read_bib_file(path)
     return {}
   end
 
-  -- LOGIK FÜR ANDERE FORMATE
+  -- Handle standard bibliography formats using Pandoc's conversion capabilities.
   local args = {path, "-t", "csljson"}
 
   if ext == ".json" then
@@ -245,6 +249,7 @@ function core.read_bib_file(path)
   return {}
 end
 
+-- Execute Pandoc to process citations using Citeproc and generate formatted output.
 function core.run_pandoc_pipeline(bib_files, csl)
   local all_refs = {}
   local seen_ids = {}
@@ -270,6 +275,7 @@ function core.run_pandoc_pipeline(bib_files, csl)
   return result
 end
 
+-- Process the Pandoc output into a structured list of entries suitable for Typst.
 function core.process_data(json_str, cfg)
   local doc = pandoc.json.decode(json_str)
   if not doc or not doc.meta or not doc.blocks then return {} end
@@ -281,7 +287,6 @@ function core.process_data(json_str, cfg)
   for _, ref in ipairs(refs) do
     local id = utils.safe_string(ref.id)
     local type_raw = utils.safe_string(ref.type)
-    -- CLEANING für Labels
     local type_clean = type_raw:gsub("%-journal", ""):gsub("paper%-", "")
 
     local year = 0
@@ -291,6 +296,7 @@ function core.process_data(json_str, cfg)
     meta_map[id] = { type = type_clean, year = year }
   end
 
+  -- Recursively find reference divs in the AST.
   local function find_entries(blocks)
     for _, el in ipairs(blocks) do
       if el.t == "Div" and el.identifier:match("^ref%-") then
@@ -320,6 +326,7 @@ function core.process_data(json_str, cfg)
   return entries
 end
 
+-- Sort publication entries by group rank, label, and year (descending).
 function core.sort_entries(entries, cfg)
   local group_rank = {}
   if cfg.group_order then
@@ -377,7 +384,6 @@ function Shortcode(args, kwargs, meta)
 
   local body = table.concat(typst_items, ",\n")
 
-  -- FIX für Typst Array Fehler: Zwingendes Komma am Ende
   return pandoc.RawBlock("typst", "#" .. cfg.func_name .. "((\n" .. body .. ",\n))")
 end
 

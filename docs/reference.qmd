@@ -1,0 +1,63 @@
+---
+title: "Reference"
+---
+
+# Syntax Reference & Cheat Sheet
+
+## Shortcodes
+
+### `{{< cv-section >}}`
+
+Renders a section of your CV from a loaded Google Sheet.
+
+**Parameters:**
+
+*   `sheet` (Required): The `shortname` of the dataset to use.
+*   `func` (Required): The Typst function to map data to (e.g., `resume-entry`, `research-interests`).
+*   `combine_cols`: Comma-separated list of columns to merge.
+*   `combine_as`: Name of the merged column (default: `details`).
+*   `combine_sep`: Separator for merged values (default: space).
+*   `exclude_cols`: Columns to drop.
+*   `na_action`: Handling of empty cells (`omit`, `keep`, `string`).
+
+### `{{< publication-list >}}`
+
+Generates a formatted bibliography from a `.bib` file.
+
+**Parameters:**
+
+*   `bib_file`: Path to the `.bib` file.
+*   `csl_file`: Path to the Citation Style Language file.
+*   `author_name`: Name to highlight (bold) in the author list.
+
+## Markdown Structure
+
+### Cover Letter
+
+To include a cover letter, use a standard Level 2 heading. The extension automatically extracts this content.
+
+```markdown
+## Coverletter
+
+Dear Committee,
+
+I am writing to apply...
+```
+
+### Attachments
+
+You can attach images or certificates at the end of the document via YAML.
+
+```yaml
+attachments:
+  - name: "PhD Certificate"
+    file: "path/to/cert.pdf"
+```
+
+## Icons
+
+Use standard FontAwesome names in your YAML configuration.
+
+*   `fa envelope`
+*   `fa brands github`
+*   `fa phone`

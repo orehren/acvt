@@ -1,30 +1,28 @@
-// typst/helper-functions.typ
-// Defines helper functions for the template
+// typst/01-definitions-helper-functions.typ
+// This module provides general-purpose utility functions used throughout the template.
+// These helpers abstract away common tasks like string cleaning, icon rendering, and list formatting.
+
 #import "@preview/fontawesome:0.5.0": *
 
-// Checks, if a variable is in the global scope and sets a default value if not
+// Safely retrieve an optional variable, returning a default if it's missing (none).
+// This prevents "unknown variable" errors when accessing optional metadata fields.
 #let get-optional(value, default) = {
   if value == none { default } else { value }
 }
 
-// Cleans up text potentially escaped from external sources (e.g., Pandoc).
+// sanitize text content that might contain artifacts from the Pandoc conversion process.
+// This ensures that strings rendered in the PDF look clean and professional.
 #let unescape_text(text) = {
   let cleaned = text
-
-  // Replaces non-breaking spaces (U+00A0) with regular spaces (U+0020)
-  cleaned = cleaned.replace(" ", " ")
-
-  // Removes literal backslashes (e.g., from Pandoc escaping)
-  cleaned = cleaned.replace("\\", "")
-
-  // Fixes a hyper-specific artifact (e.g., "end.~NextSentence")
-  cleaned = cleaned.replace(".~", ". ")
-
+  cleaned = cleaned.replace(" ", " ") // Normalize non-breaking spaces
+  cleaned = cleaned.replace("\\", "") // Remove escape characters
+  cleaned = cleaned.replace(".~", ". ") // Fix specific Pandoc artifacts
   return cleaned
 }
 
 
-// Renders the fontawesome icons based on their string identifier.
+// Render an icon based on its type definition (FontAwesome string or SVG path).
+// This allows the user to mix and match standard icons with custom SVG graphics transparently.
 #let render-icon(icon_string, color) = {
   if icon_string.starts-with("fa ") {
     let parts = icon_string.split(" ")
@@ -36,64 +34,57 @@
       assert(false, message: "Invalid FontAwesome icon string format: " + icon_string)
     }
   } else if icon_string.ends-with(".svg") {
-    // Fallback for local SVG images
+    // Treat as a local file path for custom icons.
     box(image(icon_string))
   } else {
     assert(false, message: "Invalid icon string (expected 'fa ...' or '*.svg'): " + icon_string)
   }
 }
 
-// Renders a single author detail item (e.g., icon + link).
-// This is defined as a code block {...} and builds content
-// with '+' to create a robust, horizontal, non-breaking layout.
+// Create a visual component for a single contact/social item (Icon + Text/Link).
+// Uses a box to keep the icon and text together, preventing awkward line breaks.
 #let render-author-detail(item_data, item_accent_color) = {
-  // 1. Get data from the dictionary
   let item_icon = item_data.at("icon", default: none)
   let item_url = item_data.at("url", default: none)
   let item_text_raw = item_data.at("text", default: "")
   let item_text = unescape_text(item_text_raw)
 
-  // 2. Build the icon part
   let icon_part = if item_icon != none {
     render-icon(item_icon, item_accent_color) + h(0.2em)
   } else {
-    [] // empty content
+    []
   }
 
-  // 3. Build the text part
   let text_part = if item_url != none {
     link(item_url)[#item_text]
   } else if item_text != "" {
     item_text
   } else {
-    [] // empty content
+    []
   }
 
-  // 4. Return the combined, horizontal content
   return icon_part + text_part
 }
 
-// Renders a list of author details, joined by a separator.
+// Render a horizontal list of author details separated by a spacer.
+// This is used for contact info lines in the header or title page.
 #let render-author-details-list(
   list_data,
   item_accent_color,
-  separator: h(0.5em) // Default separator is horizontal space
+  separator: h(0.5em)
 ) = {
-  // Guard clause for empty or non-existent list
   if list_data != none and list_data.len() > 0 {
-    // 1. Map each data item to a rendered, boxed item
     let rendered_items = list_data.map(item =>
-      // 'box()' ensures each item is treated as a single layout unit
       box(render-author-detail(item, item_accent_color))
     )
-    // 2. Join the list of items with the separator
     rendered_items.join(separator)
   } else {
-    [] // Return empty content if list is empty
+    []
   }
 }
 
-// --- Helper function to find contact info by icon ---
+// Retrieve specific contact information (like email or phone) by its icon identifier.
+// This allows the cover letter to dynamically pull specific contact details from the generic list.
 #let find_contact(author, icon_name) = {
   let item = author.contact.find(item => item.icon == icon_name)
   if item != none {
@@ -107,25 +98,22 @@
   }
 }
 
-// Groups a list of dictionaries by a specific field.
+// Organize a flat list of items into a dictionary of lists based on a grouping field.
+// Essential for structuring data like skills into categories.
 #let group-by-field(raw_fields_list, grouping_field) = {
-  let grouped = (:) // Initialize an empty dictionary
+  let grouped = (:)
 
   if raw_fields_list == none or raw_fields_list.len() == 0 {
     return grouped
   }
 
   for field_entry in raw_fields_list {
-    // Get the value of the field we are grouping by
     let current_field = field_entry.at(grouping_field, default: "Uncategorized")
 
     if not (current_field in grouped) {
-      // This is the first entry for this category; create a new array
       grouped.insert(current_field, (field_entry,))
     } else {
-      // This category already exists; append to its array
       let existing_list = grouped.at(current_field)
-      // Create a new array by concatenating the old list and the new item
       grouped.insert(current_field, existing_list + (field_entry,))
     }
   }

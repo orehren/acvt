@@ -1,12 +1,6 @@
-// =============================================
-//  TEMPLATE: Quarto Typst Modern-CV (Optimized)
-// =============================================
-// Version: 1.5
-// Author: Oliver Rehren
-// Description: An optimized Typst template for academic CVs,
-//              addressing font override logic and show rule errors,
-//              while preserving the original visual appearance.
-// =============================================
+// typst/typst-template.typ
+// This file defines the core `resume` function which acts as the document's main controller.
+// It determines what parts of the document (Cover Letter, CV, or both) should be rendered based on user configuration.
 
 
 // -- 7. Main Document Function --
@@ -16,7 +10,8 @@
     // --- Document Assembly ---
     // -------------------------
 
-    // 1. Render Cover Letter (if requested)
+    // 1. Conditionally render the Cover Letter.
+    // This allows users to generate a standalone letter or include it as the first page of their application.
     if render-output == "letter-only" or render-output == "combined" {
       render-cover-letter(author, color-accent, text-style-aboutme,
                           recipient: get-optional(recipient, none),
@@ -26,30 +21,31 @@
                           )
     }
 
-    // 2. Render CV (if requested)
+    // 2. Conditionally render the CV.
     if render-output == "cv-only" or render-output == "combined" {
-      // Render the Title Page
+      // Generate the Title Page with personal details and photo.
       title-page(
         author,
         profile-photo: get-optional(profile-photo, none)
       )
 
-      // Set up page settings for the rest of document (page numbering + footer)
+      // Initialize page numbering and footer for the main content pages.
       set page(footer: create-footer(author), numbering: "1")
       counter(page).update(1)
 
-      // Display optional quote
+      // Optional: Display a motivational quote.
       if famous-quote.text != none {
           quote(attribution: famous-quote.attribution, block: true, quotes: true)[#famous-quote.text]
       }
 
-      // Display optional "About Me" section
+      // Optional: Display an introductory "About Me" paragraph.
       if aboutme != none {
           set text(..text-style-aboutme)
           align(center)[#aboutme]
           v(1em)
       }
 
+      // Render the main body content provided by Quarto.
       doc
     }
 }

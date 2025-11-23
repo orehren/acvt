@@ -2,6 +2,8 @@
 -- 1. UTILS
 -- =============================================================================
 
+-- Recursively unwrap Pandoc AST elements into standard Lua types (tables/strings).
+-- This simplifies data manipulation by removing the AST layer.
 local function unwrap(obj)
   if obj == nil then return nil end
   local t = pandoc.utils.type(obj)
@@ -17,12 +19,16 @@ local function unwrap(obj)
   return pandoc.utils.stringify(obj)
 end
 
+-- Determine if a value should be treated as missing/NA.
+-- This handles various empty representations (nil, empty string, "NA", etc.).
 local function is_na(val)
   if not val then return true end
   local s = tostring(val)
   return (s == "" or s == "NA" or s == ".na.character")
 end
 
+-- Escape special characters to ensure the string is valid Typst syntax.
+-- This prevents syntax errors when the string is injected into the Typst template.
 local function clean_string(val)
   local s = tostring(val)
   s = s:gsub("“", '"'):gsub("”", '"'):gsub("‘", "'"):gsub("’", "'")
@@ -30,6 +36,7 @@ local function clean_string(val)
   return '"' .. s .. '"'
 end
 
+-- Retrieve a value from a kwargs table with a default fallback.
 local function get_arg(kwargs, key, default)
   local val = kwargs[key]
   if not val then return default end
@@ -38,7 +45,7 @@ local function get_arg(kwargs, key, default)
   return s
 end
 
--- Einfache Liste parsen (Legacy Support)
+-- Parse a comma-separated string into a Lua table (list).
 local function parse_list_arg(val)
   local res = {}
   local s = pandoc.utils.stringify(val)
@@ -54,7 +61,7 @@ end
 -- 2. TIDY SELECT LOGIC (NEU)
 -- =============================================================================
 
--- Hilfsfunktion: Index einer Spalte finden
+-- Find the numerical index of a column by its name.
 local function get_col_index(cols, name)
   for i, v in ipairs(cols) do
     if v == name then return i end
@@ -62,26 +69,24 @@ local function get_col_index(cols, name)
   return nil
 end
 
--- Hauptfunktion: Löst Strings wie 'starts_with("a"), b:d' in eine Liste von Spaltennamen auf
+-- Resolve tidy-select style strings (ranges, functions) into a list of column names.
+-- This allows flexible column selection similar to dplyr (e.g., 'start:end', 'starts_with("foo")').
 local function resolve_tidy_select(selector_str, all_columns)
   if not selector_str or selector_str == "" then return {} end
 
   local selected_cols = {}
-  local seen = {} -- Um Duplikate zu vermeiden
+  local seen = {}
 
-  -- Wir splitten am Komma, müssen aber aufpassen, keine Kommas innerhalb von Klammern zu splitten.
-  -- Für diesen Zweck nehmen wir an, dass Funktionsaufrufe keine verschachtelten Kommas haben.
   for part in string.gmatch(selector_str, "([^,]+)") do
-    part = part:match("^%s*(.-)%s*$") -- trim
+    part = part:match("^%s*(.-)%s*$")
 
-    -- 1. Range (start:end)
+    -- 1. Handle Ranges (start:end)
     local start_col, end_col = part:match("^([%w_]+):([%w_]+)$")
     if start_col and end_col then
       local idx_start = get_col_index(all_columns, start_col)
       local idx_end = get_col_index(all_columns, end_col)
 
       if idx_start and idx_end then
-        -- Richtung erkennen (vorwärts oder rückwärts)
         local step = 1
         if idx_start > idx_end then step = -1 end
         for i = idx_start, idx_end, step do
@@ -93,12 +98,11 @@ local function resolve_tidy_select(selector_str, all_columns)
         end
       end
 
-    -- 2. Funktionen (starts_with, etc.)
+    -- 2. Handle Functions (starts_with, etc.)
     else
       local func, arg = part:match("^([%w_]+)%(['\"](.+)['\"]%)$")
 
       if func then
-        -- Loop durch alle Spalten und prüfen
         for _, col in ipairs(all_columns) do
           local match = false
           if func == "starts_with" then
@@ -106,9 +110,8 @@ local function resolve_tidy_select(selector_str, all_columns)
           elseif func == "ends_with" then
             if col:find(arg .. "$") then match = true end
           elseif func == "contains" then
-            if col:find(arg, 1, true) then match = true end -- true = plain search (kein pattern)
+            if col:find(arg, 1, true) then match = true end
           elseif func == "matches" then
-             -- Lua Pattern Matching
             if col:find(arg) then match = true end
           end
 
@@ -118,18 +121,15 @@ local function resolve_tidy_select(selector_str, all_columns)
           end
         end
 
-      -- 3. Exakter Name (Literal)
+      -- 3. Handle Exact Names
       else
-        -- Prüfen ob der Spaltenname existiert
         if get_col_index(all_columns, part) then
            if not seen[part] then
              table.insert(selected_cols, part)
              seen[part] = true
            end
         else
-           -- Optional: Warnung oder Ignorieren. Wir ignorieren es hier.
-           -- Kann auch ein hardcoded String sein, falls das Argument nicht existiert?
-           -- Im Kontext von combine_cols eher unwahrscheinlich.
+           -- Column not found; ignoring silently as per current design.
         end
       end
     end
@@ -143,7 +143,7 @@ end
 -- 3. CORE LOGIC
 -- =============================================================================
 
--- A. Sammeln
+-- Gather valid fields from a row object, respecting exclusions and NA handling.
 local function collect_row_fields(row_list, exclude_set, na_mode)
   local fields = {}
 
@@ -151,7 +151,6 @@ local function collect_row_fields(row_list, exclude_set, na_mode)
     local k = item.key
     local v = item.value
 
-    -- Prüfung auf exclude_set (ist jetzt ein Set von Namen)
     if k and k ~= "" and not exclude_set[k] then
 
       if is_na(v) then
@@ -169,11 +168,10 @@ local function collect_row_fields(row_list, exclude_set, na_mode)
   return fields
 end
 
--- B. Kombinieren
+-- Combine specified columns into a single field (e.g., merging address lines).
 local function apply_combine(fields, opts)
   if #opts.cols == 0 then return fields end
 
-  -- Umwandeln der cols Liste in ein Set für schnelleren Lookup
   local target_set = {}
   for _, c in ipairs(opts.cols) do target_set[c] = true end
 
@@ -181,10 +179,7 @@ local function apply_combine(fields, opts)
   local remaining_fields = {}
   local consumed_keys = {}
 
-  -- Wir müssen die Reihenfolge der `opts.cols` einhalten beim Kombinieren!
-  -- Aber: `fields` hat die Reihenfolge der Daten.
-  -- Strategie: Wir iterieren durch `opts.cols` (die gewünschte Reihenfolge) und suchen den Wert.
-
+  -- Ensure combined parts adhere to the target order specified in opts.cols.
   for _, target_key in ipairs(opts.cols) do
     for _, field in ipairs(fields) do
       if field.key == target_key then
@@ -198,7 +193,6 @@ local function apply_combine(fields, opts)
     end
   end
 
-  -- Den Rest einsammeln
   for _, field in ipairs(fields) do
     if not consumed_keys[field.key] then
       table.insert(remaining_fields, field)
@@ -214,12 +208,10 @@ local function apply_combine(fields, opts)
   return remaining_fields
 end
 
--- C. Sortieren
+-- Reorder fields based on a provided specification string.
+-- Allows the user to control the visual order of elements in the CV entry.
 local function apply_order(fields, order_str)
   if not order_str or order_str == "" then return fields end
-
-  -- Hier nutzen wir noch die einfache Logik, da 'order' meist explizite Namen sind
-  -- Man könnte tidy select hier auch einbauen, ist aber komplexer wegen a=1 Syntax.
 
   local index_moves = {}
   local prio_list = {}
@@ -288,6 +280,8 @@ end
 -- =============================================================================
 -- 4. MAIN
 -- =============================================================================
+-- Main entry point for the shortcode.
+-- Loads data, applies selection/combination logic, and generates Typst function calls.
 local function generate_cv_section(args, kwargs, meta)
   local sheet = get_arg(kwargs, "sheet", "")
   local func  = get_arg(kwargs, "func", "")
@@ -295,20 +289,19 @@ local function generate_cv_section(args, kwargs, meta)
   if sheet == "" or func == "" then return pandoc.Strong(pandoc.Str("Missing sheet/func")) end
   if not meta.cv_data or not meta.cv_data[sheet] then return pandoc.Strong(pandoc.Str("Sheet not found")) end
 
-  -- 1. Daten laden & Unwrappen
+  -- 1. Load Data
   local rows_raw = unwrap(meta.cv_data[sheet])
   local rows = (pandoc.utils.type(rows_raw) == "MetaList" or (type(rows_raw)=="table" and rows_raw[1])) and rows_raw or {rows_raw}
 
   if #rows == 0 then return pandoc.RawBlock("typst", "") end
 
-  -- 2. Verfügbare Spalten ermitteln (aus der ersten Zeile)
-  -- Struktur der Zeile ist: { {key="col1", value="..."}, {key="col2", value="..."} }
+  -- 2. Detect Available Columns (from first row)
   local all_columns = {}
   for _, field in ipairs(rows[1]) do
     if field.key then table.insert(all_columns, field.key) end
   end
 
-  -- 3. Argumente auflösen mit Tidy Select
+  -- 3. Resolve Tidy Select Arguments
   local raw_exclude = get_arg(kwargs, "exclude_cols", "")
   local exclude_cols_list = resolve_tidy_select(raw_exclude, all_columns)
 
@@ -331,16 +324,16 @@ local function generate_cv_section(args, kwargs, meta)
   local blocks = {}
 
   for _, row_list in ipairs(rows) do
-    -- A. Sammeln
+    -- A. Collect
     local fields = collect_row_fields(row_list, exclude_set, na_action)
 
-    -- B. Kombinieren
+    -- B. Combine
     fields = apply_combine(fields, combine_opts)
 
-    -- C. Sortieren
+    -- C. Order
     fields = apply_order(fields, column_order)
 
-    -- D. Output
+    -- D. Output Generation
     if #fields > 0 then
       local arg_strings = {}
       for _, item in ipairs(fields) do

@@ -1,10 +1,9 @@
-// typst/partial-functions.typ
-// This file contains functions that generate major sections of the document,
-// such as the title page, footer, and publication list.
+// typst/04-definitions-parts-functions.typ
+// This file defines the high-level components ("parts") that make up the document structure.
+// It includes functions for rendering the cover letter, title page, CV entries, and skills.
 
-
-// -- Footer Functions
-// -------------------------
+// -- Cover Letter Render Logic --
+// Constructs the formal cover letter page, including the header grid, date/subject block, and body content.
 #let render-cover-letter(
   author,
   color-accent,
@@ -15,8 +14,7 @@
   cover_letter_content: [],
 ) = {
 
-  // --- Header ---
-  // Using a grid to align sender and recipient information.
+  // Header Grid: Aligns Sender info (left) and Recipient info (right).
   grid(
     columns: (1fr, 1fr),
     gutter: 2em,
@@ -35,10 +33,11 @@
     ]
   )
 
-  // --- Date and Subject ---
   v(2em)
   align(right)[#date]
   v(2em)
+
+  // Subject Line with styling
   if subject != none or subject == "" {
     block(
       width: 100%,
@@ -53,22 +52,23 @@
     v(2em)
   }
 
-  // --- Salutation ---
+  // Salutation
   if recipient != none or recipient == "" {
     "Dear " + recipient.salutation + ","
   }
 
-  // --- Body ---
+  // Main Content (injected from metadata)
   v(1em)
   cover_letter_content
 
-  // --- Closing ---
+  // Formal Closing
   v(2em)
   "Sincerely,"
   v(1em)
   author.firstname + " " + author.lastname
 }
-// Creates the footer content.
+
+// Generates the standard footer for CV pages.
 #let create-footer(author) = {
     set text(..text-style-footer)
 
@@ -79,13 +79,11 @@
     )
 }
 
-// -- Title Page Functions
-// -------------------------
-
-// Creates the title page layout.
+// -- Title Page Logic --
+// Layouts the main introduction page with name, role, photo, and contact details.
 #let title-page(author, profile-photo: none) = {
     set page(footer: none)
-    v(1fr)
+    v(1fr) // Vertical centering
 
     grid(..grid-style-titlepage,
         grid.cell(x: 1, y: 1, align: left + bottom)[
@@ -116,27 +114,27 @@
     )
 }
 
-// -- Resume Entry Functions
-// -------------------------
+// -- CV Section Rendering --
 
-// Formats individual cells within a resume entry grid based on their index.
+// Applies distinct styles to different columns of a CV entry row (e.g., Year vs Title vs Description).
+// This is used by map-cv-entry-values to style the grid cells dynamically.
 #let format-section-cells(index, value) = {
     let cell-content = value
 
-    if index == 0 { // First column, first row
+    if index == 0 { // Date/Label column
         align(right + horizon)[#text(..text-style-label-accent)[#cell-content]]
-    } else if index == 1 { // Second column, first row
+    } else if index == 1 { // Main Title column
         align(left + horizon)[#text(..text-style-bold)[#cell-content]]
-    } else if calc.even(index) { // Even columns >= 2
+    } else if calc.even(index) { // Context/Location columns
         align(right + horizon)[#text(..text-style-label)[#cell-content]]
-    } else if index == 3 { // Description
+    } else if index == 3 { // Description column
         align(left + horizon)[#text(..text-style-default)[#cell-content]]
-    } else { // Odd columns >= 5
+    } else { // Generic details
         align(left + horizon)[#text(..text-style-details)[#cell-content]]
     }
 }
 
-// Map cell values
+// Iterates over a flat list of entry values and formats them into a grid layout.
 #let map-cv-entry-values(entry-values, startindex: 0) = {
   grid(
     ..entry-values.enumerate(start: startindex).map(((i, value)) =>
@@ -145,14 +143,15 @@
   )
 }
 
-// Creates a dynamic two-column grid for CV entries.
+// Wrapper for standard CV entries (Work, Education).
 #let resume-entry(..args) = {
     let cv-entries = args.named()
+    // Evaluate markup strings into content blocks before rendering
     let entry-values = cv-entries.values().map((value) => eval(value, mode: "markup"))
     map-cv-entry-values(entry-values)
 }
 
-// Creates research-interests
+// Wrapper for Research Interests, starting with a different style index offset.
 #let research-interests(..args) = {
     let cv-entries = args.named()
     let entry-values = cv-entries.values().map((value) => eval(value, mode: "markup"))
@@ -160,10 +159,9 @@
 }
 
 
-// -- Skillbar Functions
-// ------------------------
+// -- Skill Bar Rendering --
 
-// prepare skillbar
+// Helper to construct the visual components of a skill bar (Label, Bar, Level text).
 #let skill-bar-components(
   skill,
   value,
@@ -206,7 +204,7 @@
   return (name: name_component, bar: bar_component, level: level_component)
 }
 
-// combine skills to table
+// Aggregates skill components into a layout table.
 #let create-skill-table(grouped_skills) = {
   for (area, skills_in_area) in grouped_skills.pairs().sorted(key: p => p.at(0)) {
     if skills_in_area.len() == 0 { continue }
@@ -239,7 +237,7 @@
   }
 }
 
-// visualiue skills table
+// Main entry point for rendering the skills section.
 #let visualize-skills-list(
   skills_list
 ) = {
@@ -252,10 +250,9 @@
   create-skill-table(grouped_skills_map)
 }
 
-// -- Publications List Functions
-// ------------------------------
+// -- Publication List Logic --
 
-// Renders the publication list from a structured array of entries.
+// Renders the list of publications, grouping them by type (Label).
 #let publication-list(entries) = {
   let cells = ()
   let prev-label = none
@@ -264,18 +261,18 @@
     let is_new_label = prev-label == none or entry.label != prev-label
 
     if is_new_label and prev-label != none {
-      // Add vertical spacing between groups.
+      // Add visual separation between different publication groups.
       cells.push(grid.cell(colspan: 2, inset: (top: 0.2em))[])
     }
 
-    // Left cell: Group label (e.g., "Journal Articles").
+    // Left Column: Group Label (only displayed once per group)
     cells.push(
       if is_new_label {
         align(end + top)[#text(..text-style-label)[#entry.label]]
       } else { [] }
     )
 
-    // Right cell: The publication entry itself.
+    // Right Column: The publication citation
     cells.push(
       align(start + top)[
         #text(..text-style-publication)[#eval(entry.item, mode: "markup")]

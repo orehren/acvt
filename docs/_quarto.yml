@@ -1,6 +1,6 @@
 project:
   type: website
-  output-dir: ../docs/_site # Render the website to a nested directory
+  output-dir: ../docs/_site # Render the website to a nested directory, as required by the CI workflow.
 
 website:
   title: "academicCVTemplate"
@@ -10,22 +10,20 @@ website:
         text: Home
       - href: installation.qmd
         text: Installation
-      - href: tutorial.qmd
-        text: Tutorial
-      - href: yaml_reference.qmd
-        text: YAML Reference
-      - href: styling.qmd
-        text: Styling
+      - href: configuration.qmd
+        text: Configuration
       - href: data_integration.qmd
         text: Data Integration
-      - href: acknowledgements.qmd
-        text: Acknowledgements
+      - href: styling.qmd
+        text: Styling
+      - href: reference.qmd
+        text: Reference
 
 format:
   html:
     theme: cosmo
     toc: true
-    keep-md: true # Keep the markdown files
+    keep-md: true # Keep the markdown files for debugging/reference
 
 execute:
-  eval: false # Don't execute code chunks for the website
+  eval: false # Don't execute code chunks for the website build

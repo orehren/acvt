@@ -1,27 +1,25 @@
---- inject_metadata.lua - a Lua filter to automatically inject document metadata
---- into a Typst template.
+-- inject_metadata.lua
+-- This filter bridges the gap between Quarto's YAML metadata and the Typst template.
+-- It converts document metadata into a raw Typst file defining variables, enabling
+-- the template to access user configuration directly as Typst code.
 
 local M = {}
 
--- ---
--- 1. CONFIGURATION & HELPER
--- ---
-
+-- Define the target path for the generated Typst metadata file.
+-- We use resolve_path to ensure it works regardless of where the filter is run from.
 local TYPST_METADATA_FILE = quarto.utils.resolve_path("../typst/02-definitions-metadata.typ")
 
--- Escapes a Lua string for use as a Typst string literal.
----
+-- Safely escape strings to prevent syntax errors in the generated Typst code.
+-- This ensures that quotes and backslashes in user data don't break the build.
 local function escape_typst_string(s)
   if s == nil then return '""' end
   return '"' .. s:gsub("\\", "\\\\"):gsub('"', '\\"') .. '"'
 end
 
----
--- Checks if a Lua table should be treated as a Typst array
--- (i.e., has sequential integer keys starting from 1).
----
+-- Determine if a Lua table represents a sequential list (array) or a dictionary.
+-- This distinction is crucial because Typst has different syntax for arrays () and dictionaries ().
 local function is_typst_array(tbl)
-  -- An empty table is considered an array.
+  -- Treat empty tables as arrays by default to avoid ambiguity.
   if next(tbl) == nil then
     return true
   end
@@ -29,19 +27,17 @@ local function is_typst_array(tbl)
   local i = 1
   for k, _ in pairs(tbl) do
     if k ~= i then
-      return false -- Found a non-sequential or non-integer key.
+      return false -- A non-integer key implies a dictionary.
     end
     i = i + 1
   end
 
-  return true -- All keys were sequential integers.
+  return true
 end
 
-local to_typ_value -- Pre-declaration for circular dependency
+local to_typ_value
 
----
--- Formats a Lua table (structured as an array) into a Typst array string literal.
----
+-- Convert a sequential Lua table into a Typst array literal: (item1, item2, ...)
 local function format_typst_array(tbl)
   local parts = {}
   for _, item in ipairs(tbl) do
@@ -50,9 +46,7 @@ local function format_typst_array(tbl)
   return '(' .. table.concat(parts, ", ") .. (#parts > 0 and "," or "") .. ')'
 end
 
----
--- Formats a Lua table (structured as a dictionary) into a Typst dictionary string literal.
----
+-- Convert a hashed Lua table into a Typst dictionary literal: (key: value, ...)
 local function format_typst_dictionary(tbl)
   local parts = {}
   for key, item in pairs(tbl) do
@@ -62,10 +56,8 @@ local function format_typst_dictionary(tbl)
   return '(' .. table.concat(parts, ", ") .. ')'
 end
 
----
--- Checks if a given Typst value string should be considered "clutter"
--- and filtered out from the final metadata file.
----
+-- Filter out empty or meaningless values to keep the metadata file clean.
+-- This prevents the Typst template from being cluttered with "none" or empty structures.
 local function is_metadata_clutter(typst_str)
   if not typst_str then return true end
   if typst_str == "none" then return true end
@@ -76,10 +68,8 @@ local function is_metadata_clutter(typst_str)
   return false
 end
 
----
--- Recursively converts a Pandoc Meta value or raw Lua table
--- into a Typst value string.
----
+-- Recursively transform Pandoc AST elements and Lua types into their Typst string equivalents.
+-- This handles the variety of data types that can appear in Quarto metadata.
 to_typ_value = function(val)
 
   if val == nil then
@@ -109,10 +99,8 @@ to_typ_value = function(val)
   end
 end
 
--- ---
--- 2. MAIN FUNCTION (PANDOC FILTER)
--- ---
-
+-- Main entry point for the filter.
+-- Iterates over all document metadata, converts it, and writes it to a file.
 function M.Pandoc(doc)
   local quarto_meta = doc.meta or {}
   local typst_definitions = {}
@@ -136,6 +124,7 @@ function M.Pandoc(doc)
 
   local typst_definitions_string = table.concat(typst_definitions, "\n") .. "\n"
 
+  -- Write the definitions to the specific file required by the Typst template.
   local file, err = io.open(TYPST_METADATA_FILE, "w")
   if file then
     file:write(typst_definitions_string)

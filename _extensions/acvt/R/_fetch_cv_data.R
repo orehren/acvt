@@ -1,15 +1,8 @@
 # _fetch_cv_data.R
-# ==============================================================================
-# Quarto Pre-render Script
-# ------------------------------------------------------------------------------
-# 1. Authenticates with Google (Drive & Sheets).
-# 2. Loads CV data based on the YAML configuration of the .qmd file.
-# 3. Transforms dataframes into row-lists (for clean YAML output).
-# 4. Caches data locally (.cv_cache.rds) for faster re-rendering.
-# 5. Writes _cv_data.yml for access by Quarto/Lua.
-# ==============================================================================
+# This script orchestrates the data fetching process from Google Sheets to YAML.
+# It acts as a pre-render hook to ensure data is available before Quarto processing.
 
-# --- Check Dependencies ---
+# Ensure all necessary packages are available to prevent runtime errors during the pre-render phase.
 required_pkgs <- c("yaml", "rmarkdown", "cli", "googledrive", "googlesheets4", "purrr", "checkmate", "rlang", "janitor")
 missing_pkgs <- required_pkgs[!sapply(required_pkgs, requireNamespace, quietly = TRUE)]
 if (length(missing_pkgs) > 0) {
@@ -17,13 +10,9 @@ if (length(missing_pkgs) > 0) {
 }
 
 main <- function() {
-  # ----------------------------------------------------------------------------
-  # 1. Setup & Paths
-  # ----------------------------------------------------------------------------
   cli::cli_h1("CV Data Extension Setup")
 
-  # We search for the 'R' folder within the extension to load helpers.
-  # We look for 'load_cv_sheets.R' as an anchor.
+  # Locate the helper scripts dynamically to support both development (repo root) and production (extension folder) environments.
   ext_r_files <- list.files(
     path = "_extensions",
     pattern = "^load_cv_sheets\\.R$",
@@ -35,13 +24,12 @@ main <- function() {
   if (length(ext_r_files) > 0) {
     script_dir <- dirname(ext_r_files[1])
   } else if (file.exists("R/load_cv_sheets.R")) {
-    # Fallback for development (if working in the repo root)
     script_dir <- "R"
   } else {
     cli::cli_abort("Could not find the 'R' folder containing helper scripts.")
   }
 
-  # Source all .R scripts in the found folder (except this script itself)
+  # Load all helper functions from the identified directory to make them available for the fetching process.
   helpers <- list.files(script_dir, pattern = "\\.[Rr]$", full.names = TRUE)
   helpers <- helpers[!grepl("_fetch_cv_data\\.R$", helpers)]
 
@@ -49,10 +37,7 @@ main <- function() {
     source(h, local = TRUE)
   }
 
-  # ----------------------------------------------------------------------------
-  # 2. Read Configuration
-  # ----------------------------------------------------------------------------
-  # We scan .qmd files for the 'google-document' key
+  # Identify the relevant .qmd file and extract the Google Sheet configuration to know which data to fetch.
   qmd_files <- list.files(pattern = "\\.qmd$")
   cv_config <- NULL
 
@@ -69,30 +54,22 @@ main <- function() {
     return(invisible(NULL))
   }
 
-  # ----------------------------------------------------------------------------
-  # 3. Caching Logic
-  # ----------------------------------------------------------------------------
   cache_file <- ".cv_cache.rds"
   output_yaml_file <- "_cv_data.yml"
 
   final_cv_data <- NULL
   is_cached <- FALSE
 
-  # Cache is valid for 24 hours
+  # Check for a valid cache file to avoid unnecessary API calls and speed up the rendering process.
   if (file.exists(cache_file)) {
     age <- difftime(Sys.time(), file.info(cache_file)$mtime, units = "hours")
     if (age < 24) is_cached <- TRUE
   }
 
-  # ----------------------------------------------------------------------------
-  # 4. Load Data (Cache or New)
-  # ----------------------------------------------------------------------------
-
   if (is_cached) {
     cli::cli_alert_success("Loading transformed data from cache.")
     final_cv_data <- readRDS(cache_file)
   } else {
-    # --- LIVE FETCH ---
 
     doc_identifier <- cv_config[["document-identifier"]]
     sheets_config <- cv_config[["sheets-to-load"]]
@@ -102,7 +79,7 @@ main <- function() {
       cli::cli_abort("Missing configuration: document-identifier or sheets-to-load.")
     }
 
-    # Auth: Drive first (Master), then pass token to Sheets
+    # Authenticate with Google services to enable access to private sheets.
     cli::cli_process_start("Authenticating with Google")
     tryCatch(
       {
@@ -120,7 +97,7 @@ main <- function() {
       }
     )
 
-    # Config normalization for load_cv_sheets helper
+    # Normalize the sheet configuration to ensure a consistent format for the loading function.
     final_sheets_config <- list()
     for (item in sheets_config) {
       if (is.list(item)) {
@@ -130,10 +107,9 @@ main <- function() {
       }
     }
 
-    # Load data (Result are Tibbles/Dataframes)
     cli::cli_alert_info("Loading Sheets from Google...")
 
-    # Resolve ID if necessary (via Drive)
+    # Resolve the document ID if a name was provided to ensure the correct file is accessed.
     real_doc_id <- doc_identifier
     if (!grepl("^[a-zA-Z0-9_-]{30,}$", doc_identifier)) {
       cli::cli_alert_info("Resolving name '{doc_identifier}'...")
@@ -147,20 +123,15 @@ main <- function() {
       sheets_to_load = final_sheets_config
     )
 
-    # --- TRANSFORMATION ---
     cli::cli_alert_info("Transforming data for sequential YAML export...")
 
+    # Transform the loaded dataframes into a specific list structure.
+    # This transformation is necessary to preserve the column order when exporting to YAML and subsequently processing with Lua.
     final_cv_data <- purrr::map(raw_data_list, function(sheet_content) {
       if (is.data.frame(sheet_content)) {
-        # 1. Transpose: Dataframe -> List of named rows
         rows <- purrr::transpose(sheet_content)
 
-        # 2. IMPORTANT: Named row -> List of Key-Value pairs
-        # We convert `list(a=1, b=2)` into `list(list(key="a", val=1), list(key="b", val=2))`
-        # This forces YAML to write a list and Lua to preserve the order.
-
         list_of_ordered_rows <- purrr::map(rows, function(row) {
-          # We iterate over names and values to build an unnamed list
           purrr::imap(row, function(val, key) {
             list(key = key, value = val)
           }) |> unname()
@@ -171,11 +142,10 @@ main <- function() {
       return(sheet_content)
     })
 
-    # Save cache
     saveRDS(final_cv_data, cache_file)
   }
 
-  # --- YAML EXPORT ---
+  # Export the processed data to a YAML file for the Quarto extension to consume.
   yaml::write_yaml(list(cv_data = final_cv_data), output_yaml_file)
   cli::cli_alert_success("Data ready in {.file {output_yaml_file}}")
 }

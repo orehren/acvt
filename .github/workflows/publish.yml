@@ -25,21 +25,12 @@ jobs:
           CONF_FILE="_extensions/acvt/_extension.yml"
           TYP_FILE="_extensions/acvt/typst/02-definitions-metadata.typ"
 
-          echo "=== 1. STATUS VORHER ==="
-          grep "pre-render" "$CONF_FILE"
-
           sed -i 's|: .*_fetch_cv_data\.R|: _extensions/orehren/acvt/R/_fetch_cv_data.R|' "$CONF_FILE"
 
-          # TYPST LEEREN
           if [ -f "$TYP_FILE" ]; then
             truncate -s 0 "$TYP_FILE"
           fi
 
-          echo "=== 2. STATUS NACHHER ==="
-          grep "pre-render" "$CONF_FILE"
-
-          echo "=== 3. GIT STATUS PRÜFUNG ==="
-          # Das hier ist entscheidend: Zeigt Git die Änderung an?
           git status
           git diff "$CONF_FILE"
         shell: bash
@@ -55,18 +46,6 @@ jobs:
           find docs/ -type f -name "*.md" -exec mv {} _extensions/acvt/docs/ \;
         shell: bash
 
-      # - name: Commit changes back to main
-      #   uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     commit_message: "Docs: Update offline markdown & config cleanup [skip ci]"
-      #     branch: main
-      #     file_pattern: |
-      #       _extensions/acvt/docs/*.md
-      #       _extensions/acvt/_extension.yml
-      #       _extensions/acvt/typst/02-definitions-metadata.typ
-      #     repository: .
-      #     commit_user_name: 'github-actions[bot]'
-      #     commit_user_email: 'github-actions[bot]@users.noreply.github.com'
       - name: Commit changes back to main
         run: |
           git config --global user.name 'github-actions[bot]'

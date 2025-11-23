@@ -1,25 +1,17 @@
 -- inject_metadata.lua
--- This filter bridges the gap between Quarto's YAML metadata and the Typst template.
--- It converts document metadata into a raw Typst file defining variables, enabling
--- the template to access user configuration directly as Typst code.
+-- Converts document metadata into a raw Typst file defining variables.
 
 local M = {}
 
--- Define the target path for the generated Typst metadata file.
--- We use resolve_path to ensure it works regardless of where the filter is run from.
 local TYPST_METADATA_FILE = quarto.utils.resolve_path("../typst/02-definitions-metadata.typ")
 
--- Safely escape strings to prevent syntax errors in the generated Typst code.
--- This ensures that quotes and backslashes in user data don't break the build.
 local function escape_typst_string(s)
   if s == nil then return '""' end
   return '"' .. s:gsub("\\", "\\\\"):gsub('"', '\\"') .. '"'
 end
 
--- Determine if a Lua table represents a sequential list (array) or a dictionary.
--- This distinction is crucial because Typst has different syntax for arrays () and dictionaries ().
+-- Heuristic to distinguish Lua arrays (sequential integers) from dictionaries.
 local function is_typst_array(tbl)
-  -- Treat empty tables as arrays by default to avoid ambiguity.
   if next(tbl) == nil then
     return true
   end
@@ -27,7 +19,7 @@ local function is_typst_array(tbl)
   local i = 1
   for k, _ in pairs(tbl) do
     if k ~= i then
-      return false -- A non-integer key implies a dictionary.
+      return false
     end
     i = i + 1
   end
@@ -37,7 +29,6 @@ end
 
 local to_typ_value
 
--- Convert a sequential Lua table into a Typst array literal: (item1, item2, ...)
 local function format_typst_array(tbl)
   local parts = {}
   for _, item in ipairs(tbl) do
@@ -46,7 +37,6 @@ local function format_typst_array(tbl)
   return '(' .. table.concat(parts, ", ") .. (#parts > 0 and "," or "") .. ')'
 end
 
--- Convert a hashed Lua table into a Typst dictionary literal: (key: value, ...)
 local function format_typst_dictionary(tbl)
   local parts = {}
   for key, item in pairs(tbl) do
@@ -56,8 +46,6 @@ local function format_typst_dictionary(tbl)
   return '(' .. table.concat(parts, ", ") .. ')'
 end
 
--- Filter out empty or meaningless values to keep the metadata file clean.
--- This prevents the Typst template from being cluttered with "none" or empty structures.
 local function is_metadata_clutter(typst_str)
   if not typst_str then return true end
   if typst_str == "none" then return true end
@@ -68,8 +56,6 @@ local function is_metadata_clutter(typst_str)
   return false
 end
 
--- Recursively transform Pandoc AST elements and Lua types into their Typst string equivalents.
--- This handles the variety of data types that can appear in Quarto metadata.
 to_typ_value = function(val)
 
   if val == nil then
@@ -99,8 +85,6 @@ to_typ_value = function(val)
   end
 end
 
--- Main entry point for the filter.
--- Iterates over all document metadata, converts it, and writes it to a file.
 function M.Pandoc(doc)
   local quarto_meta = doc.meta or {}
   local typst_definitions = {}
@@ -124,7 +108,6 @@ function M.Pandoc(doc)
 
   local typst_definitions_string = table.concat(typst_definitions, "\n") .. "\n"
 
-  -- Write the definitions to the specific file required by the Typst template.
   local file, err = io.open(TYPST_METADATA_FILE, "w")
   if file then
     file:write(typst_definitions_string)

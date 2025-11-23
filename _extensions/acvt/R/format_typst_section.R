@@ -2,9 +2,6 @@
 
 #' Format a single value for Typst based on NA handling rules
 #'
-#' This helper manages the translation of R values (including NAs) into Typst-compatible strings.
-#' It encapsulates the escaping logic and the decision-making process for different NA handling strategies.
-#'
 #' @param values Vector of values to format.
 #' @param na_action Strategy for handling NAs (omit, keep, string).
 #'
@@ -21,10 +18,6 @@
 }
 
 #' Reorder data frame columns based on a named list
-#'
-#' This helper rearranges the columns of the dataframe according to user specifications.
-#' It ensures that key columns appear in the desired position in the final output, which matters for
-#' positional arguments in Typst functions (though we typically use named arguments).
 #'
 #' @param data Dataframe to reorder.
 #' @param column_order List mapping column names to positions.
@@ -49,10 +42,6 @@
 }
 
 #' Format CV section data into a Typst string
-#'
-#' This function acts as the bridge between the R data processing and the Typst rendering engine.
-#' It transforms a tidy dataframe into a block of raw Typst code (either function calls or an array of dictionaries).
-#' This allows the Typst template to consume structured data generated from the Google Sheets.
 #'
 #' @param data Input tibble.
 #' @param typst_func The Typst function to wrap the data in.
@@ -104,7 +93,6 @@ format_typst_section <- function(data,
 
   data_proc <- data
 
-  # Merge specified columns (e.g., bullet points) into a single string to simplify the Typst template's job.
   if (length(combine_col_names) > 0) {
     data_proc <- data_proc |>
       dplyr::mutate(dplyr::across(dplyr::all_of(combine_col_names), ~ifelse(is.na(.), NA, paste0(combine_prefix, .)))) |>
@@ -125,8 +113,7 @@ format_typst_section <- function(data,
     data_proc <- .reorder_columns_corrected(data_proc, column_order)
   }
 
-  # Convert the dataframe row-by-row into Typst dictionary strings (key: "value").
-  # This vectorization is efficient and keeps the formatting logic centralized.
+  # Vectorized transformation to Typst dictionary strings
   typst_dictionaries <- data_proc |>
     dplyr::mutate(.row_id = dplyr::row_number()) |>
     tidyr::pivot_longer(

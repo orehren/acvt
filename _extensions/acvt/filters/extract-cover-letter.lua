@@ -1,7 +1,5 @@
 -- extract-cover-letter.lua
--- This filter extracts the specific "Coverletter" section from the markdown body
--- and moves it into the Typst metadata file. This allows the Typst template to
--- render the cover letter on a separate page or conditionally, decoupled from the main document flow.
+-- Moves the "Coverletter" section from body content to metadata.
 
 local section_identifiers = {
   coverletter = true,
@@ -12,8 +10,7 @@ local toplevel = 6
 local TYPST_METADATA_FILE = quarto.utils.resolve_path("../typst/02-definitions-metadata.typ")
 
 
--- Appends the extracted content as a Typst variable to the metadata file.
--- We append ("a") because inject_metadata.lua runs first and creates the file.
+-- Uses append mode because inject_metadata.lua has already created the file.
 local function write_coverletter_to_typst(content_blocks)
   if not content_blocks or #content_blocks == 0 then
     return
@@ -36,9 +33,7 @@ local function write_coverletter_to_typst(content_blocks)
 end
 
 
--- Separates the document content into "body" and "special sections" (cover letter).
--- It acts as a state machine that consumes blocks belonging to the special section
--- and preserves all others for the main output.
+-- State machine to segregate special sections (Coverletter) from the main body.
 local function extract_section_content (blocks)
   local body_blocks = {}
   local looking_at_section = false
@@ -53,15 +48,14 @@ local function extract_section_content (blocks)
 
     if section_identifiers[block.identifier] then
       collected[block.identifier] = {}
-      return block.identifier -- Start collecting special section
+      return block.identifier
     else
       body_blocks[#body_blocks + 1] = block
-      return false -- Normal section
+      return false
     end
   end
 
   local function process_section_block(block)
-    -- Stop collecting if we hit a horizontal rule.
     if block.t == 'HorizontalRule' then
       return false
     end
@@ -86,16 +80,12 @@ local function extract_section_content (blocks)
 end
 
 
--- Pandoc filter hooks.
-
 Pandoc = function (doc)
   return doc
 end
 
 Blocks = function (blocks)
   local body_blocks = extract_section_content(blocks)
-  -- Side effect: write the extracted content to the Typst file.
   write_coverletter_to_typst(collected["coverletter"])
-  -- Return only the remaining body blocks to Pandoc.
   return body_blocks
 end

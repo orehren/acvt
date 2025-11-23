@@ -2,8 +2,6 @@
 
 #' Attempt to resolve identifier as a URL
 #'
-#' This helper extracts the Sheet ID from a full URL, simplifying the input for downstream API calls.
-#'
 #' @param doc_identifier The potential URL string.
 #' @return The extracted Sheet ID string.
 #' @noRd
@@ -17,14 +15,11 @@
 
 #' Attempt to resolve identifier as a Sheet ID
 #'
-#' This helper checks if the input string plausibly resembles a Sheet ID.
-#' This allows us to skip expensive Drive searches if the user likely provided a direct ID.
-#'
 #' @param doc_identifier The potential ID string.
 #' @return The input string if it looks like an ID, otherwise NULL.
 #' @noRd
 .resolve_identifier_as_id <- function(doc_identifier) {
-  # We use a heuristic check (no protocol, no spaces, length) to guess if it's an ID.
+  # Heuristic: No protocol, no spaces, length > 30
   is_potential_id <- !grepl("://", doc_identifier, fixed = TRUE) &&
     !grepl("[[:space:]/]", doc_identifier) &&
     nchar(doc_identifier) > 30
@@ -38,9 +33,6 @@
 
 
 #' Attempt to resolve identifier as a Sheet Name using Google Drive search
-#'
-#' This helper searches Google Drive for a file with the given name.
-#' It handles the case where the user provides a human-readable name instead of an ID.
 #'
 #' @param doc_identifier The potential Sheet name string.
 #' @return A 1-row dribble if a unique match is found. Aborts otherwise.
@@ -56,7 +48,6 @@
     n_max = 2
   )
 
-  # Fail fast if the name is ambiguous or not found.
   if (nrow(found_files_dribble) == 0) {
     cli::cli_abort("No Google Sheet document found with the exact name {.val {doc_identifier}}.", call. = FALSE)
   }
@@ -76,9 +67,6 @@
 
 
 #' Resolve document identifier to a gs4-compatible object
-#'
-#' This dispatcher determines the type of identifier (URL, ID, or Name) and calls the appropriate resolution logic.
-#' It ensures the main loading function receives a consistent identifier object regardless of user input format.
 #'
 #' @param doc_identifier User-provided identifier.
 #' @return The resolved identifier (string ID or dribble).
@@ -103,8 +91,6 @@
 
 #' Read the raw data from the sheet
 #'
-#' This helper wraps the API call to fetch data, isolating the external dependency.
-#'
 #' @param ss_input Resolved identifier.
 #' @param sheet_name Sheet to read.
 #' @param na_strings NA handling.
@@ -125,9 +111,6 @@
 
 
 #' Perform post-read checks
-#'
-#' This helper validates the fetched data, specifically checking for empty results
-#' to warn the user about potentially incorrect sheet names or empty tabs.
 #'
 #' @param sheet_data The fetched tibble.
 #' @param sheet_name Name for messaging.

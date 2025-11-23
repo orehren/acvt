@@ -1,9 +1,9 @@
+-- cv-section.lua
+
 -- =============================================================================
 -- 1. UTILS
 -- =============================================================================
 
--- Recursively unwrap Pandoc AST elements into standard Lua types (tables/strings).
--- This simplifies data manipulation by removing the AST layer.
 local function unwrap(obj)
   if obj == nil then return nil end
   local t = pandoc.utils.type(obj)
@@ -19,16 +19,12 @@ local function unwrap(obj)
   return pandoc.utils.stringify(obj)
 end
 
--- Determine if a value should be treated as missing/NA.
--- This handles various empty representations (nil, empty string, "NA", etc.).
 local function is_na(val)
   if not val then return true end
   local s = tostring(val)
   return (s == "" or s == "NA" or s == ".na.character")
 end
 
--- Escape special characters to ensure the string is valid Typst syntax.
--- This prevents syntax errors when the string is injected into the Typst template.
 local function clean_string(val)
   local s = tostring(val)
   s = s:gsub("“", '"'):gsub("”", '"'):gsub("‘", "'"):gsub("’", "'")
@@ -36,7 +32,6 @@ local function clean_string(val)
   return '"' .. s .. '"'
 end
 
--- Retrieve a value from a kwargs table with a default fallback.
 local function get_arg(kwargs, key, default)
   local val = kwargs[key]
   if not val then return default end
@@ -45,7 +40,6 @@ local function get_arg(kwargs, key, default)
   return s
 end
 
--- Parse a comma-separated string into a Lua table (list).
 local function parse_list_arg(val)
   local res = {}
   local s = pandoc.utils.stringify(val)
@@ -58,10 +52,9 @@ local function parse_list_arg(val)
 end
 
 -- =============================================================================
--- 2. TIDY SELECT LOGIC (NEU)
+-- 2. TIDY SELECT LOGIC
 -- =============================================================================
 
--- Find the numerical index of a column by its name.
 local function get_col_index(cols, name)
   for i, v in ipairs(cols) do
     if v == name then return i end
@@ -69,8 +62,6 @@ local function get_col_index(cols, name)
   return nil
 end
 
--- Resolve tidy-select style strings (ranges, functions) into a list of column names.
--- This allows flexible column selection similar to dplyr (e.g., 'start:end', 'starts_with("foo")').
 local function resolve_tidy_select(selector_str, all_columns)
   if not selector_str or selector_str == "" then return {} end
 
@@ -128,8 +119,6 @@ local function resolve_tidy_select(selector_str, all_columns)
              table.insert(selected_cols, part)
              seen[part] = true
            end
-        else
-           -- Column not found; ignoring silently as per current design.
         end
       end
     end
@@ -143,7 +132,6 @@ end
 -- 3. CORE LOGIC
 -- =============================================================================
 
--- Gather valid fields from a row object, respecting exclusions and NA handling.
 local function collect_row_fields(row_list, exclude_set, na_mode)
   local fields = {}
 
@@ -168,7 +156,6 @@ local function collect_row_fields(row_list, exclude_set, na_mode)
   return fields
 end
 
--- Combine specified columns into a single field (e.g., merging address lines).
 local function apply_combine(fields, opts)
   if #opts.cols == 0 then return fields end
 
@@ -179,7 +166,6 @@ local function apply_combine(fields, opts)
   local remaining_fields = {}
   local consumed_keys = {}
 
-  -- Ensure combined parts adhere to the target order specified in opts.cols.
   for _, target_key in ipairs(opts.cols) do
     for _, field in ipairs(fields) do
       if field.key == target_key then
@@ -208,8 +194,6 @@ local function apply_combine(fields, opts)
   return remaining_fields
 end
 
--- Reorder fields based on a provided specification string.
--- Allows the user to control the visual order of elements in the CV entry.
 local function apply_order(fields, order_str)
   if not order_str or order_str == "" then return fields end
 
@@ -280,8 +264,7 @@ end
 -- =============================================================================
 -- 4. MAIN
 -- =============================================================================
--- Main entry point for the shortcode.
--- Loads data, applies selection/combination logic, and generates Typst function calls.
+
 local function generate_cv_section(args, kwargs, meta)
   local sheet = get_arg(kwargs, "sheet", "")
   local func  = get_arg(kwargs, "func", "")
@@ -289,19 +272,16 @@ local function generate_cv_section(args, kwargs, meta)
   if sheet == "" or func == "" then return pandoc.Strong(pandoc.Str("Missing sheet/func")) end
   if not meta.cv_data or not meta.cv_data[sheet] then return pandoc.Strong(pandoc.Str("Sheet not found")) end
 
-  -- 1. Load Data
   local rows_raw = unwrap(meta.cv_data[sheet])
   local rows = (pandoc.utils.type(rows_raw) == "MetaList" or (type(rows_raw)=="table" and rows_raw[1])) and rows_raw or {rows_raw}
 
   if #rows == 0 then return pandoc.RawBlock("typst", "") end
 
-  -- 2. Detect Available Columns (from first row)
   local all_columns = {}
   for _, field in ipairs(rows[1]) do
     if field.key then table.insert(all_columns, field.key) end
   end
 
-  -- 3. Resolve Tidy Select Arguments
   local raw_exclude = get_arg(kwargs, "exclude_cols", "")
   local exclude_cols_list = resolve_tidy_select(raw_exclude, all_columns)
 
@@ -324,16 +304,10 @@ local function generate_cv_section(args, kwargs, meta)
   local blocks = {}
 
   for _, row_list in ipairs(rows) do
-    -- A. Collect
     local fields = collect_row_fields(row_list, exclude_set, na_action)
-
-    -- B. Combine
     fields = apply_combine(fields, combine_opts)
-
-    -- C. Order
     fields = apply_order(fields, column_order)
 
-    -- D. Output Generation
     if #fields > 0 then
       local arg_strings = {}
       for _, item in ipairs(fields) do

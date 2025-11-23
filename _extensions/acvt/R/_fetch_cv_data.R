@@ -1,8 +1,5 @@
 # _fetch_cv_data.R
-# This script orchestrates the data fetching process from Google Sheets to YAML.
-# It acts as a pre-render hook to ensure data is available before Quarto processing.
 
-# Ensure all necessary packages are available to prevent runtime errors during the pre-render phase.
 required_pkgs <- c("yaml", "rmarkdown", "cli", "googledrive", "googlesheets4", "purrr", "checkmate", "rlang", "janitor")
 missing_pkgs <- required_pkgs[!sapply(required_pkgs, requireNamespace, quietly = TRUE)]
 if (length(missing_pkgs) > 0) {
@@ -12,7 +9,7 @@ if (length(missing_pkgs) > 0) {
 main <- function() {
   cli::cli_h1("CV Data Extension Setup")
 
-  # Locate the helper scripts dynamically to support both development (repo root) and production (extension folder) environments.
+  # Support both development (repo root) and production (extension folder) environments.
   ext_r_files <- list.files(
     path = "_extensions",
     pattern = "^load_cv_sheets\\.R$",
@@ -29,7 +26,6 @@ main <- function() {
     cli::cli_abort("Could not find the 'R' folder containing helper scripts.")
   }
 
-  # Load all helper functions from the identified directory to make them available for the fetching process.
   helpers <- list.files(script_dir, pattern = "\\.[Rr]$", full.names = TRUE)
   helpers <- helpers[!grepl("_fetch_cv_data\\.R$", helpers)]
 
@@ -37,7 +33,6 @@ main <- function() {
     source(h, local = TRUE)
   }
 
-  # Identify the relevant .qmd file and extract the Google Sheet configuration to know which data to fetch.
   qmd_files <- list.files(pattern = "\\.qmd$")
   cv_config <- NULL
 
@@ -60,7 +55,6 @@ main <- function() {
   final_cv_data <- NULL
   is_cached <- FALSE
 
-  # Check for a valid cache file to avoid unnecessary API calls and speed up the rendering process.
   if (file.exists(cache_file)) {
     age <- difftime(Sys.time(), file.info(cache_file)$mtime, units = "hours")
     if (age < 24) is_cached <- TRUE
@@ -79,7 +73,6 @@ main <- function() {
       cli::cli_abort("Missing configuration: document-identifier or sheets-to-load.")
     }
 
-    # Authenticate with Google services to enable access to private sheets.
     cli::cli_process_start("Authenticating with Google")
     tryCatch(
       {
@@ -97,7 +90,6 @@ main <- function() {
       }
     )
 
-    # Normalize the sheet configuration to ensure a consistent format for the loading function.
     final_sheets_config <- list()
     for (item in sheets_config) {
       if (is.list(item)) {
@@ -109,7 +101,6 @@ main <- function() {
 
     cli::cli_alert_info("Loading Sheets from Google...")
 
-    # Resolve the document ID if a name was provided to ensure the correct file is accessed.
     real_doc_id <- doc_identifier
     if (!grepl("^[a-zA-Z0-9_-]{30,}$", doc_identifier)) {
       cli::cli_alert_info("Resolving name '{doc_identifier}'...")
@@ -125,8 +116,7 @@ main <- function() {
 
     cli::cli_alert_info("Transforming data for sequential YAML export...")
 
-    # Transform the loaded dataframes into a specific list structure.
-    # This transformation is necessary to preserve the column order when exporting to YAML and subsequently processing with Lua.
+    # Transform to list-of-lists to preserve column order for YAML/Lua
     final_cv_data <- purrr::map(raw_data_list, function(sheet_content) {
       if (is.data.frame(sheet_content)) {
         rows <- purrr::transpose(sheet_content)
@@ -145,7 +135,6 @@ main <- function() {
     saveRDS(final_cv_data, cache_file)
   }
 
-  # Export the processed data to a YAML file for the Quarto extension to consume.
   yaml::write_yaml(list(cv_data = final_cv_data), output_yaml_file)
   cli::cli_alert_success("Data ready in {.file {output_yaml_file}}")
 }

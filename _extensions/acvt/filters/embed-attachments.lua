@@ -1,11 +1,8 @@
 -- embed-attachments.lua
--- This filter processes the 'attachments' metadata list.
--- It inserts a page break and appends the attached images/documents to the end of the document.
--- This ensures that supplementary materials defined in YAML are automatically rendered.
+-- Appends attachments (from YAML) as new pages with headers and images.
 
 function Pandoc(doc)
 
-  -- Converts filenames to safe Typst identifiers to prevent syntax errors.
   local function normalize_to_id(filename)
     if not filename or filename == "" then
       return ""
@@ -14,7 +11,6 @@ function Pandoc(doc)
     return "fig-" .. sanitized
   end
 
-  -- Verifies file existence before attempting to embed it, preventing build failures.
   local function check_file_exists(file)
     local file_handle = io.open(file, "r")
 
@@ -39,13 +35,11 @@ function Pandoc(doc)
       goto continue
     end
 
-    -- Insert a raw page break character ("\f") which subsequent filters or Quarto handles.
     doc.blocks:insert(pandoc.Para(pandoc.Str("\f")))
 
     local name = pandoc.utils.stringify(item.name)
     local file = pandoc.utils.stringify(item.file)
 
-    -- Add a heading for the attachment if a name is provided.
     if name and name ~= "" then
       local header = pandoc.Header(2, {pandoc.Str(name)}, {class = "appendix"})
       doc.blocks:insert(header)
@@ -57,7 +51,6 @@ function Pandoc(doc)
         goto continue
       end
 
-      -- Create the image element with appropriate attributes for Typst rendering.
       local fig_id = normalize_to_id(file)
       local caption = { pandoc.Str(name or "") }
       local image = pandoc.Para(

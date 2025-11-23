@@ -1,10 +1,3 @@
-// typst/03-definitions-styling.typ
-// This module centralizes all visual design definitions.
-// It defines the color palette (based on Nord), typography settings, and reusable style dictionaries.
-// Keeping these separate allows for easy theming changes without touching the layout logic.
-
-// -- Color Palette --
-// We map the user-defined accent color and define a static Nord-based palette for consistency.
 #let color-accent = rgb( unescape_text( style.at("color-accent", default: "#dc3522") ) )
 
 #let color-nord0 = rgb("#2e3440")
@@ -14,8 +7,6 @@
 #let color-nord4 = rgb("#d8dee9")
 
 
-// -- Typography --
-// Font families are retrieved from metadata with fallbacks to standard system fonts.
 #let font-header = style.at("font-header", default: ("Roboto", "Arial", "Dejavu Sans") )
 #let font-text = style.at("font-text", default: ("Source Sans Pro", "Arial", "Dejavu Sans") )
 
@@ -29,10 +20,6 @@
 #let font-size-skill = 7pt
 
 
-// -- Style Dictionaries --
-// These dictionaries bundle font properties together for easy application via the splat operator (..).
-
-// Standard body text
 #let text-style-default = (
 	font: font-text,
 	size: font-size-normal,
@@ -49,7 +36,6 @@
 	fill: color-nord1,
 )
 
-// Header/Footer specific styles
 #let text-style-header = (
 	font: font-header,
 	size: font-size-large,
@@ -74,7 +60,6 @@
   fill: color-nord2
 )
 
-// Title Page Elements
 #let text-style-title-name = (
 	font: font-header,
 	size: font-size-xl,
@@ -99,7 +84,6 @@
   fill: color-nord3
 )
 
-// Content Section Styles
 #let text-style-quote = (
   font: font-header,
   size: font-size-middle,
@@ -124,7 +108,6 @@
   fill: color-nord1
 )
 
-// Grid/Layout specific styles (Labels vs Details)
 #let text-style-label = (
 	font: font-header,
 	size: font-size-label,
@@ -164,8 +147,6 @@
   style: "normal",
   fill: color-nord1
 )
-
-// -- Layout Presets --
 
 #let grid-style-default = (
   align: center + horizon,

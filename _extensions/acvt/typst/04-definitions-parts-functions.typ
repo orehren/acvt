@@ -1,9 +1,3 @@
-// typst/04-definitions-parts-functions.typ
-// This file defines the high-level components ("parts") that make up the document structure.
-// It includes functions for rendering the cover letter, title page, CV entries, and skills.
-
-// -- Cover Letter Render Logic --
-// Constructs the formal cover letter page, including the header grid, date/subject block, and body content.
 #let render-cover-letter(
   author,
   color-accent,
@@ -14,7 +8,6 @@
   cover_letter_content: [],
 ) = {
 
-  // Header Grid: Aligns Sender info (left) and Recipient info (right).
   grid(
     columns: (1fr, 1fr),
     gutter: 2em,
@@ -37,7 +30,6 @@
   align(right)[#date]
   v(2em)
 
-  // Subject Line with styling
   if subject != none or subject == "" {
     block(
       width: 100%,
@@ -52,23 +44,19 @@
     v(2em)
   }
 
-  // Salutation
   if recipient != none or recipient == "" {
     "Dear " + recipient.salutation + ","
   }
 
-  // Main Content (injected from metadata)
   v(1em)
   cover_letter_content
 
-  // Formal Closing
   v(2em)
   "Sincerely,"
   v(1em)
   author.firstname + " " + author.lastname
 }
 
-// Generates the standard footer for CV pages.
 #let create-footer(author) = {
     set text(..text-style-footer)
 
@@ -79,11 +67,9 @@
     )
 }
 
-// -- Title Page Logic --
-// Layouts the main introduction page with name, role, photo, and contact details.
 #let title-page(author, profile-photo: none) = {
     set page(footer: none)
-    v(1fr) // Vertical centering
+    v(1fr)
 
     grid(..grid-style-titlepage,
         grid.cell(x: 1, y: 1, align: left + bottom)[
@@ -114,27 +100,22 @@
     )
 }
 
-// -- CV Section Rendering --
-
-// Applies distinct styles to different columns of a CV entry row (e.g., Year vs Title vs Description).
-// This is used by map-cv-entry-values to style the grid cells dynamically.
 #let format-section-cells(index, value) = {
     let cell-content = value
 
-    if index == 0 { // Date/Label column
+    if index == 0 {
         align(right + horizon)[#text(..text-style-label-accent)[#cell-content]]
-    } else if index == 1 { // Main Title column
+    } else if index == 1 {
         align(left + horizon)[#text(..text-style-bold)[#cell-content]]
-    } else if calc.even(index) { // Context/Location columns
+    } else if calc.even(index) {
         align(right + horizon)[#text(..text-style-label)[#cell-content]]
-    } else if index == 3 { // Description column
+    } else if index == 3 {
         align(left + horizon)[#text(..text-style-default)[#cell-content]]
-    } else { // Generic details
+    } else {
         align(left + horizon)[#text(..text-style-details)[#cell-content]]
     }
 }
 
-// Iterates over a flat list of entry values and formats them into a grid layout.
 #let map-cv-entry-values(entry-values, startindex: 0) = {
   grid(
     ..entry-values.enumerate(start: startindex).map(((i, value)) =>
@@ -143,15 +124,12 @@
   )
 }
 
-// Wrapper for standard CV entries (Work, Education).
 #let resume-entry(..args) = {
     let cv-entries = args.named()
-    // Evaluate markup strings into content blocks before rendering
     let entry-values = cv-entries.values().map((value) => eval(value, mode: "markup"))
     map-cv-entry-values(entry-values)
 }
 
-// Wrapper for Research Interests, starting with a different style index offset.
 #let research-interests(..args) = {
     let cv-entries = args.named()
     let entry-values = cv-entries.values().map((value) => eval(value, mode: "markup"))
@@ -159,9 +137,6 @@
 }
 
 
-// -- Skill Bar Rendering --
-
-// Helper to construct the visual components of a skill bar (Label, Bar, Level text).
 #let skill-bar-components(
   skill,
   value,
@@ -204,7 +179,6 @@
   return (name: name_component, bar: bar_component, level: level_component)
 }
 
-// Aggregates skill components into a layout table.
 #let create-skill-table(grouped_skills) = {
   for (area, skills_in_area) in grouped_skills.pairs().sorted(key: p => p.at(0)) {
     if skills_in_area.len() == 0 { continue }
@@ -237,7 +211,6 @@
   }
 }
 
-// Main entry point for rendering the skills section.
 #let visualize-skills-list(
   skills_list
 ) = {
@@ -250,9 +223,6 @@
   create-skill-table(grouped_skills_map)
 }
 
-// -- Publication List Logic --
-
-// Renders the list of publications, grouping them by type (Label).
 #let publication-list(entries) = {
   let cells = ()
   let prev-label = none
@@ -261,18 +231,15 @@
     let is_new_label = prev-label == none or entry.label != prev-label
 
     if is_new_label and prev-label != none {
-      // Add visual separation between different publication groups.
       cells.push(grid.cell(colspan: 2, inset: (top: 0.2em))[])
     }
 
-    // Left Column: Group Label (only displayed once per group)
     cells.push(
       if is_new_label {
         align(end + top)[#text(..text-style-label)[#entry.label]]
       } else { [] }
     )
 
-    // Right Column: The publication citation
     cells.push(
       align(start + top)[
         #text(..text-style-publication)[#eval(entry.item, mode: "markup")]

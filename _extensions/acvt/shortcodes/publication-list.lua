@@ -1,9 +1,10 @@
+-- publication-list.lua
+
 -- =============================================================================
 -- 1. UTILS
 -- =============================================================================
 local utils = {}
 
--- Safely convert any object to a string.
 function utils.safe_string(obj)
   if obj == nil then return "" end
   local status, res = pcall(pandoc.utils.stringify, obj)
@@ -16,7 +17,6 @@ function utils.trim(s)
   return s:match("^%s*(.-)%s*$")
 end
 
--- Normalize quotation marks to standard ASCII double/single quotes.
 function utils.fix_quotes(s)
   if not s then return nil end
   s = tostring(s)
@@ -30,7 +30,6 @@ function utils.file_exists(path)
   if f then io.close(f); return true else return false end
 end
 
--- Parse "key=value, key2=value2" strings into a table.
 function utils.parse_key_val(str)
   local res = {}
   local s = utils.safe_string(str)
@@ -41,7 +40,6 @@ function utils.parse_key_val(str)
   return res
 end
 
--- Parse comma-separated lists into a Lua table.
 function utils.parse_list_string(str)
   local res = {}
   local s = utils.safe_string(str)
@@ -56,8 +54,7 @@ end
 -- =============================================================================
 local config = {}
 
--- Load configuration from multiple sources: kwargs, project YAML, or defaults.
--- This ensures the shortcode is flexible and respects global settings.
+-- Helper: merges kwargs, YAML metadata, and defaults.
 function config.get(kwargs)
   local env_conf = {}
   local global_meta = {}
@@ -196,14 +193,12 @@ end
 -- =============================================================================
 local core = {}
 
--- Parse bibliography files into a Lua table, handling various formats via Pandoc.
 function core.read_bib_file(path)
   if not utils.file_exists(path) then return {} end
 
   local ext = path:match("^.+(%..+)$")
   if ext then ext = ext:lower() end
 
-  -- Handle YAML/YML directly or wrap it if needed.
   if ext == ".yaml" or ext == ".yml" then
     local f = io.open(path, "r")
     if not f then return {} end
@@ -226,7 +221,6 @@ function core.read_bib_file(path)
     return {}
   end
 
-  -- Handle standard bibliography formats using Pandoc's conversion capabilities.
   local args = {path, "-t", "csljson"}
 
   if ext == ".json" then
@@ -249,7 +243,6 @@ function core.read_bib_file(path)
   return {}
 end
 
--- Execute Pandoc to process citations using Citeproc and generate formatted output.
 function core.run_pandoc_pipeline(bib_files, csl)
   local all_refs = {}
   local seen_ids = {}
@@ -275,7 +268,6 @@ function core.run_pandoc_pipeline(bib_files, csl)
   return result
 end
 
--- Process the Pandoc output into a structured list of entries suitable for Typst.
 function core.process_data(json_str, cfg)
   local doc = pandoc.json.decode(json_str)
   if not doc or not doc.meta or not doc.blocks then return {} end
@@ -296,7 +288,6 @@ function core.process_data(json_str, cfg)
     meta_map[id] = { type = type_clean, year = year }
   end
 
-  -- Recursively find reference divs in the AST.
   local function find_entries(blocks)
     for _, el in ipairs(blocks) do
       if el.t == "Div" and el.identifier:match("^ref%-") then
@@ -326,7 +317,6 @@ function core.process_data(json_str, cfg)
   return entries
 end
 
--- Sort publication entries by group rank, label, and year (descending).
 function core.sort_entries(entries, cfg)
   local group_rank = {}
   if cfg.group_order then

@@ -4,7 +4,7 @@ title: "Installation"
 
 # Installation Guide
 
-To use the `academicCVTemplate`, you need to install the Quarto extension itself and the `academicCVtools` R package, which provides the functions for data integration.
+To use the `academicCVTemplate`, you need to install the Quarto extension itself. The necessary R functions for data integration are included within the extension.
 
 ## 1. Get Started with the Template
 
@@ -44,23 +44,9 @@ This will prompt you to provide a name for the new project directory. It will th
 
 ## 2. Set Up the R Environment
 
-This template uses R to fetch and process data from Google Sheets. The project relies on the `renv` package for dependency management and the `academicCVtools` package for its core functions.
+This template uses R to fetch and process data from Google Sheets. The project relies on the `renv` package for dependency management.
 
-### 2.1. Install the `academicCVtools` Package
-
-The `academicCVtools` package is not on CRAN, so you will need to install it directly from GitHub. Open your R console and run the following commands:
-
-```r
-# First, ensure you have the 'remotes' package installed
-if (!requireNamespace("remotes", quietly = TRUE)) {
-  install.packages("remotes")
-}
-
-# Now, install the tools package from GitHub
-remotes::install_github("orehren/academicCVtools")
-```
-
-### 2.2. Restore Project Dependencies
+### 2.1. Restore Project Dependencies
 
 The project template comes with a `renv.lock` file that lists all the specific R package versions needed to ensure the template renders correctly.
 

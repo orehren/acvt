@@ -6,11 +6,11 @@ title: "Data Integration"
 
 A key feature of this template is its ability to populate your CV by pulling data directly from a Google Sheet. This allows you to maintain your CV content in a structured way, separate from the document itself.
 
-This guide provides a brief overview. For a full list of options, please refer to the documentation for the `academicCVtools` R package.
+This guide provides a brief overview of the integrated functions.
 
-## 1. The `academicCVtools` R Package
+## 1. Core R Functions
 
-All data integration is handled by the `academicCVtools` R package. Ensure you have it installed as described in the **[Installation Guide](./installation.md)**.
+All data integration is handled by R functions included in the extension. Ensure you have restored the project environment as described in the **[Installation Guide](./installation.md)**.
 
 The two key functions you will use are `load_cv_sheets()` and `format_typst_section()`.
 

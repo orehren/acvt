@@ -14,6 +14,8 @@ website:
         text: Tutorial
       - href: yaml_reference.qmd
         text: YAML Reference
+      - href: shortcodes.qmd
+        text: Shortcodes
       - href: styling.qmd
         text: Styling
       - href: data_integration.qmd

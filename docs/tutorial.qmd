@@ -4,117 +4,141 @@ title: "Tutorial: Your First CV"
 
 # Tutorial: Creating Your First CV
 
-This tutorial will guide you through the process of creating a complete CV and cover letter using the `template.qmd` file provided with the extension.
+This tutorial will guide you through the process of creating a complete CV and cover letter using the `academicCV-template.qmd` file.
 
-## 1. The `template.qmd` File
+## 1. The Template File
 
-The easiest way to get started is by using the `template.qmd` file that comes with this extension. It contains a pre-configured YAML header and the necessary R code chunks to get you started.
+The template comes with a file named `academicCV-template.qmd`. This file serves as the control center for your CV. It contains:
+1.  **YAML Header:** Metadata, configuration, and personal details.
+2.  **Shortcodes:** Placeholders that tell Quarto where to insert your CV sections and publications.
 
 Make a copy of this file and rename it to something like `my-cv.qmd`.
 
-## 2. Configure the YAML Header
+## 2. Configure Personal Details (YAML)
 
-Open your new `.qmd` file. The top section, enclosed in `---`, is the YAML header. This is where you will configure all your personal information.
+Open `my-cv.qmd`. The top section enclosed in `---` is the YAML header.
 
 ### 2.1. Basic Information
 
-Start by filling in your name and the document title.
+Update your name, position, and the document title.
 
 ```yaml
-title: "Documents of Application"
+title: "Application for Assistant Professor"
 author:
-  firstname: "Your Firstname"
-  lastname: "Your Lastname"
+  firstname: "Jane"
+  lastname: "Doe"
+position: "PhD Candidate in Computational Biology"
 ```
 
-### 2.2. Contact and Social Media
+### 2.2. Contact & Social Media
 
-Fill in your contact details. You can add or remove items from this list as you see fit. The `icon` field uses Font Awesome icons.
+Add your contact details. You can use any [Font Awesome](https://fontawesome.com/) icon by specifying its class (e.g., `fa envelope`, `fa brands github`).
 
 ```yaml
 author:
   # ...
   contact:
-    - icon: fa address-card
-      text: "Your Address"
-    - icon: fa mobile-screen
-      text: "Your Phone Number"
     - icon: fa envelope
-      text: "your.email@example.com"
-      url: "mailto:your.email@example.com"
+      text: "jane.doe@example.com"
+      url: "mailto:jane.doe@example.com"
+    - icon: fa location-dot
+      text: "New York, USA"
   socialmedia:
-    - icon: fa github
-      text: "Your GitHub"
-      url: "https://github.com/your-username"
+    - icon: fa brands github
+      text: "github.com/janedoe"
+      url: "https://github.com/janedoe"
 ```
 
-### 2.3. The `profile-photo`
+### 2.3. Profile Photo
 
-By default, the template includes a placeholder image. To use your own photo, replace the placeholder file at `assets/images/picture.jpg` with your own image.
-
-If you prefer not to have a profile photo, you can disable it in the YAML header:
+To change the profile photo, replace the file at `_extensions/acvt/assets/images/picture.jpg` or update the path in the YAML:
 
 ```yaml
-profile-photo: null
+profile-photo: "path/to/your/photo.jpg"
+# To disable the photo:
+# profile-photo: ""
 ```
 
 ## 3. The Cover Letter
 
-The body of your cover letter is written directly in the `.qmd` file under a `## Coverletter` heading. You can use standard Markdown for formatting.
+If you want to include a cover letter, configure the recipient details and write the content in the body of the document.
+
+### 3.1. Recipient Details
+
+```yaml
+recipient:
+  name: "Dr. Alan Turing"
+  salutation: "Dear Dr. Turing,"
+  address: "Department of Computer Science"
+  city: "Bletchley Park"
+  zip: "MK3 6EB"
+date: "October 24, 2025"
+subject: "Application for Research Position"
+```
+
+### 3.2. Letter Content
+
+Write your cover letter text under the `## Coverletter` heading in the main body of the document using standard Markdown.
 
 ```markdown
 ## Coverletter
 
-Dear Dr. Recipient,
-
-This is the body of my cover letter. I can use **bold**, *italics*, and other Markdown features.
-
-Sincerely,
-Your Name
+I am writing to express my interest in...
 ```
 
-## 4. Adding CV Content with R
+## 4. Connecting Your Data
 
-The template is designed to pull data from a Google Sheet.
+The power of this template comes from its integration with Google Sheets. Instead of typing your work history manually into the document, you manage it in a spreadsheet.
 
-### 4.1. Set Up Your Google Sheet
+1.  **Create your Sheet:** See the **[Data Integration](./data_integration.qmd)** guide for the expected format.
+2.  **Configure YAML:**
 
-The R code in the `template.qmd` expects a Google Sheet with specific tabs (e.g., "Working Experiences", "Education"). Make a copy of the example sheet and fill it with your own data.
-
-### 4.2. Link Your Sheet
-
-In the first R code chunk, update the `doc_identifier` to the name of your Google Sheet.
-
-```r
-# In the [lst-setup] R chunk
-cv_sheets <- load_cv_sheets(
-  doc_identifier = "Your_Google_Sheet_Name",
-  # ...
-)
+```yaml
+google-document:
+  auth-email: "your.email@gmail.com"
+  document-identifier: "Name_of_Your_Google_Sheet"
+  sheets-to-load:
+    - name: "Working Experiences" # Tab name in Google Sheets
+      shortname: "working"        # ID to use in shortcodes
+    - name: "Education"
+      shortname: "education"
 ```
 
-### 4.3. Render a Section
+## 5. Adding CV Sections (Shortcodes)
 
-For each section of your CV, there is a small R chunk that takes the data and formats it. For example, to render your work experience:
+To display a section from your data (e.g., your work experience), use the `{{< cv-section >}}` shortcode. You place this directly in the document body.
 
-```r
-## Working Experiences
+```markdown
+## Working Experience
 
-```r
-#| output: asis
-cv_sheets$`Working Experiences` |>
-  format_typst_section(
-    typst_func = "#resume-entry"
-  ) |> cat()
+{{< cv-section sheet="working" func="resume-entry" >}}
 ```
-You can add, remove, or reorder these sections to build your CV.
 
-## 5. Render the Document
+*   `sheet`: Matches the `shortname` you defined in the YAML.
+*   `func`: The layout function to use (e.g., `resume-entry` for standard CV entries, `research-interests` for simple lists).
 
-Once you have configured your YAML and set up your data, you can render the final PDF. Open your terminal in the project directory and run:
+See the **[Shortcodes Reference](./shortcodes.qmd)** for advanced options like filtering columns or combining bullet points.
+
+## 6. Adding Publications
+
+To add your publication list, configure the bibliography file in the YAML and use the `{{< publication-list >}}` shortcode.
+
+```yaml
+publication-list:
+  bib_file: "my_pubs.bib"
+  bib_style: "apa.csl"
+```
+
+```markdown
+## Publications
+
+{{< publication-list >}}
+```
+
+## 7. Render
+
+To generate your PDF, run:
 
 ```bash
 quarto render my-cv.qmd
 ```
-
-This will generate a `my-cv.pdf` file containing your professional, typeset CV and cover letter. Congratulations!

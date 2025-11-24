@@ -2,71 +2,75 @@
 title: "Data Integration"
 ---
 
-# How-To: Data Integration with Google Sheets
+# Data Integration
 
-A key feature of this template is its ability to populate your CV by pulling data directly from a Google Sheet. This allows you to maintain your CV content in a structured way, separate from the document itself.
+This template separates your content from the layout by fetching data from Google Sheets. This allows you to update your CV simply by editing a spreadsheet.
 
-This guide provides a brief overview. For a full list of options, please refer to the documentation for the `academicCVtools` R package.
+## 1. Setup
 
-## 1. The `academicCVtools` R Package
+In your `.qmd` file, you configure the connection in the `google-document` YAML block:
 
-All data integration is handled by the `academicCVtools` R package. Ensure you have it installed as described in the **[Installation Guide](./installation.md)**.
-
-The two key functions you will use are `load_cv_sheets()` and `format_typst_section()`.
-
-## 2. Setting Up Your Google Sheet
-
-The functions expect your Google Sheet to be organized with one sheet (tab) per CV section. For example:
-
-*   A sheet named "Education"
-*   A sheet named "Working Experiences"
-*   A sheet named "Skills"
-
-Each row in a sheet represents an entry in that section. The column headers in your sheet will become the field names for each entry (e.g., "Degree", "Institution", "Year").
-
-## 3. Loading the Data
-
-The first step in your `.qmd` file is to load the data from your Google Sheet. This is done in the R setup chunk.
-
-```r
-# In the [lst-setup] R chunk
-cv_sheets <- load_cv_sheets(
-  # The exact name of your Google Sheet
-  doc_identifier = "My Academic CV Data",
-
-  # A list of the sheets you want to load
-  sheets_to_load = list(
-    "Working Experiences",
-    "Education",
-    "Skills"
-  )
-)
+```yaml
+google-document:
+  auth-email: "your.email@gmail.com"
+  document-identifier: "Name_of_Your_Sheet"
+  sheets-to-load:
+    - name: "Working Experiences" # Tab Name
+      shortname: "working"        # ID for Shortcodes
 ```
-The `load_cv_sheets` function will authenticate with Google, download the data, and store it in the `cv_sheets` R object.
 
-## 4. Rendering a Section in Your CV
+On the first render, R will open a browser window to ask for permission to access your Google Drive. This token is cached locally, so you only need to do this once.
 
-Once the data is loaded, you can render any section in your CV with a small R code chunk.
+## 2. Spreadsheet Structure
 
-To render the "Education" section, you would add the following to your `.qmd` file:
+Your Google Sheet should have separate tabs for each section of your CV (e.g., "Experience", "Education", "Skills"). The first row of each tab must contain the **Column Headers**.
+
+### Example: Working Experience
+
+For a standard timeline entry, your sheet might look like this:
+
+| start | end | title | location | description |
+| :--- | :--- | :--- | :--- | :--- |
+| 01/2020 | Present | Senior Researcher | University of X | Leading project Y... |
+| 05/2018 | 12/2019 | Postdoc | Institute Z | Developed algorithm... |
+
+**Key Concept:** The column names (`start`, `end`, `title`, etc.) are passed directly to the Typst template. The default CV entry function (`#resume-entry`) expects specific keys, but you can map your columns to these keys using the `cv-section` shortcode.
+
+### Example: Skills
+
+For a list of skills, you might structure it like this:
+
+| category | skill | level |
+| :--- | :--- | :--- |
+| Languages | English | Native |
+| Languages | German | C1 |
+| Tech | R | Expert |
+
+## 3. Connecting Data to Layout
+
+Once your data is in the sheet, you use the `{{< cv-section >}}` shortcode to display it.
 
 ```markdown
-## Education
-
-  ````r
-  #| output: asis
-  cv_sheets$Education |>
-    format_typst_section(
-      typst_func = "#resume-entry"
-    ) |> cat()
-  ````
+{{< cv-section sheet="working" func="resume-entry" >}}
 ```
 
-### How it Works
+### The `resume-entry` Function
+The default layout function `#resume-entry` expects the following arguments (columns):
+*   `title`
+*   `location`
+*   `date` (or `start` + `end`)
+*   `description`
 
-1.  `cv_sheets$Education`: This selects the "Education" data that we loaded.
-2.  `format_typst_section()`: This function takes the data and transforms it into the raw Typst code needed to render the section.
-3.  `typst_func = "#resume-entry"`: This tells the function to format each row of data using the `#resume-entry` function defined in the Typst template, which is the standard layout for a CV item.
-4.  `|> cat()`: This takes the generated Typst code and outputs it directly into the document.
+If your sheet has different column names, or if you want to combine multiple columns (e.g., multiple bullet points) into the `description`, you can configure the shortcode:
 
-You can create your entire CV by repeating this pattern for each section.
+```markdown
+{{< cv-section
+    sheet="working"
+    func="resume-entry"
+    combine_cols="details_*"
+    combine_as="description"
+    combine_prefix="• "
+>}}
+```
+
+This flexibility allows you to structure your Google Sheet however you like, as long as you tell the shortcode how to map it to the template.

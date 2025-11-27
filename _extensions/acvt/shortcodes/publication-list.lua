@@ -85,7 +85,12 @@ function config.get(kwargs)
   end
 
   local function fetch_complex(key, parser, default)
-    if kwargs[key] then return parser(kwargs[key]) end
+    local arg_val = kwargs[key]
+    local arg_str = utils.safe_string(arg_val)
+    if arg_val and utils.trim(arg_str) ~= "" then
+      return parser(arg_val)
+    end
+
     if env_conf[key] then
       local val = env_conf[key]
       if type(val) == "table" then
@@ -106,11 +111,13 @@ function config.get(kwargs)
     local files = {}
     local keys_to_check = {"bib_file", "bib_files", "bibfile"}
     for _, key in ipairs(keys_to_check) do
-      if kwargs[key] then
-        local raw = utils.safe_string(kwargs[key])
-        local parts = utils.parse_list_string(raw)
-        for _, p in ipairs(parts) do table.insert(files, p) end
+      local arg_val = kwargs[key]
+      local arg_str = utils.safe_string(arg_val)
+      if arg_val and utils.trim(arg_str) ~= "" then
+         local parts = utils.parse_list_string(arg_str)
+         for _, p in ipairs(parts) do table.insert(files, p) end
       end
+
       if env_conf[key] then
         local val = env_conf[key]
         if type(val) == "table" then
@@ -158,18 +165,16 @@ function config.get(kwargs)
     highlight_markup = utils.fix_quotes(hl_style)
   end
 
-  -- KORREKTE CSL TYPEN:
   local standard_group_labels = {
-    article = "Journal Article",     -- CSL: article-journal -> article
-    conference = "Conference Paper", -- CSL: paper-conference -> conference
-    chapter = "Book Chapter",        -- CSL: chapter
-    book = "Book",                   -- CSL: book
-    thesis = "Thesis",               -- CSL: thesis
-    report = "Technical Report",     -- CSL: report
+    article = "Journal Article",
+    conference = "Conference Paper",
+    chapter = "Book Chapter",
+    book = "Book",
+    thesis = "Thesis",
+    report = "Technical Report",
     misc = "Miscellaneous"
   }
 
-  -- Merge-Logik: Erst Standards, dann User-Überschreibungen
   local user_labels = fetch_complex("group_labels", utils.parse_key_val, {})
   local final_group_labels = {}
   for k, v in pairs(standard_group_labels) do final_group_labels[k] = v end
@@ -198,7 +203,6 @@ function core.read_bib_file(path)
   local ext = path:match("^.+(%..+)$")
   if ext then ext = ext:lower() end
 
-  -- LOGIK FÜR YAML/YML
   if ext == ".yaml" or ext == ".yml" then
     local f = io.open(path, "r")
     if not f then return {} end
@@ -209,7 +213,6 @@ function core.read_bib_file(path)
 
     local args = {"-f", "markdown", "-t", "csljson"}
     local input_data = content
-    -- Wrapper, falls nur Liste ohne Header
     if not content:match("^%-%-%-") and not content:match("^references:") then
        input_data = "---\nreferences:\n" .. content .. "\n---\n"
     end
@@ -222,19 +225,12 @@ function core.read_bib_file(path)
     return {}
   end
 
-  -- LOGIK FÜR ANDERE FORMATE
   local args = {path, "-t", "csljson"}
-
-  if ext == ".json" then
-    table.insert(args, "--from=csljson")
-  elseif ext == ".bib" then
-    table.insert(args, "--from=biblatex")
-  elseif ext == ".bibtex" then
-    table.insert(args, "--from=bibtex")
-  elseif ext == ".xml" then
-    table.insert(args, "--from=endnotexml")
-  elseif ext == ".ris" then
-    table.insert(args, "--from=ris")
+  if ext == ".json" then table.insert(args, "--from=csljson")
+  elseif ext == ".bib" then table.insert(args, "--from=biblatex")
+  elseif ext == ".bibtex" then table.insert(args, "--from=bibtex")
+  elseif ext == ".xml" then table.insert(args, "--from=endnotexml")
+  elseif ext == ".ris" then table.insert(args, "--from=ris")
   end
 
   local json_out = pandoc.pipe("pandoc", args, "")
@@ -262,7 +258,6 @@ function core.run_pandoc_pipeline(bib_files, csl)
   if #all_refs == 0 then return nil end
 
   local merged_json = pandoc.json.encode(all_refs)
-
   local args = {"--from=csljson", "--to=json", "--citeproc", "--csl=" .. csl}
   local result = pandoc.pipe("pandoc", args, merged_json)
 
@@ -281,7 +276,6 @@ function core.process_data(json_str, cfg)
   for _, ref in ipairs(refs) do
     local id = utils.safe_string(ref.id)
     local type_raw = utils.safe_string(ref.type)
-    -- CLEANING für Labels
     local type_clean = type_raw:gsub("%-journal", ""):gsub("paper%-", "")
 
     local year = 0
@@ -320,11 +314,83 @@ function core.process_data(json_str, cfg)
   return entries
 end
 
+-- INTELLIGENTE SORTIERUNG (Explicit + Implicit Filler)
 function core.sort_entries(entries, cfg)
   local group_rank = {}
-  if cfg.group_order then
-    for i, g in ipairs(cfg.group_order) do group_rank[g] = i end
+
+  -- 1. Alle tatsächlich vorkommenden Labels sammeln (aus den Daten)
+  local present_labels_set = {}
+  local present_labels_list = {}
+  for _, e in ipairs(entries) do
+    if not present_labels_set[e.label] then
+      present_labels_set[e.label] = true
+      table.insert(present_labels_list, e.label)
+    end
   end
+  table.sort(present_labels_list) -- Alphabetisch sortieren für konsistentes Auffüllen
+
+  -- 2. Config parsen (Explicit vs. Implicit in Config)
+  local explicit_ranks = {}
+  local config_implicit_list = {}
+  local max_idx = 0
+
+  if cfg.group_order and #cfg.group_order > 0 then
+    for _, item in ipairs(cfg.group_order) do
+      local label, idx_str = item:match("^%s*(.-)%s*=%s*(%d+)%s*$")
+      if label and idx_str then
+        local idx = tonumber(idx_str)
+        explicit_ranks[idx] = label
+        if idx > max_idx then max_idx = idx end
+      else
+        local clean_label = utils.trim(item)
+        if clean_label and clean_label ~= "" then
+          table.insert(config_implicit_list, clean_label)
+        end
+      end
+    end
+  end
+
+  -- 3. "Leftovers" finden (Labels in den Daten, aber nicht in Config)
+  local leftovers = {}
+  for _, lbl in ipairs(present_labels_list) do
+    local is_in_explicit = false
+    for _, v in pairs(explicit_ranks) do if v == lbl then is_in_explicit = true break end end
+
+    local is_in_implicit = false
+    for _, v in ipairs(config_implicit_list) do if v == lbl then is_in_implicit = true break end end
+
+    if not is_in_explicit and not is_in_implicit then
+      table.insert(leftovers, lbl)
+    end
+  end
+
+  -- 4. Merge: Pool aus Config-Implicit + Leftovers bauen
+  local fill_pool = {}
+  for _, v in ipairs(config_implicit_list) do table.insert(fill_pool, v) end
+  for _, v in ipairs(leftovers) do table.insert(fill_pool, v) end
+
+  -- 5. Zipper: Lücken füllen
+  local pool_idx = 1
+  local rank_counter = 1
+
+  -- Schleife läuft, bis wir über den max_idx hinaus sind UND der Pool leer ist
+  while true do
+    if rank_counter > max_idx and pool_idx > #fill_pool then break end
+
+    if explicit_ranks[rank_counter] then
+      -- Fester Platz
+      group_rank[explicit_ranks[rank_counter]] = rank_counter
+    else
+      -- Lücke -> aus Pool füllen
+      if pool_idx <= #fill_pool then
+        group_rank[fill_pool[pool_idx]] = rank_counter
+        pool_idx = pool_idx + 1
+      end
+    end
+    rank_counter = rank_counter + 1
+  end
+
+  -- 6. Sortieren
   table.sort(entries, function(a, b)
     if a.label ~= b.label then
       local ra = group_rank[a.label] or 999
@@ -377,7 +443,6 @@ function Shortcode(args, kwargs, meta)
 
   local body = table.concat(typst_items, ",\n")
 
-  -- FIX für Typst Array Fehler: Zwingendes Komma am Ende
   return pandoc.RawBlock("typst", "#" .. cfg.func_name .. "((\n" .. body .. ",\n))")
 end
 

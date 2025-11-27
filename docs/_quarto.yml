@@ -10,10 +10,14 @@ website:
         text: Home
       - href: installation.qmd
         text: Installation
+       - href: structure.qmd
+         text: Structure
       - href: tutorial.qmd
         text: Tutorial
       - href: yaml_reference.qmd
         text: YAML Reference
+      - href: shortcodes.qmd
+        text: Shortcodes
       - href: styling.qmd
         text: Styling
       - href: data_integration.qmd

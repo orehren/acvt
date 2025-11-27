@@ -14,8 +14,8 @@ Imports:
     googlesheets4,
     purrr,
     checkmate,
-    rlang,
-    janitor
+    rlang
 Suggests:
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    renv
 Config/testthat/edition: 3

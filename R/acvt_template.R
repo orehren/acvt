@@ -61,7 +61,11 @@ acvt_template <- function(path, firstname, lastname, email, renv, git, ...) {
   setwd(path)
 
   if (renv) {
-    renv::init()
+    if (requireNamespace("renv", quietly = TRUE)) {
+      renv::init()
+    } else {
+      warning("`renv` package not found. Please install it to use renv with this project.")
+    }
   }
 
   if (git) {

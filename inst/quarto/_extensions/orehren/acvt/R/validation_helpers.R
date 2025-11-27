@@ -1,19 +1,19 @@
-# R/validation_helpers.R
-
-#' Validate arguments for create_publication_list
+#' Validate Arguments for `create_publication_list`
 #'
-#' @param bib_file Path to the .bib file.
-#' @param author_name Author's full name.
-#' @param csl_file Path to the .csl file.
-#' @param group_labels Named character vector for group labels.
-#' @param default_label Default label string.
-#' @param group_order Optional character vector for sort order.
-#' @param pandoc_path Optional path to Pandoc executable.
-#' @param author_highlight_markup Typst markup string.
-#' @param typst_func_name Typst function name.
+#' An internal helper function that uses `checkmate` assertions to validate all
+#' arguments passed to the `create_publication_list` function.
 #'
-#' @return `TRUE` (invisibly) if all checks pass.
-#' @importFrom checkmate assert_file_exists assert_string assert_character assert_named
+#' @param bib_file Path to the bibliography file.
+#' @param author_name Author's name for highlighting.
+#' @param csl_file Path to the CSL styling file.
+#' @param group_labels Named character vector for publication groups.
+#' @param default_label Default label for uncategorized publications.
+#' @param group_order Character vector specifying the order of groups.
+#' @param pandoc_path Optional path to the Pandoc executable.
+#' @param author_highlight_markup Typst markup string for highlighting.
+#' @param typst_func_name The name of the Typst function to be generated.
+#'
+#' @return `TRUE` (invisibly) if all checks pass, otherwise aborts with an error.
 #' @noRd
 .validate_create_publication_list_args <- function(
     bib_file, author_name, csl_file, group_labels, default_label,
@@ -40,21 +40,22 @@
   invisible(TRUE)
 }
 
-#' Validate arguments for format_typst_section
+#' Validate Arguments for `format_typst_section`
 #'
-#' @param data A data frame or tibble.
+#' An internal helper function that uses `checkmate` assertions to validate all
+#' arguments passed to the `format_typst_section` function.
+#'
+#' @param data The input data frame or tibble.
 #' @param typst_func The name of the Typst function.
-#' @param combine_cols Tidyselect expression.
-#' @param combine_as Name of the new combined column.
-#' @param combine_sep Separator for combined columns.
-#' @param combine_prefix Prefix for combined column values.
-#' @param exclude_cols Tidyselect expression.
-#' @param na_action How to handle `NA` values.
-#' @param output_mode Output structure.
+#' @param combine_cols A tidyselect expression for columns to combine.
+#' @param combine_as The name for the new combined column.
+#' @param combine_sep The separator string for combined values.
+#' @param combine_prefix A prefix for each combined value.
+#' @param exclude_cols A tidyselect expression for columns to exclude.
+#' @param na_action The action to take for `NA` values.
+#' @param output_mode The desired output structure.
 #'
-#' @return `TRUE` (invisibly) if all checks pass.
-#' @importFrom checkmate assert_data_frame assert_string assert_character assert_choice
-#' @importFrom rlang quo_is_null
+#' @return `TRUE` (invisibly) if all checks pass, otherwise aborts with an error.
 #' @noRd
 .validate_format_typst_section_args <- function(
     data, typst_func, combine_cols, combine_as, combine_sep,
@@ -69,13 +70,19 @@
   invisible(TRUE)
 }
 
-#' Validate arguments for load_cv_sheets
+#' Validate Arguments for `load_cv_sheets`
+#'
+#' An internal helper function that uses `checkmate` assertions to validate all
+#' arguments passed to the `load_cv_sheets` function.
+#'
+#' @param doc_identifier The Google Sheet identifier.
+#' @param sheets_to_load The specification of sheets to load.
+#' @param ... Additional arguments (currently unused, for extensibility).
+#'
+#' @return `TRUE` (invisibly) if all checks pass, otherwise aborts with an error.
 #' @noRd
 .validate_load_cv_sheets_args <- function(doc_identifier, sheets_to_load, ...) {
-  # Validate doc_identifier
   checkmate::assert_string(doc_identifier, min.chars = 1)
-
-  # Validate sheets_to_load
   if (is.character(sheets_to_load)) {
     checkmate::assert_character(sheets_to_load, min.chars = 1, min.len = 1)
   } else if (rlang::is_named(sheets_to_load)) {
@@ -85,7 +92,18 @@
   }
 }
 
-#' Validate arguments for read_cv_sheet
+#' Validate Arguments for `read_cv_sheet`
+#'
+#' An internal helper function that uses `checkmate` assertions to validate all
+#' arguments passed to the `read_cv_sheet` function.
+#'
+#' @param doc_identifier The Google Sheet identifier.
+#' @param sheet_name The name of the sheet to read.
+#' @param na_strings A vector of strings to treat as `NA`.
+#' @param col_types The column type specification.
+#' @param trim_ws A logical value for trimming whitespace.
+#'
+#' @return `TRUE` (invisibly) if all checks pass, otherwise aborts with an error.
 #' @noRd
 .validate_read_cv_sheet_args <- function(
     doc_identifier, sheet_name, na_strings, col_types, trim_ws) {
@@ -98,22 +116,23 @@
   checkmate::assert_logical(trim_ws, len = 1, any.missing = FALSE)
 }
 
-#' Find and validate an executable, returning its path
+#' Validate and Find a System Executable
 #'
-#' @param exec_name The name of the executable (e.g., "pandoc").
-#' @param path_arg An optional user-provided path to the executable.
-#' @param arg_name The name of the argument providing `path_arg` (for error messages).
+#' An internal helper that finds an executable on the system PATH or validates a
+#' user-provided path.
+#'
+#' @param exec_name The name of the executable (e.g., `"pandoc"`).
+#' @param path_arg An optional, user-provided path to the executable.
+#' @param arg_name The name of the argument providing `path_arg`, for use in
+#'   error messages.
 #'
 #' @return The validated, absolute path to the executable.
-#' @importFrom cli cli_abort
-#' @importFrom checkmate assert_string test_file_exists
 #' @noRd
 .validate_executable_found <- function(exec_name, path_arg = NULL, arg_name = "path_arg") {
   if (!is.null(path_arg)) {
     if (!checkmate::test_file_exists(path_arg)) {
       cli::cli_abort(
-        c(
-          "x" = "Executable not found at the path you provided.",
+        c("x" = "Executable not found at the path you provided.",
           " " = "Argument: {.arg {arg_name}}",
           " " = "Path: {.path {path_arg}}"
         ),
@@ -122,12 +141,10 @@
     }
     return(path_arg)
   }
-
   exec_path <- Sys.which(exec_name)
   if (exec_path == "") {
     cli::cli_abort(
-      c(
-        "x" = "{.val {exec_name}} executable not found in your system's PATH.",
+      c("x" = "{.val {exec_name}} executable not found in your system's PATH.",
         "i" = "Please install {exec_name} or provide a direct path via the {.arg {arg_name}} argument."
       ),
       call = NULL
@@ -136,47 +153,43 @@
   exec_path
 }
 
-#' Validate the corrected column_order argument
+#' Validate the `column_order` Argument
 #'
-#' @param column_order A list for reordering, e.g., `list("col_a" = 1)`.
-#' @param data The data frame to check against.
+#' An internal helper that validates the structure and content of the
+#' `column_order` argument used in some processing functions.
 #'
-#' @return `TRUE` (invisibly) if checks pass.
-#' @importFrom checkmate assert_list assert_numeric
-#' @importFrom cli cli_abort
+#' @param column_order A named list for reordering columns, where names are
+#'   column names and values are integer positions.
+#' @param data The data frame against which to validate.
+#'
+#' @return `TRUE` (invisibly) if all checks pass, otherwise aborts with an error.
 #' @noRd
 .validate_column_order_corrected <- function(column_order, data) {
   if (is.null(column_order)) {
     return(invisible(TRUE))
   }
-
   checkmate::assert_list(column_order, names = "unique")
 
-  # Check that names (column names) exist in the data
   specified_cols <- names(column_order)
   missing_cols <- setdiff(specified_cols, colnames(data))
   if (length(missing_cols) > 0) {
     cli::cli_abort(
-      c(
-        "x" = "Columns specified in {.arg column_order} not found in the data.",
+      c("x" = "Columns specified in {.arg column_order} not found in the data.",
         "i" = "Missing column{?s}: {.val {missing_cols}}"
       ),
       call = NULL
     )
   }
 
-  # Check that values (positions) are unique positive integers
   order_indices <- unlist(column_order)
   checkmate::assert_numeric(order_indices, lower = 1, unique = TRUE, any.missing = FALSE)
   if (any(order_indices %% 1 != 0)) {
     cli::cli_abort(
-      c(
-        "x" = "The values of the {.arg column_order} list must be positive integers.",
+      c("x" = "The values of the {.arg column_order} list must be positive integers.",
         "i" = "Example: {.code list(\"col_a\" = 1, \"col_b\" = 3)}"
       ),
       call = NULL
     )
   }
-
   invisible(TRUE)
 }

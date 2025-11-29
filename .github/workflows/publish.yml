@@ -11,7 +11,7 @@ env:
   # Source of Truth (R-Package Struktur)
   SRC_PATH: "inst/rstudio/templates/project/skeleton/_extensions/orehren/acvt"
   # Target für Quarto CLI (Root Struktur)
-  ROOT_EXT_PATH: "_extensions/orehren/acvt"
+  ROOT_EXT_PATH: "_extensions/acvt"
 
 jobs:
   publish-and-commit:

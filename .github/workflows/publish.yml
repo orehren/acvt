@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
 
 env:
-  # Source of Truth (R-Package Struktur)
+  # Source of Truth (R-Paket Struktur)
   SRC_PATH: "inst/rstudio/templates/project/skeleton/_extensions/orehren/acvt"
-  # Target für Quarto CLI (Root Struktur)
+  # Target für Quarto CLI (Root)
   ROOT_EXT_PATH: "_extensions/acvt"
 
 jobs:
@@ -27,41 +27,43 @@ jobs:
         uses: quarto-dev/quarto-actions/setup@v2
 
       # --- SCHRITT 1: Synchronisierung (inst -> root) ---
-      - name: Sync Extension to Root
+      - name: Sync Extension and Template Files to Root
         run: |
           echo "Synchronizing extension from inst/ to root..."
           
-          # Alten Root-Ordner bereinigen (falls vorhanden)
+          # 1. Extension Ordner syncen
           rm -rf _extensions
-          
-          # Zielstruktur erstellen
           mkdir -p "$ROOT_EXT_PATH"
-          
-          # Kopieren (Recursive)
           cp -r "$SRC_PATH/"* "$ROOT_EXT_PATH/"
           
-          echo "Sync abgeschlossen. Inhalt von $ROOT_EXT_PATH:"
-          ls -R "$ROOT_EXT_PATH"
+          # 2. Template Dateien (Quarto Config & QMD) ins Root kopieren
+          # Wir kopieren sie aus dem SRC_PATH direkt in das aktuelle Verzeichnis (.)
+          echo "Copying template files (_quarto.yml, academicCV-template.qmd) to Repo Root..."
+          
+          cp "$SRC_PATH/_quarto.yml" ./_quarto.yml
+          cp "$SRC_PATH/academicCV-template.qmd" ./academicCV-template.qmd
+
+          echo "Sync abgeschlossen."
+          ls -la
         shell: bash
 
       # --- SCHRITT 2: Dateien vorbereiten (Patching) ---
-      # Wir patchen die Datei im ROOT Ordner, da Quarto diese zum Rendern nutzt.
-      # Falls diese Änderung permanent sein soll, müsste man sie auch in SRC_PATH machen.
       - name: Prepare Source Files (Patch Config & Clear Metadata)
         run: |
           CONF_FILE="$ROOT_EXT_PATH/_extension.yml"
           TYP_FILE="$ROOT_EXT_PATH/typst/02-definitions-metadata.typ"
 
           echo "Patching Configuration: $CONF_FILE"
-          # Pfad anpassen (stellt sicher, dass extension.yml auf das korrekte R-Script zeigt)
-          sed -i 's|: .*_fetch_cv_data\.R|: _extensions/orehren/acvt/R/_fetch_cv_data.R|' "$CONF_FILE"
+          
+          # Pfad auf Root-Struktur anpassen
+          sed -i 's|: .*_fetch_cv_data\.R|: _extensions/acvt/R/_fetch_cv_data.R|' "$CONF_FILE"
 
           if [ -f "$TYP_FILE" ]; then
             echo "Clearing Metadata: $TYP_FILE"
             truncate -s 0 "$TYP_FILE"
           fi
 
-          # Optional: Den Patch auch zurück in die Source kopieren, damit er committet wird
+          # Patch zurück in die Source kopieren (damit Sync konsistent bleibt)
           cp "$CONF_FILE" "$SRC_PATH/_extension.yml"
           cp "$TYP_FILE" "$SRC_PATH/typst/02-definitions-metadata.typ"
         shell: bash
@@ -72,8 +74,6 @@ jobs:
           path: docs
 
       # --- SCHRITT 3: Markdown Dateien bewegen ---
-      # Wir schieben die generierten MDs in den SOURCE Ordner (Source of Truth)
-      # und syncen dann erneut zum Root, damit alles konsistent ist.
       - name: Move intermediate Markdown files and Re-Sync
         run: |
           DOCS_TARGET="$SRC_PATH/docs"
@@ -91,14 +91,17 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-          # 1. Wir adden die Source of Truth (R-Paket Struktur)
+          # 1. Source of Truth adden
           git add -f "$SRC_PATH/docs/*.md"
           git add -f "$SRC_PATH/_extension.yml"
           git add -f "$SRC_PATH/typst/02-definitions-metadata.typ"
           
-          # 2. Wir adden den Root Ordner (für Quarto CLI User)
-          # Hier adden wir den kompletten Ordner, um sicherzugehen, dass er synchron ist
+          # 2. Root Extension adden
           git add -f _extensions
+
+          # 3. Template Dateien im Root adden (NEU)
+          git add -f _quarto.yml
+          git add -f academicCV-template.qmd
 
           if git diff --staged --quiet; then
             echo "Keine Änderungen zu committen."

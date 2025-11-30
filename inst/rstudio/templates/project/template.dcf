@@ -21,9 +21,11 @@ Default: "your.email@example.com"
 Parameter: renv
 Widget: CheckboxInput
 Label: Use renv with this project
-Default: On
+Default: Off
+Position: left
 
 Parameter: git
 Widget: CheckboxInput
 Label: Create a git repository
-Default: On
+Default: Off
+Position: right

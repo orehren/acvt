@@ -13,19 +13,40 @@ This is a [Quarto](https://quarto.org/) extension for creating beautiful, modern
 
 ## Installing
 
-If you would like to add the template to an existing project directory:
+### Recommended Method: R Package & RStudio Template
+
+This is the easiest and most powerful way to use the template. It installs all R package dependencies automatically and makes the project available as a template in the RStudio "New Project" wizard.
+
+1.  **Install the R Package from GitHub:**
+    Open your R console (or RStudio) and run the following commands:
+    ```r
+    # Install devtools if you don't have it already
+    if (!requireNamespace("devtools", quietly = TRUE)) {
+      install.packages("devtools")
+    }
+    # Install the package
+    devtools::install_github("orehren/academicCVTemplate")
+    ```
+
+2.  **Restart RStudio:**
+    You must restart your RStudio session for the project template to appear.
+
+3.  **Create a New Project:**
+    Go to **File > New Project... > New Directory**. You will now see "Academic CV Project" in the list of project types. Select it to create a new, ready-to-use CV project.
+
+### Alternative Method: Manual Quarto Installation
+
+If you are not using RStudio or prefer a manual setup, you can install the Quarto extension directly.
 
 ```bash
-quarto install extension orehren/acvt
-```
-
-Alternatively, you can create a new Quarto project bundled with a `.qmd` template file to get started:
-
-``` bash
+# To create a new project with the template
 quarto use template orehren/academicCVTemplate
+
+# To add the extension to an existing project
+quarto add orehren/academicCVTemplate
 ```
 
-This will install the format extension and create an example qmd file that you can use as a starting place for your document.
+**Note:** With this method, you must manually install the required R packages. Please see the full documentation for the list of packages
 
 ## Documentation
 

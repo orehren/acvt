@@ -56,7 +56,7 @@ jobs:
           echo "Patching Configuration: $CONF_FILE"
           
           # Pfad auf Root-Struktur anpassen
-          sed -i 's|: .*_fetch_cv_data\.R|: _extensions/acvt/R/_fetch_cv_data.R|' "$CONF_FILE"
+          sed -i 's|: .*_fetch_cv_data\.R|: _extensions/orehren/acvt/R/_fetch_cv_data.R|' "$CONF_FILE"
 
           if [ -f "$TYP_FILE" ]; then
             echo "Clearing Metadata: $TYP_FILE"

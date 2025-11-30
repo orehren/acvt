@@ -15,12 +15,6 @@ Label: Last Name
 Default: Author
 Position: right
 
-Parameter: email
-Widget: TextInput
-Label: Email
-Default: your.email@example.com
-Position: left
-
 Parameter: renv
 Widget: CheckboxInput
 Label: Use renv with this project
@@ -32,3 +26,9 @@ Widget: CheckboxInput
 Label: Create a git repository
 Default: Off
 Position: right
+
+Parameter: setup
+Widget: CheckboxInput
+Label: Use Setup Wizard with this project
+Default: Off
+Position: left

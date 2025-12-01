@@ -39,7 +39,7 @@ echo "Info: Installing core R packages (tidyverse, devtools, db backends)..."
 # 4. Uses the repositories from Rprofile.site (automatically)
 
 # The single '-' tells Rscript to read from stdin
-Rscript - <<EOF
+Rscript -e - <<EOF
 # --- Setup ---
 # 1. Set parallel cores
 ncpus <- as.integer(Sys.getenv("NCPUS", "-1"))

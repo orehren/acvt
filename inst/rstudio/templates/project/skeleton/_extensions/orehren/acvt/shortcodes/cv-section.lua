@@ -50,6 +50,17 @@ local function parse_list_arg(val)
   return res
 end
 
+-- Helper to read JSON file directly
+local function read_cv_data_json()
+  local f = io.open(".cv_data.json", "r")
+  if not f then return nil end
+  local content = f:read("*a")
+  f:close()
+  if not content or content == "" then return nil end
+  -- quarto.json is available in Lua filters running in Quarto
+  return quarto.json.decode(content)
+end
+
 -- =============================================================================
 -- 2. TIDY SELECT LOGIC (NEU)
 -- =============================================================================
@@ -293,10 +304,24 @@ local function generate_cv_section(args, kwargs, meta)
   local func  = get_arg(kwargs, "func", "")
 
   if sheet == "" or func == "" then return pandoc.Strong(pandoc.Str("Missing sheet/func")) end
-  if not meta.cv_data or not meta.cv_data[sheet] then return pandoc.Strong(pandoc.Str("Sheet not found")) end
+
+  -- Try to load from meta or file
+  local cv_data_source = nil
+  if meta.cv_data and meta.cv_data[sheet] then
+    cv_data_source = meta.cv_data
+  else
+    local json_data = read_cv_data_json()
+    if json_data and json_data.cv_data then
+      cv_data_source = json_data.cv_data
+    end
+  end
+
+  if not cv_data_source or not cv_data_source[sheet] then
+     return pandoc.Strong(pandoc.Str("Sheet not found"))
+  end
 
   -- 1. Daten laden & Unwrappen
-  local rows_raw = unwrap(meta.cv_data[sheet])
+  local rows_raw = unwrap(cv_data_source[sheet])
   local rows = (pandoc.utils.type(rows_raw) == "MetaList" or (type(rows_raw)=="table" and rows_raw[1])) and rows_raw or {rows_raw}
 
   if #rows == 0 then return pandoc.RawBlock("typst", "") end

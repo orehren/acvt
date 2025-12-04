@@ -26,6 +26,8 @@ website:
         text: Styling
       - href: structure.qmd
         text: Structure
+      - href: update_template.qmd
+        text: Template Update
       - href: yaml_reference.qmd
         text: YAML Reference
       - href: acknowledgements.qmd

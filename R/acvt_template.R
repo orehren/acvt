@@ -36,7 +36,7 @@ acvt_template <- function(path, firstname, lastname, renv, git, ...) {
   file.copy(from = file.path(source_of_truth_dir, "_quarto.yml"),
             to = file.path(path, "_quarto.yml"))
 
-  # Copy directly to 'cv.qmd'
+  # Copy directly to 'cv.qmd' so it matches the .dcf OpenFiles directive immediately
   target_qmd <- file.path(path, "cv.qmd")
   file.copy(from = file.path(source_of_truth_dir, "academicCV-template.qmd"),
             to = target_qmd)
@@ -45,19 +45,14 @@ acvt_template <- function(path, firstname, lastname, renv, git, ...) {
   .update_template_yaml(target_qmd, firstname, lastname)
 
   # 6. Initialize Version Control & Environment
+  # We use system calls on the target directory to remain side-effect free
+
   if (git && nzchar(Sys.which("git"))) {
     system(paste("git -C", shQuote(path), "init"), ignore.stdout = TRUE, ignore.stderr = TRUE)
   }
 
   if (renv && requireNamespace("renv", quietly = TRUE)) {
     renv::init(project = path, bare = TRUE, restart = FALSE)
-  }
-
-  # 7. Explicitly switch project and open the file
-  # This overrides the default Wizard behavior and ensures the file is opened
-  # in the NEW session context.
-  if (requireNamespace("rstudioapi", quietly = TRUE) && rstudioapi::isAvailable()) {
-    rstudioapi::openProject(path = path, newSession = FALSE, initialFiles = "cv.qmd")
   }
 
   return(invisible(TRUE))

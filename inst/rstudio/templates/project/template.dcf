@@ -26,9 +26,3 @@ Widget: CheckboxInput
 Label: Create a git repository
 Default: Off
 Position: right
-
-Parameter: setup
-Widget: CheckboxInput
-Label: Use Setup Wizard with this project
-Default: Off
-Position: left

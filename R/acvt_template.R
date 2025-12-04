@@ -44,6 +44,7 @@ acvt_template <- function(path, firstname, lastname, renv, git, ...) {
   # 5. Personalize YAML Header
   .update_template_yaml(target_qmd, firstname, lastname)
 
+  print(renv)
   # 6. Initialize Version Control & Environment
   # We use system calls on the target directory to remain side-effect free (no setwd)
 

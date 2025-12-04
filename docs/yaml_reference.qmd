@@ -152,42 +152,102 @@ subject: "Application for Research Position"
 
 ## Data Integration (`google-document`)
 
-Configures the connection to your Google Sheet data source.
+Configures the connection to your data sources. While the key is named `google-document` for historical reasons, it now supports a **hybrid approach**, allowing you to mix Google Sheets, local Excel/CSV/JSON files, and entire directories.
 
 ### `google-document`
-**Type:** Object (`auth-email`, `document-identifier`, `sheets-to-load`)
+**Type:** Object
 
 **Fields:**
 
-*   `auth-email`: The email address used for Google authentication. **Type:** String
-*   `document-identifier`: The name or ID of your Google Sheet. **Type:** String
-*   `sheets-to-load`: A list of sheets to import. **Type:** List of Objects (`name`, `shortname`)
+*   `auth-email`: The email address used for Google authentication (only required if using Google Sheets). **Type:** String
+*   `document-identifier`: The source(s) of your data. Can be a single string or a list of strings. **Type:** String | List of Strings
+*   `sheets-to-load`: A list of specific data sections to import from the defined sources. **Type:** List of Objects
 
-#### `sheets-to-load` Items
-You can define sheets using objects (recommended for control) or simple strings.
+### `document-identifier`
+This field tells the system *where* to look for data. You can provide a single source or a list of multiple sources. The system will merge them together.
 
-**Object Format:**
+**Supported Source Types:**
 
-*   `name`: The exact name of the tab in your Google Sheet. **Type:** String
-*   `shortname`: The unique ID you will use in the `{{< cv-section >}}` shortcode. **Type:** String
+1.  **Google Sheet:** Provide the unique **ID** (recommended) or the exact **Name** of the file on your Google Drive or the url to that file.
+2.  **Local File:** Provide a relative path to a `.xlsx`, `.csv`, or `.json` file.
+3.  **Local Directory:** Provide a relative path to a folder (e.g., `_data/`). The system will scan it for supported files.
 
-**String Format:**
+**How Matching Works:**
+*   **Google Sheets / Excel:** The system looks for a **Tab (Sheet)** matching the `name` defined in `sheets-to-load`.
+*   **CSV / JSON:** The system looks for a **Filename** matching the `name` defined in `sheets-to-load` (ignoring the extension).
 
-*   You can simply list the tab names. The `shortname` will be automatically generated (lowercased, spaces replaced by underscores, special chars removed).
-    *   Example: `"Working Experiences"` -> `working_experiences`
+#### Examples
 
-**Example:**
+**1. Online Only (Classic)**
+Fetches all data from a single Google Sheet.
 ```yaml
 google-document:
   auth-email: "me@gmail.com"
-  document-identifier: "My_CV_Data"
+  document-identifier: "1BxiMVs0XRA5nSLqo..." # or "My CV Data"
   sheets-to-load:
-    # Object Format
     - name: "Working Experiences"
       shortname: "working"
-    # String Format
-    - "Education" # shortname becomes 'education'
 ```
+
+**2. Local File Only**
+Uses a local Excel file instead of the cloud. No email required.
+```yaml
+google-document:
+  document-identifier: "data/my_cv.xlsx"
+  sheets-to-load:
+    - name: "Education" # Looks for a tab named "Education" in the xlsx
+      shortname: "edu"
+```
+
+**3. Mixed Sources (Hybrid)**
+Combines public data from Google Sheets with private data from a local Excel file.
+```yaml
+google-document:
+  auth-email: "me@gmail.com"
+  document-identifier:
+    - "My Public CV Data"   # Google Sheet
+    - "private/details.xlsx" # Local Excel
+  sheets-to-load:
+    - name: "Working Experiences" # From Google
+      shortname: "working"
+    - name: "References"          # From local Excel
+      shortname: "refs"
+```
+
+**4. Directory Scan**
+Scans a folder. Useful if you prefer one CSV per section (e.g., `_data/skills.csv`, `_data/languages.csv`).
+```yaml
+google-document:
+  document-identifier: "_data/"
+  sheets-to-load:
+    - name: "skills"    # Matches '_data/skills.csv'
+      shortname: "skills"
+    - name: "languages" # Matches '_data/languages.csv'
+      shortname: "lang"
+```
+
+### `sheets-to-load`
+Defines *what* data to extract from the sources configured above.
+
+**Object Format (Recommended):**
+
+*   `name`: The identifier used to find the data.
+    *   *For Excel/Google:* The exact Tab Name.
+    *   *For CSV/JSON:* The Filename (without extension).
+*   `shortname`: The unique ID you will use in the `{{< cv-section >}}` shortcode to render this data.
+
+**String Format:**
+You can simply list names. The `shortname` will be automatically generated (lowercased, spaces replaced by underscores).
+
+```yaml
+sheets-to-load:
+  # Object Format
+  - name: "Working Experiences"
+    shortname: "working"
+  # String Format
+  - "Education" # shortname becomes 'education'
+```
+
 
 ## Publication List (`publication-list`)
 

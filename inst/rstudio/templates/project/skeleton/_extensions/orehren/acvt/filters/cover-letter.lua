@@ -10,7 +10,7 @@ local p_Raw    = pandoc.RawBlock
 -- Configuration
 local TARGET_SECTION_ID = "coverletter"
 local TYPST_VAR_NAME    = "cover_letter_content"
-local META_INJECTION_KEY = "definitions-01b-injected-cover-letter"
+local META_INJECTION_KEY = "injected-cover-letter"
 local FORMAT_TYPST      = "typst"
 
 

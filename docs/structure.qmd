@@ -29,30 +29,30 @@ It handles authentication, fetches data from Google Sheets, and writes the struc
 
 ### Filters
 
-*Files:* `inject-metadata.lua`, `extract-cover-letter.lua`, `embed-attachments.lua`
+*Files:* `inject-metadata.lua`, `cover-letter.lua`, `embed-attachments.lua`
 
 *Location:* `acvt/filters/`
 
 Lua filters intervene in the Pandoc conversion process to inject data and handle special content.
 
 -   `inject-metadata.lua`: Reads the entire YAML data and converts it into Typst variables. The Variables are then passed to the typst template.
--   `extract-cover-letter.lua`: Extracts the content under `## Coverletter` and makes it available to the template.
+-   `cover-letter.lua`: Extracts the content under `## Coverletter` and makes it available to the template.
 -   `embed-attachments.lua`: Handles the inclusion of appendix documents.
 
 ### Shortcodes
 
-*Files:* `cv-section.lua`, `publication-list.lua`
+*Files:* `cv-section.lua`, `publications.lua`
 
 *Location:* `acvt/shortcodes/`
 
 These Lua scripts provide the user-facing commands used in the `.qmd` file:
 
 -   `cv-section.lua`: Implements `{{< cv-section >}}`. This is the default shortcode used to display most sections of the CV. It reads the content of your sheets from `.cv_data.json`
--   `publication-list.lua`: Implements `{{< publication-list >}}`. A shortcode for rendering publication lists.
+-   `publications.lua`: Implements `{{< publication-list >}}`. A shortcode for rendering publication lists.
 
 ### Template & Partials
 
-*Files*: `template.typ`, `typst-template.typ`, `definitions-00a-helper-functions.typ`, `definitions-02a-styling.typ`, `definitions-03a-parts-functions.typ`, `page.typ`
+*Files*: `template.typ`, `typst-template.typ`, `helper-functions.typ`, `stylings.typ`, `parts-functions.typ`, `page.typ`
 
 *Location*: `acvt/typst/`
 
@@ -65,9 +65,9 @@ Instead, modify the specific partials it loads:
 | Partial File | Purpose |
 |:-----------------------------------|:-----------------------------------|
 | `typst-template.typ` | Defines the main document structure (Logic for Cover Letter vs. CV). |
-| `definitions-00a-helper-functions.typ` | Helper functions for data processing and icons. |
-| `definitions-02a-styling.typ` | Defines the visual identity (colors, fonts, text styles). |
-| `definitions-03a-parts-functions.typ` | Contains the layout functions (`resume-entry`, etc.). |
+| `helper-functions.typ` | Helper functions for data processing and icons. |
+| `stylings.typ` | Defines the visual identity (colors, fonts, text styles). |
+| `parts-functions.typ` | Contains the layout functions (`resume-entry`, etc.). |
 | `page.typ` | Configures page dimensions and margins. |
 
 **Output:** By default, the generated document is saved to the `_output/` directory.
@@ -103,7 +103,7 @@ The extension includes several static assets in `_extensions/orehren/acvt/assets
 | Directory | Content |
 |:-------------------|:---------------------------------------------------|
 | `bib/` | Bibliography files (`bibliography.bib`, `.json`, `.ris`, `.xml`, or `.yml`). |
-| `images/` | Default profile picture (`picture.jpg` or `.png`) and example appendix files (`first_document.png`, `second_document.png`). |
+| `images/` | Default profile picture (`picture.jpg` or `.png`) and example appendix files (`appendix1.png`, `appendix2.png`). |
 
 ## 3. Layout Logic (The Grid)
 

@@ -78,9 +78,9 @@ google-document:
 
 attachments:
   - name: "First Document"
-    file: "_extensions/orehren/acvt/assets/images/first_document.png"
+    file: "_extensions/orehren/acvt/assets/images/appendix1.png"
   # - name: "Second Document"
-  #   file: "_extensions/orehren/acvt/assets/images/second_document.png"
+  #   file: "_extensions/orehren/acvt/assets/images/appendix2.png"
 
 # -- Publication List ----------------------------------------------
 # Configuration for the publication list. See `?render_publication_list`.

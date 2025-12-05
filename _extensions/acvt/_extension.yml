@@ -16,7 +16,7 @@ contributes:
       output-file: "CV_Application"
       shortcodes:
         - shortcodes/cv-section.lua
-        - shortcodes/publication-list.lua
+        - shortcodes/publications.lua
       execute:
         echo: false
         warning: false
@@ -34,13 +34,13 @@ contributes:
       keep-typ: false
       filters:
         - path: filters/inject-metadata.lua
-        - path: filters/extract-cover-letter.lua
+        - path: filters/cover-letter.lua
         - path: filters/embed-attachments.lua
       template: typst/template.typ
       template-partials:
-        - typst/definitions-00a-helper-functions.typ
-        - typst/definitions-02a-styling.typ
-        - typst/definitions-03a-parts-functions.typ
+        - typst/helper-functions.typ
+        - typst/stylings.typ
+        - typst/parts-functions.typ
         - typst/page.typ
         - typst/typst-show.typ
         - typst/typst-template.typ

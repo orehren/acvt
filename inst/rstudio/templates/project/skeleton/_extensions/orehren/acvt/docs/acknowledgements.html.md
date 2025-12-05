@@ -25,4 +25,4 @@ This project served as a crucial starting point and proof-of-concept for creatin
 *   **Project Link:** [https://github.com/pandoc-ext/abstract-section](https://github.com/pandoc-ext/abstract-section)
 *   **Developers:** Albert Krewinkel (@tarleb), John MacFarlane (@jgm), Mickaël Canouil (@mcanouil)
 
-The `extract-cover-letter.lua` filter in this project is a modified version of the `abstract-section.lua` filter. Their elegant and robust code for extracting a specific section from a document was adapted to handle the cover letter content.
+The `cover-letter.lua` filter in this project is a modified version of the `abstract-section.lua` filter. Their elegant and robust code for extracting a specific section from a document was adapted to handle the cover letter content.

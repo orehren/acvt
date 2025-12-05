@@ -9,7 +9,7 @@ local pandoc_type  = pandoc.utils.type
 local pandoc_str   = pandoc.utils.stringify
 local pandoc_raw   = pandoc.RawBlock
 
-local TYPST_META_KEY   = "definitions-01a-injected-meta-data"
+local TYPST_META_KEY   = "injected-meta-data"
 local PANDOC_FMT_TYPST = "typst"
 
 -- Single-pass substitution table for Typst string escaping

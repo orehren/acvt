@@ -1,4 +1,4 @@
-# Academic CV Typst Template for Quarto
+# Academic-CV Typst Template for Quarto
 
 This is a [Quarto](https://quarto.org/) extension for creating beautiful, modern, and professional academic CVs and cover letters using the [Typst](https://typst.app/) typesetting system.
 

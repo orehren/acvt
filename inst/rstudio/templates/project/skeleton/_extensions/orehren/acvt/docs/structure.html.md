@@ -2,7 +2,7 @@
 title: "Structure & Layout of the Extension"
 ---
 
-This page explains the architecture of the `academicCVTemplate` extension.
+This page explains the architecture of the `Academic-CVTemplate` extension.
 
 ## 1. Data Caching Mechanism
 

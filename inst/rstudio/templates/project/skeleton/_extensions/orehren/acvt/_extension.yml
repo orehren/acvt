@@ -1,28 +1,25 @@
 title: acvt
 author: Oliver Rehren
-version: 0.9.0
-description: "A Quarto extension for creating academic CVs and cover letters using Typst."
+version: 0.9.8
+description: "A Quarto extension for creating CVs and cover letters using the Academic-CV Typst Template."
 quarto-required: ">=1.8.0"
 license: MIT
 contributes:
   project:
     project:
-      type: default
+      type: website
       output-dir: _output
       pre-render: _extensions/orehren/acvt/R/_fetch_cv_data.R
-    format: acvt-typst
+    format:
+      acvt-typst: default
   formats:
     common:
-      output-file: "CV_Application"
-      shortcodes:
-        - shortcodes/cv-section.lua
-        - shortcodes/publications.lua
       execute:
         echo: false
         warning: false
         error: false
       style:
-        color-accent: "#dc3522"
+        color-accent: "#4F46E5"
         font-header: ["Roboto", "Arial", "Dejavu Sans"]
         font-text: ["Source Sans Pro", "Arial", "Dejavu Sans"]
       surpress-bibliography: true
@@ -31,16 +28,31 @@ contributes:
         highlight-author: color
       profile-photo: "assets/images/picture.jpg"
     typst:
+      output-file: "CV_Application"
       keep-typ: false
+      shortcodes:
+        - shortcodes/cvs/typst-cvsection.lua
+        - shortcodes/cvs/typst-interests.lua
+        - shortcodes/vsl/typst-skills.lua
+        - shortcodes/pbl/typst-publist.lua
       filters:
-        - path: filters/inject-metadata.lua
-        - path: filters/cover-letter.lua
-        - path: filters/embed-attachments.lua
+        - at: pre-ast
+          path: filters/typst-inject-metadata.lua
+        - at: pre-quarto
+          path: filters/typst-cover-letter.lua
+        - at: pre-quarto
+          path: filters/typst-embed-attachments.lua
+        - at: post-quarto
+          path: filters/typst-styling.lua
+        - at: post-quarto
+          path: filters/typst-layout.lua
       template: typst/template.typ
       template-partials:
-        - typst/helper-functions.typ
-        - typst/stylings.typ
-        - typst/parts-functions.typ
+        - typst/utils.typ
+        - typst/theme.typ
+        - typst/letter.typ
+        - typst/cv-parts.typ
+        - typst/skills.typ
         - typst/page.typ
         - typst/typst-show.typ
         - typst/typst-template.typ

@@ -1,4 +1,4 @@
-#' Create a new Academic CV Project
+#' Create a new Academic-CV Project
 #'
 #' Implements the logic for the RStudio Project Wizard.
 #' Accepts dynamic arguments via ellipsis.

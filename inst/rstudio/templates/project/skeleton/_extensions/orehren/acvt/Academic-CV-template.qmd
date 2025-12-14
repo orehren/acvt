@@ -13,11 +13,11 @@ author:
   lastname: "Author"
   contact:
     - icon: fa address-card
-      text: "Your Address"
+      text: "Somewhere Street 19, 1337 Leet, Nerdland"
     - icon: fa mobile-screen
-      text: "Your Phone Number"
+      text: "00 123 45 678 9" # Your Phone Number
     - icon: fa envelope
-      text: "Your E-Mail-Address"
+      text: "Email at Gmail" # Your E-Mail-Address
       url: "mailto:your.email@gmail.com"
   socialmedia:
     - icon: fa house
@@ -35,8 +35,9 @@ author:
 
 # -- Cover Letter Information --------------------------------------
 recipient:
-  name: "A Name"
-  salutation: "Salutation"
+  name: "A Name" # Name to use for the Salutation
+  salutation: "Hey there"
+  addressee: "HRI Research Group"
   address: "Oxmoron Street"
   city: "The City"
   zip: "66696"
@@ -45,7 +46,7 @@ subject: "The subject of the cover letter"
 
 # -- Core CV Content -----------------------------------------------
 # These fields provide main content blocks to the template.
-position: "Your Position" # Either your current position or the position you are applying for
+position: "Unbelievable Skilled Scientist" # Either your current position or the position you are applying for
 aboutme: |
   Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy 
   eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam 
@@ -57,14 +58,20 @@ famous-quote: # Optional
 # -- Template Styling ----------------------------------------------
 # These variables override the template defaults.
 style:
-  color-accent: "5e81ac" # A custom accent color (e.g., from Nord palette)
+  color-accent: "#4F46E5" # A custom accent color (e.g., from Nord palette)
   font-header: "Lato"
   font-text: "Roboto"
+
+# -- CV Grid Layout ---------------------- 
+# Configuration for the relations of the two column layout (sidebar and main)
+cv-grid: 
+  sidebar: 3 
+  main: 9
 
 # profile-photo: null # to disable the picture
 
 google-document:
-  auth-email: e.xample@geeeeemail.com # TRUE
+    auth-email: g.eek@geeeeemail.com # TRUE | The E-Mail address of your Google Drive Account
   document-identifier: 
     - "Application_CV_Data" # Give a Google Identifier (id, file name in google drive or url.)
     # - "data/" # Give a Folder with csv, json and / or xlsx files
@@ -83,10 +90,10 @@ attachments:
   #   file: "_extensions/orehren/acvt/assets/images/appendix2.png"
 
 # -- Publication List ----------------------------------------------
-# Configuration for the publication list. See `?render_publication_list`.
+# Configuration for the publication list.
 publication-list:
   author-name: "Author, A." # Optional: Will be inferred if not set
-  highlight-author: "bold" # '#text(fill: rgb("516db0"), weight: "bold")[%s]' # "bold", "italic", "color", or a custom Typst string
+  highlight-author: "bold" # italic | color | a custom pandoc native markdown string (e.g. '[%s]{color="#4F46E5"}')
   bib-file:
     - _extensions/orehren/acvt/assets/bib/bibliography.bib
     - _extensions/orehren/acvt/assets/bib/bibliography.ris
@@ -102,29 +109,53 @@ render-output: "combined" # "cv-only", "letter-only", or "combined"
 
 ## Coverletter
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
+eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
+voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
+clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
+amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
+rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
+ipsum dolor sit amet.
 
 ## Research Interests
 
-{{< cv-section 
-    sheet="interests" 
-    func="research-interests" 
-    exclude-cols="label_7"
-    pos-1="details_2"
-    pos-2="label_2" 
-    pos-3="{details_6}, {details_7}"
+{{< research-interests 
+      sheet="interests" 
+      exclude-cols="label_7" 
+      pos-1="details_2" 
+      pos-4="label_2" 
+      pos-3="{details_6}, {details_7}" 
   >}}
 
 ## Working Experiences
 
 {{< cv-section 
-    sheet="working" 
-    func="resume-entry" 
-    exclude-cols="date"
-    pos-0="{start} -- {end}" 
-    pos-5="· {starts_with('detail') | \\ \\ · }" 
->}}
+      sheet="working" 
+      exclude-cols="date" 
+      pos-0="{start} -- {end}" 
+      pos-4 = "label_2" 
+      pos-5="· {starts_with('detail') | \ \ · }" 
+  >}}
 
-## Publications
+## Publications 1
 
-{{< publication-list >}}
+{{< publication-list 
+      group-order="Journal Article=1" 
+  >}}
+
+## Publications 2
+
+{{< publication-list 
+      bib-file="_extensions/orehren/acvt/assets/bib/bibliography.xml, _extensions/orehren/acvt/assets/bib/bibliography.yml" 
+      default-label="Anything" 
+      highlight-author="bold" 
+  >}}
+
+## Language Skills
+
+{{< visualize-skills 
+      sheet="skills" 
+  >}}
+

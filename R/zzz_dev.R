@@ -1,4 +1,4 @@
-#' Developer Tool: Sync Template to Library
+#' Developer Tool: Sync Academic-CV Template to Library
 #'
 #' Copies the current template files from your source directory (`inst/`)
 #' directly to your installed R library.

@@ -2,11 +2,11 @@
 title: "Tutorial: Creating Your First CV"
 ---
 
-This tutorial will guide you through the process of creating a complete CV and cover letter using the `academicCV-template.qmd` file.
+This tutorial will guide you through the process of creating a complete CV and cover letter using the `Academic-CV-template.qmd` file.
 
 ## 1. The Template File
 
-The template comes with a file named `academicCV-template.qmd`. This file serves as the control center for your CV. It contains:
+The template comes with a file named `Academic-CV-template.qmd`. This file serves as the control center for your CV. It contains:
 
 1.  **YAML Header:** Metadata, configuration, and personal details.
 2.  **Shortcodes:** Placeholders that tell Quarto where to insert your CV sections and publications.

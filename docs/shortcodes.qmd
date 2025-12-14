@@ -4,7 +4,7 @@ title: "Shortcodes Reference"
 
 This chapter provides a detailed reference for the shortcodes included in the extension. These tools allow you to dynamically fetch, filter, and format your data from Google Sheets or local files without writing complex code.
 
-## 1. `{{< cv-section >}}` {#sec-cv-section}
+## 1. Rendering CV Sections (`{{< cv-section >}}`) {#sec-cv-section}
 
 The `cv-section` shortcode is the primary tool for building your CV. It acts as a bridge between your data and the layout: it fetches a specific dataset (sheet) and processes it row by row, mapping data columns to the arguments of a selected Typst layout function.
 
@@ -13,9 +13,9 @@ The `cv-section` shortcode is the primary tool for building your CV. It acts as 
 | Argument | Description | Default | Example |
 | :--- | :--- | :--- | :--- |
 | `sheet` | **Required.** The `shortname` of the data sheet to load (defined in your YAML configuration). | - | `sheet="working"` |
-| `func` | **Required.** The Typst function to use for rendering. This determines the grid layout. | - | `func="resume-entry"` |
-| `pos-<N>` | **The Mapping Engine.** Defines the content for the **Nth** argument (grid position) of the Typst function. Supports string interpolation and **column aggregation** (e.g., `"{starts_with('det') \| , }"`). | - | `pos-0="{Date}"` |
-| `exclude-cols` | Columns to exclude from the **Auto-Fill** process. Supports tidy selection helpers. | `""` | `exclude-cols="id, notes"` |
+| `func` | **Optional.** The Typst function to use for rendering. This determines the grid layout. | `"resume-entry"` | `func="resume-entry"` |
+| `pos-<N>` | **The Mapping Engine.** Defines the content for the **Nth** argument (grid position) of the Typst function. Supports tidy style selection helpers, string interpolation and **column aggregation** (e.g., `"{starts_with('det') \| , }"`). | - | `pos-0="{Date}"` |
+| `exclude-cols` | Columns to exclude from the **Auto-Fill** process. Supports tidy style selection helpers. | `""` | `exclude-cols="id, notes"` |
 | `na-action` | Action for empty values: `"omit"` (pass empty string), `"keep"` (pass `none`), `"string"` (pass `"NA"`). | `"omit"` | `na-action="string"` |
 
 ---
@@ -39,11 +39,11 @@ When using `pos-<N>`, you can reference column names by wrapping them in curly b
 #### 1. Simple Reference & Combination
 *   **Simple Reference:** `pos-0="{Location}"` inserts the value of the 'Location' column.
 *   **Combination:** `pos-0="{Start} -- {End}"` combines two columns.
-*   **Formatting:** `pos-1="**{Title}**"` adds Markdown formatting (if supported) or static text around the value.
+*   **Formatting:** `pos-1="**{Title}**"` adds Markdown formatting or static text around the value.
 *   **Static Text:** `pos-2="Projects"` ignores data columns and passes the static string "Projects".
 
 #### 2. Column Aggregation (The Pipe Syntax)
-You can aggregate multiple columns into a single string using **Tidy Selectors** and a **Separator**. This is useful for combining multiple detail columns (e.g., `detail_1`, `detail_2`, `detail_3`) into one block without worrying about empty values.
+You can aggregate multiple columns into a single string using **Tidy Style Selectors** and a **Separator**. This is useful for combining multiple detail columns (e.g., `detail_1`, `detail_2`, `detail_3`) into one block without worrying about empty values.
 
 **Syntax:** `{ <SELECTOR> | <SEPARATOR> }`
 
@@ -67,7 +67,6 @@ If your spreadsheet columns are already in the correct order for the Typst funct
 ```markdown
 {{< cv-section 
     sheet="working" 
-    func="resume-entry" 
 >}}
 ```
 
@@ -79,8 +78,7 @@ Suppose your data has columns `Start`, `End`, `Job`, `Employer`, but the layout 
 
 ```markdown
 {{< cv-section 
-    sheet="working" 
-    func="resume-entry" 
+    sheet="working"
     pos-0="{Start} -- {End}" 
     pos-1="{Job}"
 >}}
@@ -96,8 +94,7 @@ You can inject labels or format specific fields directly in the shortcode.
 
 ```markdown
 {{< cv-section 
-    sheet="working" 
-    func="resume-entry" 
+    sheet="working"
     pos-1="**{Role}**" 
     pos-2="Team: {TeamName} at {Company}" 
 >}}
@@ -111,8 +108,7 @@ Sometimes a layout function has a slot you want to leave empty (e.g., a subtitle
 
 ```markdown
 {{< cv-section 
-    sheet="working" 
-    func="resume-entry"
+    sheet="working"
     pos-1="{Title}"
     pos-2="" 
 >}}
@@ -122,8 +118,7 @@ Sometimes a layout function has a slot you want to leave empty (e.g., a subtitle
 
 ```markdown
 {{< cv-section 
-    sheet="working" 
-    func="resume-entry"
+    sheet="working"
     pos-5="{Description}"
 >}}
 ```
@@ -134,8 +129,7 @@ If you have a variable number of detail columns (`detail_1` to `detail_7`) and w
 
 ```markdown
 {{< cv-section 
-    sheet="working" 
-    func="resume-entry"
+    sheet="working"
     pos-5="{starts_with('detail') | \\ \\ }"
 >}}
 ```
@@ -154,13 +148,12 @@ Both `exclude-cols` and the **interpolation syntax `{...}`** support the followi
 
 ```markdown
 {{< cv-section 
-    sheet="working" 
-    func="resume-entry"
+    sheet="working"
     exclude-cols="id, notes, starts_with('internal_')"
 >}}
 ```
 
-## 2. `{{< publication-list >}}` {#sec-publication-list}
+## 2. Displaying the Publications List (`{{< publications-list >}}`)
 
 This shortcode automatically generates a formatted bibliography from one or more bibliography files.
 
@@ -221,25 +214,25 @@ You can highlight specific author names (e.g., make them bold) in the bibliograp
 2.  **Manual Configuration:** Set `author-name` to the exact string produced by the citation style (e.g., "Doe, J." for APA).
 
 **Styling (`highlight-author`):**
-You can customize how the name is highlighted using keywords or a custom Typst string.
+You can customize how the name is highlighted using keywords or Pandoc Native Markdown Syntax.
 
 *   `bold` (Default) -> **Doe, J.**
 *   `italic` -> *Doe, J.*
 *   `color` -> Uses the document's accent color.
-*   **Custom Typst String:** You can pass a raw Typst format string where `%s` represents the author name.
-    *   Example: `highlight-author="#text(fill: red, weight: \"bold\")[%s]"`
+*   **Custom Pandoc String:** You can pass a native Pandoc Markdown format string where `%s` represents the author name.
+    *   Example: `highlight-author='[%s]{color="#5e81ac" font-weight="bold"}'`
 
-## 3. Visualizing Skills
+## 3. Visualizing Skills (`{{< visualize-skills >}}`)
 
-To create a graphical representation of your skills (bar charts), you can use the `visualize-skills-list` function as part of the `cv-section` shortcode.
+To create a graphical representation of your skills (bar charts), you can use the `visualize-skills shortcode.
 
 ### Prerequisites
 Your data sheet must contain a column named `value` with numeric values between `0.0` and `1.0`.
 
 ### Usage
-Use `cv-section` with `func="visualize-skills-list"`. This will process your skills data and render the visualization.
+Use the `{{< visualize-skills >}}` shortcode. This will process your skills data and render the visualization.
 
 ```markdown
 ## Skills
-{{< cv-section sheet="skills" func="visualize-skills-list" >}}
+{{< visualize-skills sheet="skills" >}}
 ```

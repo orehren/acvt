@@ -3,14 +3,14 @@ project:
   output-dir: ../docs/_site # Render the website to a nested directory
 
 website:
-  title: "academicCVTemplate"
+  title: "Academic-CV Template"
   search:
     location: navbar
     type: overlay
   navbar:
     tools:
       - icon: github
-        href:  https://github.com/orehren/academicCVTemplate
+        href:  https://github.com/orehren/acvt
     left:
       - href: index.qmd
         text: Home
@@ -38,6 +38,7 @@ format:
     theme: cosmo
     toc: true
     keep-md: true # Keep the markdown files
+    number-sections: true
 
 execute:
   eval: false # Don't execute code chunks for the website

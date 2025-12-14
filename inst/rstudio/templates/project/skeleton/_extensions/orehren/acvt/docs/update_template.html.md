@@ -90,6 +90,6 @@ acvt::dev_sync_template()
 2.  Copies them directly into the package's installation folder in the R library.
 
 **Workflow:**
-1.  Make changes to `inst/.../academicCV-template.qmd`.
+1.  Make changes to `inst/.../Academic-CV-template.qmd`.
 2.  Run `acvt::dev_sync_template()`.
 3.  Open *File -> New Project* in RStudio -> The changes are visible immediately.

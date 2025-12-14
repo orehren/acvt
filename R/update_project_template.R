@@ -1,4 +1,4 @@
-#' Update CV Extension Files in Current Project
+#' Update Academic-CV Extension Files in Current Project
 #'
 #' Updates the `_extensions` folder in the current project to match the version
 #' currently installed in the `acvt` R package.

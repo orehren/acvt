@@ -9,7 +9,8 @@ on:
 
 env:
   # Source of Truth (R package structure)
-  SRC_PATH: "inst/rstudio/templates/project/skeleton/_extensions/orehren/acvt"
+  # SRC_PATH: "inst/rstudio/templates/project/skeleton/_extensions/orehren/acvt"
+  SRC_PATH: "inst/rstudio/templates/project/skeleton/_extensions/acvt"
   # Target for Quarto CLI (Root)
   ROOT_EXT_PATH: "_extensions/acvt"
 
@@ -30,17 +31,17 @@ jobs:
       - name: Sync Extension and Template Files to Root
         run: |
           echo "Synchronizing extension from inst/ to root..."
-          
+
           # 1. Extension Folder syncing
           rm -rf _extensions
           mkdir -p "$ROOT_EXT_PATH"
           cp -r "$SRC_PATH/"* "$ROOT_EXT_PATH/"
-          
+
           # 2. Copy Template Files (Quarto Config & QMD) into Root
-          echo "Copying template files (_quarto.yml, academicCV-template.qmd) to Repo Root..."
-          
+          echo "Copying template files (_quarto.yml, Academic-CV-template.qmd) to Repo Root..."
+
           cp "$SRC_PATH/_quarto.yml" ./_quarto.yml
-          cp "$SRC_PATH/academicCV-template.qmd" ./academicCV-template.qmd
+          cp "$SRC_PATH/Academic-CV-template.qmd" ./Academic-CV-template.qmd
 
           echo "Sync finished."
           ls -la
@@ -52,9 +53,10 @@ jobs:
           CONF_FILE="$ROOT_EXT_PATH/_extension.yml"
 
           echo "Patching Configuration: $CONF_FILE"
-          
-          # edit path to match extension root 
-          sed -i 's|: .*_fetch_cv_data\.R|: _extensions/orehren/acvt/R/_fetch_cv_data.R|' "$CONF_FILE"
+
+          # edit path to match extension root
+          # sed -i 's|: .*_fetch_cv_data\.R|: _extensions/orehren/acvt/R/_fetch_cv_data.R|' "$CONF_FILE"
+          sed -i 's|: .*_fetch_cv_data\.R|: _extensions/acvt/R/_fetch_cv_data.R|' "$CONF_FILE"
 
           # copy patch back in to the source to keep sync consistent
           cp "$CONF_FILE" "$SRC_PATH/_extension.yml"
@@ -70,10 +72,10 @@ jobs:
         run: |
           DOCS_TARGET="$SRC_PATH/docs"
           mkdir -p "$DOCS_TARGET"
-          
+
           echo "Moving generated markdown files to Source of Truth ($DOCS_TARGET)..."
           find docs/ -type f -name "*.md" -exec mv {} "$DOCS_TARGET/" \;
-          
+
           echo "Re-Syncing updated files from Source to Root..."
           cp -r "$SRC_PATH/docs" "$ROOT_EXT_PATH/"
         shell: bash
@@ -86,13 +88,13 @@ jobs:
           # 1. Add Source of Truth
           git add -f "$SRC_PATH/docs/*.md"
           git add -f "$SRC_PATH/_extension.yml"
-          
+
           # 2. Add Root Extension
           git add -f _extensions
 
           # 3. Add Template Files to Root
           git add -f _quarto.yml
-          git add -f academicCV-template.qmd
+          git add -f Academic-CV-template.qmd
 
           if git diff --staged --quiet; then
             echo "No changes to commit."

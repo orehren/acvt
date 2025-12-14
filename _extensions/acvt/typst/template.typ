@@ -4,15 +4,19 @@
 
 $definitions.typ()$
 
-$helper-functions.typ()$
+$utils.typ()$
 
 $injected-meta-data$
 
 $injected-cover-letter$
   
-$stylings.typ()$
+$theme.typ()$
 
-$parts-functions.typ()$
+$letter.typ()$
+
+$cv-parts.typ()$
+
+$skills.typ()$
 
 // ================
 // 2. Content

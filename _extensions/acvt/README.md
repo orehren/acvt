@@ -22,7 +22,7 @@ quarto install extension orehren/acvt
 Alternatively, you can create a new Quarto project bundled with a `.qmd` template file to get started:
 
 ``` bash
-quarto use template orehren/academicCVTemplate
+quarto use template orehren/Academic-CVTemplate
 ```
 
 This will install the format extension and create an example qmd file that you can use as a starting place for your document.

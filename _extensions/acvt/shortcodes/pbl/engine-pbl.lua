@@ -1,24 +1,15 @@
 -- =============================================================================
--- 1. PERFORMANCE & CONSTANTS
+-- PUBLICATIONS ENGINE MODULE
+-- Handles configuration parsing, Pandoc Citeproc execution, AST extraction,
+-- and sorting logic. Returns structured data, not rendered output.
 -- =============================================================================
 
-local t_insert = table.insert
-local t_sort   = table.sort
-local t_concat = table.concat
-local s_match  = string.match
-local s_gmatch = string.gmatch
-local s_gsub   = string.gsub
-local s_format = string.format
-local s_lower  = string.lower
-local p_type   = pandoc.utils.type
-local p_str    = pandoc.utils.stringify
-local p_json   = pandoc.json.decode
-local p_pipe   = pandoc.pipe
+local Engine = {}
+
+local Utils = require("../utils")
 
 local ENV_QUARTO_INFO = "QUARTO_EXECUTE_INFO"
-local PATTERN_TRIM    = "^%s*(.-)%s*$"
 local PATTERN_KEYVAL  = "^%s*([^=]+)=([^=]+)%s*$"
-local PATTERN_LIST    = "([^,]+)"
 local PATTERN_REF_ID  = "^ref%-(.+)$"
 local PATTERN_EXT     = "^.+(%..+)$"
 local PATTERN_RANK    = "^%s*(.-)%s*=%s*(%d+)%s*$"
@@ -37,93 +28,44 @@ local STANDARD_LABELS = {
   misc       = "Miscellaneous"
 }
 
--- Optimization: Single-pass substitution table for Typst escaping
-local TYPST_ESCAPES = {
-  ["\\"] = "\\\\",
-  ['"']  = '\\"'
-}
-
 
 -- =============================================================================
--- 2. CORE UTILITIES
--- =============================================================================
-
-local function ensure_string(obj)
-  if obj == nil then return "" end
-  local status, res = pcall(p_str, obj)
-  return status and res or tostring(obj)
-end
-
-local function trim_whitespace(s)
-  return s and s_match(s, PATTERN_TRIM) or ""
-end
-
-local function file_exists(path)
-  local f = io.open(path, "r")
-  if f then io.close(f); return true end
-  return false
-end
-
-local function read_file_content(path)
-  local f = io.open(path, "r")
-  if not f then return nil end
-  local content = f:read("*a")
-  f:close()
-  return content
-end
-
-local function parse_comma_separated_list(str)
-  local res = {}
-  local s = ensure_string(str)
-  for item in s_gmatch(s, PATTERN_LIST) do
-    t_insert(res, trim_whitespace(item))
-  end
-  return res
-end
-
-local function parse_key_value_pairs(str)
-  local res = {}
-  local s = ensure_string(str)
-  for pair in s_gmatch(s, PATTERN_LIST) do
-    local k, v = s_match(pair, PATTERN_KEYVAL)
-    if k and v then res[trim_whitespace(k)] = trim_whitespace(v) end
-  end
-  return res
-end
-
-local function escape_typst_string(s)
-  -- Single-pass replacement for performance and clarity
-  return tostring(s):gsub('[\\"]', TYPST_ESCAPES)
-end
-
-
--- =============================================================================
--- 3. CONFIGURATION ENGINE
+-- 1. CONFIGURATION LOGIC
 -- =============================================================================
 
 local function load_global_metadata()
   local path = os.getenv(ENV_QUARTO_INFO)
   if not path or path == "" then return {} end
 
-  local content = read_file_content(path)
+  local content = Utils.read_file_content(path)
   if not content or content == "" then return {} end
 
-  local status, res = pcall(p_json, content)
+  local status, res = pcall(pandoc.json.decode, content)
   if status and res and res.format and res.format.metadata then
     return res.format.metadata
   end
   return {}
 end
 
+-- local function retrieve_string_config(key, kwargs, global_conf, default)
+--   local val_arg = Utils.get_argument_with_default(kwargs, key, nil)
+--   if val_arg then return val_arg end
+
+--   local val_glob = Utils.get_argument_with_default(global_conf, key, nil)
+--   if val_glob then return val_glob end
+
+--   return default
+-- end
+
 local function retrieve_string_config(key, kwargs, global_conf, default)
   if kwargs[key] then
-    local s = ensure_string(kwargs[key])
-    if trim_whitespace(s) ~= "" then return trim_whitespace(s) end
+    local s = Utils.ensure_string(kwargs[key])
+    if Utils.trim_whitespace(s) ~= "" then return Utils.trim_whitespace(s) end
   end
 
   if global_conf[key] then
-    local s = ensure_string(global_conf[key])
-    if trim_whitespace(s) ~= "" then return trim_whitespace(s) end
+    local s = Utils.ensure_string(global_conf[key])
+    if Utils.trim_whitespace(s) ~= "" then return Utils.trim_whitespace(s) end
   end
 
   return default
@@ -133,17 +75,27 @@ local function convert_pandoc_map_to_table(tbl)
   local res = {}
   for k, v in pairs(tbl) do
     if type(k) == "number" then
-      t_insert(res, ensure_string(v))
+      table.insert(res, Utils.ensure_string(v))
     else
-      res[ensure_string(k)] = ensure_string(v)
+      res[Utils.ensure_string(k)] = Utils.ensure_string(v)
     end
+  end
+  return res
+end
+
+local function parse_key_value_pairs(str)
+  local res = {}
+  local s = Utils.ensure_string(str)
+  for pair in string.gmatch(s, "([^,]+)") do
+    local k, v = string.match(pair, PATTERN_KEYVAL)
+    if k and v then res[Utils.trim_whitespace(k)] = Utils.trim_whitespace(v) end
   end
   return res
 end
 
 local function retrieve_structured_config(key, kwargs, global_conf, parser, default)
   local arg_val = kwargs[key]
-  if arg_val and trim_whitespace(ensure_string(arg_val)) ~= "" then
+  if arg_val and Utils.trim_whitespace(Utils.ensure_string(arg_val)) ~= "" then
     return parser(arg_val)
   end
 
@@ -157,16 +109,22 @@ local function retrieve_structured_config(key, kwargs, global_conf, parser, defa
   return parser(env_val)
 end
 
+-- Restored Helper: Handles both Lua tables (YAML lists) and strings (Shortcode args)
 local function collect_files_from_source(source_val, target_list)
   if not source_val then return end
 
+  -- Case 1: It's a table (List from YAML/JSON)
   if type(source_val) == "table" then
-    for _, v in pairs(source_val) do t_insert(target_list, ensure_string(v)) end
+    for _, v in pairs(source_val) do 
+      table.insert(target_list, Utils.ensure_string(v)) 
+    end
     return
   end
 
-  for _, f in ipairs(parse_comma_separated_list(source_val)) do
-    t_insert(target_list, f)
+  -- Case 2: It's a string (Shortcode argument or single YAML string)
+  -- We parse it as a comma-separated list to support multiple files in one string.
+  for _, f in ipairs(Utils.parse_comma_separated_string(source_val)) do
+    table.insert(target_list, f)
   end
 end
 
@@ -180,7 +138,7 @@ local function aggregate_bibliography_files(kwargs, global_conf)
   local seen = {}
   for _, f in ipairs(raw_list) do
     if f ~= "" and not seen[f] then
-      t_insert(unique, f)
+      table.insert(unique, f)
       seen[f] = true
     end
   end
@@ -195,24 +153,34 @@ local function determine_author_name(kwargs, global_meta)
   if not auth then return nil end
 
   if type(auth) == "table" and auth.lastname then
-    local ln = ensure_string(auth.lastname)
-    local fn = ensure_string(auth.firstname)
+    local ln = Utils.ensure_string(auth.lastname)
+    local fn = Utils.ensure_string(auth.firstname)
     return (fn ~= "") and (ln .. ", " .. fn:sub(1, 1) .. ".") or ln
   end
 
-  return ensure_string(auth)
+  return Utils.ensure_string(auth)
 end
 
 local function determine_highlight_format(style, accent_color)
-  if style == "bold" then return "#strong[%s]" end
-  if style == "italic" then return "#emph[%s]" end
+  if style == "bold" then return "**%s**" end
+  if style == "italic" then return "*%s*" end
+  
   if style == "color" then
-    return '#text(fill: rgb("' .. (accent_color or "000000") .. '"))[%s]'
+    local col = (accent_color and accent_color ~= "") and accent_color or "#000000"
+    
+    -- Ensure Hex colors have a hash prefix
+    if not string.match(col, "^#") and string.match(col, "^%x+$") and (#col == 3 or #col == 6) then
+      col = "#" .. col
+    end
+  
+    return string.format('[%%s]{color="%s"}', col)
   end
-  if s_match(style, "%%s") then
+  
+  if string.match(style, "%%s") then
     return style:gsub("“", '"'):gsub("”", '"'):gsub("‘", "'"):gsub("’", "'")
   end
-  return "#strong[%s]"
+  
+  return "**%s**"
 end
 
 local function build_configuration_object(kwargs)
@@ -231,32 +199,32 @@ local function build_configuration_object(kwargs)
     bib_files     = aggregate_bibliography_files(kwargs, pub_conf),
     bib_style     = retrieve_string_config("bib-style", kwargs, pub_conf, retrieve_string_config("csl-file", kwargs, pub_conf, nil)),
     author_name   = determine_author_name(kwargs, global_meta),
-    highlight_fmt = determine_highlight_format(hl_style, ensure_string(style_conf['color-accent'])),
+    highlight_fmt = determine_highlight_format(hl_style, Utils.ensure_string(style_conf['color-accent'])),
     group_labels  = labels,
     default_label = retrieve_string_config("default-label", kwargs, pub_conf, DEFAULT_LABEL),
-    group_order   = retrieve_structured_config("group-order", kwargs, pub_conf, parse_comma_separated_list, nil),
+    group_order   = retrieve_structured_config("group-order", kwargs, pub_conf, Utils.parse_comma_separated_string, nil),
     func_name     = retrieve_string_config("func-name", kwargs, pub_conf, DEFAULT_FUNC)
   }
 end
 
 
 -- =============================================================================
--- 4. PANDOC PIPELINE
+-- 2. PANDOC PIPELINE
 -- =============================================================================
 
 local function convert_yaml_to_csljson(path)
-  local content = read_file_content(path)
+  local content = Utils.read_file_content(path)
   if not content or content == "" then return {} end
 
   local input_data = content
-  if not s_match(content, "^%-%-%-") and not s_match(content, "^references:") then
+  if not string.match(content, "^%-%-%-") and not string.match(content, "^references:") then
      input_data = "---\nreferences:\n" .. content .. "\n---\n"
   end
 
-  local json_out = p_pipe("pandoc", {"-f", "markdown", "-t", "csljson"}, input_data)
+  local json_out = pandoc.pipe("pandoc", {"-f", "markdown", "-t", "csljson"}, input_data)
   if not json_out or json_out == "" then return {} end
 
-  local status, data = pcall(p_json, json_out)
+  local status, data = pcall(pandoc.json.decode, json_out)
   return (status and type(data) == "table") and data or {}
 end
 
@@ -268,18 +236,18 @@ local function convert_bib_to_csljson(path, ext)
   elseif ext == ".ris" then format_flag = "--from=ris"
   end
 
-  local json_out = p_pipe("pandoc", {path, "-t", "csljson", format_flag}, "")
+  local json_out = pandoc.pipe("pandoc", {path, "-t", "csljson", format_flag}, "")
   if not json_out or json_out == "" then return {} end
 
-  local status, data = pcall(p_json, json_out)
+  local status, data = pcall(pandoc.json.decode, json_out)
   return (status and type(data) == "table") and data or {}
 end
 
 local function parse_bibliography_file(path)
-  if not file_exists(path) then return {} end
+  if not Utils.file_exists(path) then return {} end
 
-  local ext = s_match(path, PATTERN_EXT)
-  if ext then ext = s_lower(ext) end
+  local ext = string.match(path, PATTERN_EXT)
+  if ext then ext = string.lower(ext) end
 
   if ext == ".yaml" or ext == ".yml" then
     return convert_yaml_to_csljson(path)
@@ -291,7 +259,7 @@ local function add_reference_if_unique(ref, target_list, seen_ids)
   if not ref.id then return end
   if seen_ids[ref.id] then return end
 
-  t_insert(target_list, ref)
+  table.insert(target_list, ref)
   seen_ids[ref.id] = true
 end
 
@@ -315,14 +283,14 @@ local function execute_pandoc_citeproc(bib_files, csl_path)
   local merged_json = pandoc.json.encode(all_refs)
   local args = {"--from=csljson", "--to=json", "--citeproc", "--csl=" .. csl_path}
 
-  local result = p_pipe("pandoc", args, merged_json)
+  local result = pandoc.pipe("pandoc", args, merged_json)
   if not result or result == "" then error("Pandoc pipeline failed (empty output).") end
   return result
 end
 
 
 -- =============================================================================
--- 5. PROCESSING ENGINE
+-- 3. PROCESSING ENGINE (AST Manipulation)
 -- =============================================================================
 
 local function extract_metadata_map(doc_meta)
@@ -330,8 +298,8 @@ local function extract_metadata_map(doc_meta)
   local refs = doc_meta.references or {}
 
   for _, ref in ipairs(refs) do
-    local id = ensure_string(ref.id)
-    local type_raw = ensure_string(ref.type)
+    local id = Utils.ensure_string(ref.id)
+    local type_raw = Utils.ensure_string(ref.type)
     local type_clean = type_raw:gsub("%-journal", ""):gsub("paper%-", "")
 
     local year = 0
@@ -343,33 +311,37 @@ local function extract_metadata_map(doc_meta)
   return map
 end
 
-local function apply_author_highlighting(typst_code, author_name, fmt_string)
-  if not author_name or author_name == "" then return typst_code end
-
-  local pattern = author_name:gsub("([%(%)%.%%%+%-%*%?%[%]%^%$])", "%%%1")
-  local replacement = s_format(fmt_string, author_name)
-
-  return typst_code:gsub(pattern, replacement)
+local function highlight_author_in_ast(blocks, author_name, highlight_fmt)
+  if not author_name or author_name == "" then return blocks end
+  
+  local doc = pandoc.Pandoc(blocks)
+  local md_text = pandoc.write(doc, "markdown")
+  
+  local safe_name = author_name:gsub("([%(%)%.%%%+%-%*%?%[%]%^%$])", "%%%1")
+  local replacement = string.format(highlight_fmt, "%1")
+  local new_md_text = md_text:gsub("(" .. safe_name .. ")", replacement)
+  
+  local new_doc = pandoc.read(new_md_text, "markdown+bracketed_spans")
+  
+  return new_doc.blocks
 end
 
 local function process_reference_div(el, id, meta_map, config, target_list)
   local meta = meta_map[id]
   if not meta then return end
 
-  local entry_doc = pandoc.Pandoc(el.content)
-  local typst_code = trim_whitespace(pandoc.write(entry_doc, "typst"))
-
-  typst_code = apply_author_highlighting(typst_code, config.author_name, config.highlight_fmt)
+  local content_blocks = el.content
+  content_blocks = highlight_author_in_ast(content_blocks, config.author_name, config.highlight_fmt)
 
   local label = config.group_labels[meta.type] or config.default_label
-  t_insert(target_list, { label = label, year = meta.year, content = typst_code })
+  
+  table.insert(target_list, { label = label, year = meta.year, blocks = content_blocks })
 end
 
--- Forward declaration for recursion
 local collect_entries_recursive
 
 local function dispatch_div_action(div_el, meta_map, config, target_list)
-  local id = s_match(div_el.identifier, PATTERN_REF_ID)
+  local id = string.match(div_el.identifier, PATTERN_REF_ID)
 
   if id then
     process_reference_div(div_el, id, meta_map, config, target_list)
@@ -390,7 +362,7 @@ collect_entries_recursive = function(blocks, meta_map, config, target_list)
 end
 
 local function extract_entries_from_pandoc_json(json_str, config)
-  local doc = p_json(json_str)
+  local doc = pandoc.json.decode(json_str)
   if not doc or not doc.meta or not doc.blocks then return {} end
 
   local meta_map = extract_metadata_map(doc.meta)
@@ -402,11 +374,11 @@ end
 
 
 -- =============================================================================
--- 6. SORTING ENGINE
+-- 4. SORTING ENGINE
 -- =============================================================================
 
 local function parse_single_rank_item(item, ranks, implicit_list, current_max)
-  local label, idx_str = s_match(item, PATTERN_RANK)
+  local label, idx_str = string.match(item, PATTERN_RANK)
 
   if label and idx_str then
     local idx = tonumber(idx_str)
@@ -414,8 +386,8 @@ local function parse_single_rank_item(item, ranks, implicit_list, current_max)
     return (idx > current_max) and idx or current_max
   end
 
-  local clean = trim_whitespace(item)
-  if clean ~= "" then t_insert(implicit_list, clean) end
+  local clean = Utils.trim_whitespace(item)
+  if clean ~= "" then table.insert(implicit_list, clean) end
   return current_max
 end
 
@@ -473,7 +445,7 @@ end
 local function sort_entries_by_rank_and_year(entries, config)
   local rank_map = calculate_group_ranks(entries, config)
 
-  t_sort(entries, function(a, b)
+  table.sort(entries, function(a, b)
     if a.label ~= b.label then
       local ra = rank_map[a.label] or 9999
       local rb = rank_map[b.label] or 9999
@@ -488,53 +460,45 @@ end
 
 
 -- =============================================================================
--- 7. MAIN ENTRY POINT
+-- 5. MAIN ENTRY POINT (EXPOSED)
 -- =============================================================================
 
-local function Shortcode(args, kwargs, meta)
+function Engine.process_publications(kwargs)
   local config = build_configuration_object(kwargs)
 
-  if kwargs["debug"] == "true" then
-    return pandoc.RawBlock("typst", "// Debug: Check console output")
-  end
-
+  -- Validation
   if #config.bib_files == 0 then
-    return pandoc.Strong(pandoc.Str("Error: 'bib-file' missing or empty."))
+    return { error = "Error: 'bib-file' missing or empty." }
   end
   if not config.bib_style then
-    return pandoc.Strong(pandoc.Str("Error: 'bib-style' missing."))
+    return { error = "Error: 'bib-style' missing." }
   end
 
   for _, f in ipairs(config.bib_files) do
-    if not file_exists(f) then return pandoc.Strong(pandoc.Str("Error: File not found: " .. f)) end
+    if not Utils.file_exists(f) then return { error = "Error: File not found: " .. f } end
   end
-  if not file_exists(config.bib_style) then
-    return pandoc.Strong(pandoc.Str("Error: File not found: " .. config.bib_style))
+  if not Utils.file_exists(config.bib_style) then
+    return { error = "Error: File not found: " .. config.bib_style }
   end
 
+  -- Execution
   local status, res = pcall(execute_pandoc_citeproc, config.bib_files, config.bib_style)
 
   if not status then
-    return pandoc.Strong(pandoc.Str("Lua Error: " .. tostring(res)))
+    return { error = "Lua Error: " .. tostring(res) }
   end
 
   if not res then
-     return pandoc.RawBlock("typst", "#" .. config.func_name .. "(())")
+     return { entries = {}, config = config }
   end
 
   local entries = extract_entries_from_pandoc_json(res, config)
   entries = sort_entries_by_rank_and_year(entries, config)
 
-  local typst_items = {}
-  for _, e in ipairs(entries) do
-    local item_str = escape_typst_string(e.content)
-    t_insert(typst_items, s_format('(label: "%s", item: "%s")', e.label, item_str))
-  end
-
-  local body = t_concat(typst_items, ",\n")
-  local result = "#" .. config.func_name .. "((\n" .. body .. ",\n))"
-
-  return pandoc.RawBlock("typst", result)
+  return {
+    entries = entries,
+    config = config
+  }
 end
 
-return { ["publication-list"] = Shortcode }
+return Engine

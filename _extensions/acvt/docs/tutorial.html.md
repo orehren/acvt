@@ -2,11 +2,11 @@
 title: "Tutorial: Creating Your First CV"
 ---
 
-This tutorial will guide you through the process of creating a complete CV and cover letter using the `academicCV-template.qmd` file.
+This tutorial will guide you through the process of creating a complete CV and cover letter using the `Academic-CV-template.qmd` file.
 
 ## 1. The Template File
 
-The template comes with a file named `academicCV-template.qmd`. This file serves as the control center for your CV. It contains:
+The template comes with a file named `Academic-CV-template.qmd`. This file serves as the control center for your CV. It contains:
 
 1.  **YAML Header:** Metadata, configuration, and personal details.
 2.  **Shortcodes:** Placeholders that tell Quarto where to insert your CV sections and publications.
@@ -131,7 +131,7 @@ google-document:
       shortname: "education"
 ```
 
-This allows you to automatically parse informations from sheets in a spreadsheet in your Google Drive and insert it into the document at any section.
+This allows you to automatically parse information from sheets in a Google Drive spreadsheet and insert it into the document at any section. Additionally, the template supports data integration from local files in various formats.
 
 ## 5. Adding CV Sections (Shortcodes)
 
@@ -146,7 +146,7 @@ To display a section from your data (e.g., your work experience), use the `{{< c
 *   `sheet`: Matches the `shortname` you defined in the YAML.
 *   `func`: The layout function to use (e.g., `resume-entry` for standard CV entries, `research-interests` for simple lists).
 
-See the **[Shortcodes Reference: cv-section](./shortcodes.qmd#sec-cv-section)** for advanced options like filtering columns or combining bullet points.
+See the **[Shortcodes Reference](./shortcodes.qmd)** for additional shortcodes and advanced options like filtering columns or combining bullet points.
 
 ## 6. Adding Publications
 
@@ -180,7 +180,7 @@ To output the publication list, just insert the shortcode at the desired locatio
 {{< publication-list >}}
 ```
 
-See the **[Shortcodes Reference: publication-list](./shortcodes.qmd#sec-publication-list)** for advanced options like labeling of outlet groups or reordering.
+See the **[Shortcodes Reference: publication-list](./shortcodes.qmd)** and **[YAML Reference: publication-list](./yaml_reference.qmd)** for advanced options like labeling of outlet groups or reordering.
 
 ## 7. Adding an Appendix (Attachments)
 

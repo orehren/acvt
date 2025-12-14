@@ -14,13 +14,17 @@ main <- function() {
   helpers_env <- .load_helper_scripts()
 
   config <- .get_quarto_config()
-  if (is.null(config)) return(invisible(NULL))
+  if (is.null(config)) {
+    return(invisible(NULL))
+  }
 
   # Caching prevents expensive API calls during iterative rendering.
-  if (.is_cache_fresh(".cv_data.json")) return(invisible(NULL))
+  if (.evaluate_cache_state(".cv_data.json", config)) {
+    return(invisible(NULL))
+  }
 
   sheets_map <- .normalize_sheet_config(config[["sheets-to-load"]])
-  sources    <- .resolve_sources(config[["document-identifier"]])
+  sources <- .resolve_sources(config[["document-identifier"]])
 
   raw_data <- .fetch_all_sources(sources, sheets_map, config[["auth-email"]], helpers_env)
 
@@ -88,19 +92,61 @@ main <- function() {
   return(valid_configs[[1]])
 }
 
-#' Check Cache Freshness
+#' Helper to safely retrieve config values with defaults
+#'
+#' @param config List object.
+#' @param key String key.
+#' @param default Fallback value.
+#' @return The value or the default.
+.get_conf_val <- function(config, key, default) {
+  val <- config[[key]]
+  if (is.null(val)) {
+    return(default)
+  }
+  return(val)
+}
+
+#' Evaluate Cache Status
+#'
+#' Determines whether to skip the data fetch based on file existence,
+#' user configuration, and file age.
 #'
 #' @param path Path to the cache file.
-#' @param max_age_hours Maximum age in hours.
-#' @return Logical TRUE if cache is valid.
-.is_cache_fresh <- function(path, max_age_hours = 24) {
-  if (!file.exists(path)) return(FALSE)
+#' @param config The parsed YAML configuration list.
+#' @return Logical TRUE if fetch should be skipped (cache is valid), FALSE otherwise.
+.evaluate_cache_state <- function(path, config) {
+  # 1. Hard Requirement: File must exist
+  if (!file.exists(path)) {
+    return(FALSE)
+  }
 
-  age <- difftime(Sys.time(), file.info(path)$mtime, units = "hours")
-  if (age < max_age_hours) {
+  # 2. Check if caching is explicitly disabled
+  # Default is TRUE. If set to FALSE, we force a refresh.
+  use_cache <- .get_conf_val(config, "sheet-cache", TRUE)
+  if (isFALSE(use_cache)) {
+    cli::cli_alert_info("Caching disabled by config. Forcing update.")
+    return(FALSE)
+  }
+
+  # 3. Check if updates are disabled (Frozen Cache)
+  # Default is TRUE. If FALSE, we use the existing file regardless of age.
+  allow_update <- .get_conf_val(config, "cache-update", TRUE)
+  if (isFALSE(allow_update)) {
+    cli::cli_alert_success("Cache update disabled. Using existing data from {.file {path}}.")
+    return(TRUE)
+  }
+
+  # 4. Check Age against Interval
+  age_hours <- difftime(Sys.time(), file.info(path)$mtime, units = "hours")
+  max_age <- as.numeric(.get_conf_val(config, "cache-update-interval", 24))
+
+  if (age_hours < max_age) {
     cli::cli_alert_success("Cached data found in {.file {path}} (fresh). Skipping fetch.")
     return(TRUE)
   }
+
+  # Cache is stale
+  cli::cli_alert_info("Cache is older than {max_age} hours. Refreshing data...")
   return(FALSE)
 }
 
@@ -110,7 +156,9 @@ main <- function() {
 #' @return A named list: names = Real Sheet Names, values = Short Names.
 .normalize_sheet_config <- function(raw_config) {
   purrr::map(raw_config, function(item) {
-    if (is.list(item)) return(stats::setNames(item$shortname, item$name))
+    if (is.list(item)) {
+      return(stats::setNames(item$shortname, item$name))
+    }
     stats::setNames(gsub("[^a-z0-9_]", "_", tolower(item)), item)
   }) |> unlist()
 }
@@ -155,11 +203,11 @@ main <- function() {
 
   ext <- tolower(tools::file_ext(path))
   type <- switch(ext,
-                 "xlsx" = "local_xlsx",
-                 "xls"  = "local_xlsx",
-                 "csv"  = "local_csv",
-                 "json" = "local_json",
-                 "unknown"
+    "xlsx" = "local_xlsx",
+    "xls"  = "local_xlsx",
+    "csv"  = "local_csv",
+    "json" = "local_json",
+    "unknown"
   )
   list(path = path, type = type)
 }
@@ -200,14 +248,14 @@ main <- function() {
 #' @return Named list of DataFrames.
 .read_source <- function(source, sheets_map, auth_email, helpers_env) {
   switch(source$type,
-         "google"     = .read_google(source$path, sheets_map, auth_email, helpers_env),
-         "local_xlsx" = .read_excel(source$path, sheets_map),
-         "local_csv"  = .read_flat(source$path, "csv", sheets_map),
-         "local_json" = .read_flat(source$path, "json", sheets_map),
-         {
-           cli::cli_alert_warning("Skipping unknown source: {source$path}")
-           list()
-         }
+    "google" = .read_google(source$path, sheets_map, auth_email, helpers_env),
+    "local_xlsx" = .read_excel(source$path, sheets_map),
+    "local_csv" = .read_flat(source$path, "csv", sheets_map),
+    "local_json" = .read_flat(source$path, "json", sheets_map),
+    {
+      cli::cli_alert_warning("Skipping unknown source: {source$path}")
+      list()
+    }
   )
 }
 
@@ -270,7 +318,9 @@ main <- function() {
   fname <- tools::file_path_sans_ext(basename(path))
   match <- .find_fuzzy_match(fname, names(sheets_map))
 
-  if (is.null(match)) return(list())
+  if (is.null(match)) {
+    return(list())
+  }
 
   short_name <- sheets_map[[match]]
   cli::cli_alert_info("Reading {.val {type}}: {.file {path}} as {.val {short_name}}")
@@ -292,17 +342,23 @@ main <- function() {
 #' @param candidates Vector of strings to search in.
 #' @return Matching string from candidates or NULL.
 .find_fuzzy_match <- function(target, candidates) {
-  if (target %in% candidates) return(target)
+  if (target %in% candidates) {
+    return(target)
+  }
 
   norm_t <- tolower(trimws(target))
   norm_c <- tolower(trimws(candidates))
 
   idx <- match(norm_t, norm_c)
-  if (!is.na(idx)) return(candidates[idx])
+  if (!is.na(idx)) {
+    return(candidates[idx])
+  }
 
   slugify <- function(x) tolower(gsub("[^[:alnum:]]", "", x))
   idx <- match(slugify(target), slugify(candidates))
-  if (!is.na(idx)) return(candidates[idx])
+  if (!is.na(idx)) {
+    return(candidates[idx])
+  }
 
   return(NULL)
 }
@@ -319,7 +375,9 @@ main <- function() {
 #' @return Merged list.
 .merge_source_lists <- function(existing_list, new_list) {
   purrr::iwalk(new_list, function(df, sheet_name) {
-    if (!is.data.frame(df)) return()
+    if (!is.data.frame(df)) {
+      return()
+    }
 
     if (hasName(existing_list, sheet_name)) {
       existing_list[[sheet_name]] <<- .robust_bind_rows(existing_list[[sheet_name]], df)
@@ -353,7 +411,9 @@ main <- function() {
 #' @return List structure matching Lua expectations.
 .transform_data_for_lua <- function(data_list) {
   purrr::map(data_list, function(df) {
-    if (!is.data.frame(df)) return(df)
+    if (!is.data.frame(df)) {
+      return(df)
+    }
 
     # Lua/JSON serialization is safer with pure strings, avoiding
     # issues with Factors, Dates, or mixed types in the Lua filter.

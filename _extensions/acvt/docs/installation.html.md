@@ -19,7 +19,7 @@ if (!requireNamespace("devtools", quietly = TRUE)) {
 }
 
 # Install the acvt package from GitHub
-devtools::install_github("orehren/academicCVTemplate")
+devtools::install_github("orehren/Academic-CVTemplate")
 ```
 
 ### 2. Restart RStudio
@@ -28,7 +28,7 @@ You must restart your RStudio session for the project template to appear in the 
 
 ### 3. Create a New Project
 
-After restarting, go to **File > New Project... > New Directory**. You will now see "Academic CV Project" in the list of project types. Select it, fill in your details, and a new, ready-to-use CV project will be created. All R package dependencies will be installed and available to the project.
+After restarting, go to **File > New Project... > New Directory**. You will now see "Academic-CV Project" in the list of project types. Select it, fill in your details, and a new, ready-to-use CV project will be created. All R package dependencies will be installed and available to the project.
 
 ## Method 2: Alternative Manual Installation
 

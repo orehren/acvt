@@ -37,6 +37,7 @@ Set to `null` or `""` to disable the photo.
 
 ```yaml
 profile-photo: "assets/images/my_photo.jpg"
+# profile-photo: null # to omit rendering of a profile picture
 ```
 
 ### `aboutme`
@@ -146,11 +147,11 @@ date: "October 24, 2025"
 subject: "Application for Research Position"
 ```
 
-## Data Integration (`google-document`)
+## Data Integration (`google-document`) {#google-document}
 
 Configures the connection to your data sources. While the key is named `google-document` for historical reasons, it now supports a **hybrid approach**, allowing you to mix Google Sheets, local Excel/CSV/JSON files, and entire directories.
 
-### `google-document`
+### `google-document` 
 **Type:** Object
 
 **Fields:**
@@ -158,6 +159,9 @@ Configures the connection to your data sources. While the key is named `google-d
 *   `auth-email`: The email address used for Google authentication (only required if using Google Sheets). **Type:** String
 *   `document-identifier`: The source(s) of your data. Can be a single string or a list of strings. **Type:** String | List of Strings
 *   `sheets-to-load`: A list of specific data sections to import from the defined sources. **Type:** List of Objects
+*   `sheet-cache`: Controls whether fetched data is saved locally to speed up future renders. **Type:** Boolean (Default: `true`)
+*   `cache-update`: Determines if the local cache should be refreshed when it expires. **Type:** Boolean (Default: `true`)
+*   `cache-update-interval`: The validity period of the cache in hours. **Type:** Integer (Default: `24`)
 
 ### `document-identifier`
 This field tells the system *where* to look for data. You can provide a single source or a list of multiple sources. The system will merge them together.
@@ -244,6 +248,35 @@ sheets-to-load:
   - "Education" # shortname becomes 'education'
 ```
 
+### Caching Configuration {#caching}
+To avoid exceeding Google API limits and to speed up rendering, the extension uses a caching system. Data is stored in a hidden file named `.cv_data.json` in your project root.
+
+You can control the behavior of this cache using the following options:
+
+*   **`sheet-cache`**: (Default: `true`)
+    *   If set to `false`, the system will **always** fetch fresh data from the source. This ensures data is up-to-date but may be slower and hit API limits.
+*   **`cache-update`**: (Default: `true`)
+    *   If set to `false`, the system will **never** update the cache, even if it is expired. It will strictly use the existing `.cv_data.json`. This is useful for working offline or locking the data state.
+*   **`cache-update-interval`**: (Default: `24`)
+    *   Defines the age (in hours) after which the cache is considered "stale". If the file is older than this interval (and `cache-update` is true), a fresh fetch is triggered.
+
+**Example: Aggressive Caching (Offline Mode)**
+```yaml
+google-document:
+  # ...
+  sheet-cache: true
+  cache-update: false # Never fetch new data, use what we have
+```
+
+**Example: Frequent Updates**
+```yaml
+google-document:
+  # ...
+  sheet-cache: true
+  cache-update: true
+  cache-update-interval: 1 # Check for updates every hour
+```
+
 
 ## Publication List (`publication-list`)
 
@@ -306,7 +339,7 @@ Customize the visual identity.
 
 **Fields:**
 
-*   `color-accent`: Hex color code (without `#`). **Type:** String
+*   `color-accent`: Hex color code (with or without `#`). **Type:** String
 *   `font-header`: List of font families for headings. **Type:** List of Strings
 *   `font-text`: List of font families for body text. **Type:** List of Strings
 
@@ -317,6 +350,23 @@ style:
   font-header: ["Lato", "Helvetica", "sans-serif"]
   font-text: ["Roboto", "Arial", "sans-serif"]
 ```
+
+### `cv-grid`
+Configure the layout ratio between the sidebar and the main content area. The values represent fractional units (similar to CSS `fr`).
+
+**Type:** Object (`sidebar`, `main`)
+
+**Fields:**
+
+*   `sidebar`: Relative width unit for the left sidebar column. **Type:** Number
+*   `main`: Relative width unit for the right main content column. **Type:** Number
+
+**Example:**
+	```yaml
+cv-grid:
+  sidebar: 3
+  main: 9
+	```
 
 ### `render-output`
 Controls which documents are generated.

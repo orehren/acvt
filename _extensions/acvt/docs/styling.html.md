@@ -63,31 +63,40 @@ It means:
 2.  Typst is now automatically falling back to the built-in fonts (Libertinus Serif).
 3.  Your PDF will still be generated correctly, but it will use a serif font style instead of the intended sans-serif style.
 
-## 2. Advanced Styling (Typst Inline Code)
+## 2. Advanced Styling (Markdown & Attributes)
 
-A powerful feature is the ability to use **Typst inline code** directly within your Google Sheet data.
+To ensure your CV renders correctly in the PDF (Typst) format, the template uses Pandoc Native Markdown for styling within your data cells. Beyond rendering fidelity, this approach ensures a format-agnostic structure, significantly simplifying the process of porting the template to other output formats in the future.
 
 ### How it Works
 
-The template processes data in `markup` mode.
-You can use the `#` symbol to call Typst functions or standard Typst syntax (like `\` for line breaks).
+Instead of writing format-specific code (like HTML tags or Typst functions), you use standard Markdown syntax. The extension automatically translates this into the correct code for the target output.
 
-**Example:** Highlight a project name and force a line break.
+### 1. Standard Formatting
+You can use standard Markdown for basic styling:
+*   **Bold:** `**Text**`
+*   **Italic:** `*Text*`
+*   **Links:** `[Link Text](https://example.com)`
 
-**In Google Sheets:**
+### 2. Colors & Typography (Bracketed Spans)
+To apply specific colors or font styles, use Pandoc's **Bracketed Span** syntax: `[Text]{key="value"}`.
 
-| title | location |
-|:---|:---|
-| Research Associate in `#text(fill: rgb("5e81ac"), weight: "bold")[My Project]` | University  of Science |
+**Supported Attributes:**
+*   `color`: Hex code (e.g., `"#5e81ac"`) or CSS variable.
+*   `font-weight`: e.g., `"bold"`, `"medium"`, `"light"`.
+*   `font-style`: e.g., `"italic"`, `"oblique"`.
+*   `font-size`: e.g., `"0.8em"` or `"10pt"`.
 
-**Rendered Result:** \* "My Project" appears in the accent color and bold.
-\* "University" and "of Science" appear on separate lines.
+**Example:**
+| Input in Google Sheet | Result |
+| :--- | :--- |
+| `Research in [Neuroscience]{color="#5e81ac"}` | "Neuroscience" appears in the accent color. |
+| `[Important]{font-weight="bold"}` | "Important" appears bold. |
 
-**Context:** The content is handled as if it is in Typst markup mode.
-\* `#text(...)[]` works.
-\* `text(...)[]` (without hash) does **not** work.
+### 3. Line Breaks
+Standard Markdown ignores single line breaks. To force a hard line break inside a cell (e.g., for an address), use the custom sequence: **Backslash + Space + Backslash**.
 
-For available functions, see the [**Official Typst Documentation**](https://typst.app/docs/).
+*   **Syntax:** `\ \`
+*   **Example:** `Street Name 12 \ \ 12345 City`
 
 ## 3. Advanced Styling (Modifying Typst)
 
@@ -100,32 +109,30 @@ Always make a backup before making changes.
 
 ### Key Files
 
--   **`stylings.typ`:** This is the main stylesheet.
-    It defines all the core styles, such as colors and font sizes, as `#let` variables.
-    This is the best place to start for most advanced changes.
-    For example, you can change the default font sizes:
+-   **`theme.typ`:** This is the **Design System**.
+    It defines the color palette (mapped to semantic names like `color-text-main`), font families, sizes, and reusable text styles.
+    This is the best place to start for most visual changes.
+    For example, you can adjust the semantic color mapping or font sizes:
 
     ``` typst
-    // in stylings.typ
-    #let font-size-large = 18pt
-    #let font-size-middle = 12pt
-    #let font-size-small = 10pt
+    // in theme.typ
+    #let color-text-strong = rgb("#000000") // Change headlines to pure black
+    #let size-lg = 18pt                     // Increase headline size
     ```
 
--   **`typst-show.typ`:** This file controls the appearance of specific document elements, like headings, using `#show` rules.
-    For example, you could change the style of a level-2 heading:
+-   **`typst-show.typ`:** This file controls the appearance of specific document elements, like headings or blockquotes, using `#show` rules.
+    For example, you could change the style of a level-2 heading to use the accent color:
 
     ``` typst
     // in typst-show.typ
-    #show heading.where(level: 2): it => {
-        set text(fill: blue, weight: "bold") // Change to bold and blue
-        it.body
-    }
+    #show heading.where(level: 2): set text(
+      fill: color-accent, 
+      weight: "bold"
+    )
     ```
 
--   **`parts-functions.typ`:** This file contains the functions that render larger components, like the `title-page`.
-    You can modify the layout of these components here.
-    For example, you could change the alignment or spacing of elements on the title page.
+-   **`cv-parts.typ` & `letter.typ`:** These files contain the functions that render the actual layout components (e.g., the Title Page, Resume Entries, or the Cover Letter Header).
+    Modify these if you want to change the structural layout of the CV or the Letter.
 
 ### How to Apply Changes
 
@@ -138,20 +145,21 @@ Your changes will be immediately reflected in the new PDF output.
 
 ### Typst Template Structure
 
-For users who want to modify the core layout, the Typst files are located in the `typst/` subdirectory of the extensions root folder.
+For users who want to modify the core layout, the Typst files are located in the `typst/` subdirectory of the extension's root folder.
 
 ### File Overview
 
 | File | Purpose |
 |:---|:---|
-| `template.typ` | The main entry point. Orchestrates the loading of partials. |
-| `typst-template.typ` | Contains the main document structure and logic. |
-| `helper-functions.typ` | Helper functions for data processing and icons. |
+| `resume.typ` | **Main Entry Point.** Orchestrates the logic to switch between Cover Letter and CV modes. |
+| `theme.typ` | **Design System.** Defines colors, fonts, sizes, and global styles. |
+| `utils.typ` | Low-level helper functions for data manipulation and icons. |
+| `letter.typ` | **Cover Letter.** Contains the specific layout logic for the Cover Letter. |
+| `cv-parts.typ` | **CV Components.** Renders Title Page, Footer, Resume Entries, and Publication Lists. |
+| `skills.typ` | **Skills.** Specialized logic for rendering skill bars and tables. |
+| `page.typ` | **Page Layout.** Configures global page dimensions, margins, and the page header. |
+| `typst-show.typ` | **Show Rules.** Styles raw Markdown elements (Headings, Blockquotes). |
 | `injected-meta-data` | **Auto-generated.** Contains the metadata injected from your YAML. |
 | `injected-cover-letter` | **Auto-generated.** Contains the content of the cover letter. |
-| `stylings.typ` | Defines colors, fonts, and text styles. |
-| `parts-functions.typ` | Defines the layout components (`resume-entry`, `visualize-skills-list`, title page, footer). |
-| `page.typ` | Page setup (margins, size). |
-| `typst-show.typ` | Global show rules. |
 
 To customize these files, you can copy them to your project root and update the `template-partials` in your `_extension.yml` (or `_quarto.yml`) to point to your local versions.

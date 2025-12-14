@@ -42,7 +42,7 @@ google-document:
       shortname: "working"
 ```
 
-For a detailed explanation of all available configuration options, please refer to the **[`google-document` section in the YAML Reference](./yaml_reference.qmd#sec-google-document)**.
+For a detailed explanation of all available configuration options, please refer to the **[`google-document` section in the YAML Reference](./yaml_reference.qmd)**.
 
 ## 3. Spreadsheet Structure
 
@@ -65,7 +65,7 @@ For the visual skills bar (using `visualize-skills-list`), your data **must** in
 
 ## 4. Connecting Data to Layout
 
-Once your data is structured in Google Sheets, you need to tell the template where and how to display it. You do this using the `cv-section` shortcode.
+Once your data is structured in Google Sheets, you need to tell the template where and how to display it. You do this using different shortcodes, like the `cv-section` shortcode.
 
 This shortcode acts as a bridge: it fetches the data from the sheet you specify (e.g., `working`) and passes each row to a Typst layout function (e.g., `resume-entry`).
 

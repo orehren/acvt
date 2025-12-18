@@ -71,7 +71,7 @@ cv-grid:
 # profile-photo: null # to disable the picture
 
 google-document:
-  auth-email: g.eek@geeeeemail.com # TRUE | The E-Mail address of your Google Drive Account
+  auth-email: true # 'true' uses your already stored credentials or you can give the E-Mail address of your Google Drive Account
   document-identifier: 
     - "Application_CV_Data" # Give a Google Identifier (id, file name in google drive or url.)
     # - "data/" # Give a Folder with csv, json and / or xlsx files

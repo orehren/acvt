@@ -9,17 +9,23 @@ setup_acvt <- function() {
   if (!interactive()) stop("This function must be run in an interactive R session.")
 
   # --- STEP 1: WELCOME ---
-  if (!.step_welcome()) return(invisible(NULL))
+  if (!.step_welcome()) {
+    return(invisible(NULL))
+  }
 
   # --- STEP 2: PACKAGES ---
   # Returns TRUE (next), "skip_auth" (skip next), or FALSE (abort)
   pkg_result <- .step_packages()
 
-  if (isFALSE(pkg_result)) return(invisible(NULL))
+  if (isFALSE(pkg_result)) {
+    return(invisible(NULL))
+  }
 
   # --- STEP 3: AUTHENTICATION ---
   if (!identical(pkg_result, "skip_auth")) {
-    if (!.step_auth()) return(invisible(NULL))
+    if (!.step_auth()) {
+      return(invisible(NULL))
+    }
   } else {
     cli::cli_alert_info("Skipping Google Authentication as requested.")
   }
@@ -33,6 +39,7 @@ setup_acvt <- function() {
 # 0. CONSTANTS
 # ==============================================================================
 
+# List of packages required for the extension to function at runtime.
 REQUIRED_PACKAGES <- c(
   "googlesheets4", "googledrive", "readxl", "jsonlite",
   "checkmate", "cli", "purrr", "rlang"
@@ -43,6 +50,9 @@ REQUIRED_PACKAGES <- c(
 # 1. WELCOME STEP
 # ==============================================================================
 
+#' Display Welcome Message and Confirm Start
+#' @return Logical TRUE to proceed, FALSE to abort.
+#' @noRd
 .step_welcome <- function() {
   cli::cli_h1("CV Project Setup Wizard")
 
@@ -55,7 +65,7 @@ REQUIRED_PACKAGES <- c(
   cli::cli_end()
 
   cli::cli_alert_info("All steps are optional and you can abort this wizard at any time by selecting 'Quit'.")
-  cli::cli_text("──────────────────────────────────────────────────────────────")
+  cli::cli_rule()
 
   choice <- .ask_option(
     question = "How do you want to proceed?",
@@ -84,10 +94,13 @@ REQUIRED_PACKAGES <- c(
 # 2. PACKAGE INSTALLATION STEP
 # ==============================================================================
 
+#' Handle Case: All Packages Installed
+#' @return Logical TRUE to proceed, FALSE to abort, "skip_auth" to skip auth.
+#' @noRd
 .handle_all_packages_installed <- function() {
   cli::cli_alert_success("Great news! All required packages are already installed.")
   cli::cli_text("We are now ready to proceed with the Google Authentication setup.")
-  cli::cli_text("──────────────────────────────────────────────────────────────")
+  cli::cli_rule()
 
   next_choice <- .ask_option(
     question = "How do you want to proceed?",
@@ -98,17 +111,25 @@ REQUIRED_PACKAGES <- c(
     )
   )
 
-  if (next_choice == "q") return(FALSE)
-  if (next_choice == "2") return("skip_auth")
+  if (next_choice == "q") {
+    return(FALSE)
+  }
+  if (next_choice == "2") {
+    return("skip_auth")
+  }
 
   return(TRUE)
 }
 
+#' Handle Case: Missing Packages
+#' @param missing Character vector of missing package names.
+#' @return Logical TRUE to proceed, FALSE to abort.
+#' @noRd
 .handle_missing_packages <- function(missing) {
   cli::cli_text("")
   cli::cli_alert_warning(paste("We Found", length(missing), "missing packages:"))
   cli::cli_ul(missing)
-  cli::cli_text("──────────────────────────────────────────────────────────────")
+  cli::cli_rule()
 
   sub_choice <- .ask_option(
     question = "Do you want to install these packages now?",
@@ -119,16 +140,23 @@ REQUIRED_PACKAGES <- c(
     )
   )
 
-  if (sub_choice == "q") return(FALSE)
-  if (sub_choice == "2") return(TRUE)
+  if (sub_choice == "q") {
+    return(FALSE)
+  }
+  if (sub_choice == "2") {
+    return(TRUE)
+  }
 
   cli::cli_h3("Installing...")
-  utils::install.packages(missing)
+  install.packages(missing)
   cli::cli_alert_success("Packages installed successfully.")
 
   return(TRUE)
 }
 
+#' Execute Package Check Step
+#' @return Logical TRUE (next), "skip_auth" (skip next), or FALSE (abort).
+#' @noRd
 .step_packages <- function() {
   cli::cli_h2("Step 1: Package Check")
 
@@ -137,7 +165,7 @@ REQUIRED_PACKAGES <- c(
   cli::cli_text("")
 
   cli::cli_alert_info("We will now scan your R library to check which of these are already installed.")
-  cli::cli_text("──────────────────────────────────────────────────────────────")
+  cli::cli_rule()
 
   choice <- .ask_option(
     question = "How do you want to proceed?",
@@ -148,7 +176,9 @@ REQUIRED_PACKAGES <- c(
     )
   )
 
-  if (choice == "q") return(FALSE)
+  if (choice == "q") {
+    return(FALSE)
+  }
   if (choice == "2") {
     cli::cli_alert_warning("Skipping package installation.")
     return(TRUE)
@@ -171,6 +201,9 @@ REQUIRED_PACKAGES <- c(
 # 3. AUTHENTICATION STEP
 # ==============================================================================
 
+#' Prompt User for Email
+#' @return String email, "SKIP", or NULL (abort).
+#' @noRd
 .prompt_for_valid_email <- function() {
   email <- ""
 
@@ -184,7 +217,9 @@ REQUIRED_PACKAGES <- c(
       )
     )
 
-    if (sub_choice == "q") return(NULL) # Signal abort
+    if (sub_choice == "q") {
+      return(NULL)
+    } # Signal abort
     if (sub_choice == "2") {
       cli::cli_alert_warning("Skipping authentication.")
       return("SKIP") # Signal skip
@@ -201,22 +236,33 @@ REQUIRED_PACKAGES <- c(
   return(email)
 }
 
+#' Execute Authentication Logic
+#' @param is_global Logical. TRUE for global auth, FALSE for local.
+#' @param email String. The user email.
+#' @return Logical TRUE if successful, FALSE otherwise.
+#' @noRd
 .execute_auth_strategy <- function(is_global, email) {
   cli::cli_alert_info("Launching browser...")
 
-  tryCatch({
-    if (is_global) {
-      .perform_global_auth(email)
-    } else {
-      .perform_local_auth(email)
+  tryCatch(
+    {
+      if (is_global) {
+        .perform_global_auth(email)
+      } else {
+        .perform_local_auth(email)
+      }
+      return(TRUE)
+    },
+    error = function(e) {
+      cli::cli_alert_danger(paste("Authentication failed:", e$message))
+      return(FALSE)
     }
-    return(TRUE)
-  }, error = function(e) {
-    cli::cli_alert_danger(paste("Authentication failed:", e$message))
-    return(FALSE)
-  })
+  )
 }
 
+#' Execute Authentication Step
+#' @return Logical TRUE (success/skip) or FALSE (abort).
+#' @noRd
 .step_auth <- function() {
   cli::cli_h2("Step 2: Google Authentication")
 
@@ -237,7 +283,9 @@ REQUIRED_PACKAGES <- c(
     )
   )
 
-  if (choice_1 == "q") return(FALSE)
+  if (choice_1 == "q") {
+    return(FALSE)
+  }
   if (choice_1 == "2") {
     cli::cli_alert_warning("Skipping authentication.")
     return(TRUE)
@@ -273,7 +321,9 @@ REQUIRED_PACKAGES <- c(
     )
   )
 
-  if (choice_2 == "q") return(FALSE)
+  if (choice_2 == "q") {
+    return(FALSE)
+  }
   if (choice_2 == "3") {
     cli::cli_alert_warning("Skipping authentication.")
     return(TRUE)
@@ -291,8 +341,12 @@ REQUIRED_PACKAGES <- c(
 
   email <- .prompt_for_valid_email()
 
-  if (is.null(email)) return(FALSE) # User quit
-  if (email == "SKIP") return(TRUE) # User skipped
+  if (is.null(email)) {
+    return(FALSE)
+  } # User quit
+  if (email == "SKIP") {
+    return(TRUE)
+  } # User skipped
 
   # --- EXECUTION ---
   if (!.execute_auth_strategy(choice_2 == "1", email)) {
@@ -337,6 +391,8 @@ REQUIRED_PACKAGES <- c(
 # 4. FINISH STEP
 # ==============================================================================
 
+#' Display Finish Message
+#' @noRd
 .step_finish <- function() {
   cli::cli_h1("Setup Complete")
   cli::cli_alert_success("Your CV environment is ready!")
@@ -353,6 +409,7 @@ REQUIRED_PACKAGES <- c(
 #' @param question String question.
 #' @param options Named vector of options (e.g., c("1"="Yes", "q"="Quit")).
 #' @return The key of the selected option.
+#' @noRd
 .ask_option <- function(question, options) {
   cli::cli_text(paste0("\n{.strong ", question, "}"))
 
@@ -379,12 +436,18 @@ REQUIRED_PACKAGES <- c(
   return(selection)
 }
 
+#' Perform Global Authentication
+#' @param email String.
+#' @noRd
 .perform_global_auth <- function(email) {
   googledrive::drive_auth(email = email, use_oob = FALSE)
   googlesheets4::gs4_auth(token = googledrive::drive_token())
   cli::cli_alert_success("Global token cached.")
 }
 
+#' Perform Local Authentication
+#' @param email String.
+#' @noRd
 .perform_local_auth <- function(email) {
   secrets_dir <- ".secrets"
 
@@ -404,6 +467,9 @@ REQUIRED_PACKAGES <- c(
   cli::cli_alert_success("Local token cached in .secrets")
 }
 
+#' Delete Credentials
+#' @param choice_key String "1" (Global) or "2" (Local).
+#' @noRd
 .delete_credentials <- function(choice_key) {
   if (choice_key == "1") { # Global
     googledrive::drive_deauth()
@@ -413,6 +479,10 @@ REQUIRED_PACKAGES <- c(
   }
 }
 
+#' Ensure Folder is Git-Ignored
+#' @param folder_name String.
+#' @return Logical TRUE if successful.
+#' @noRd
 .secure_local_folder <- function(folder_name) {
   git_path <- ".gitignore"
   if (!file.exists(git_path)) file.create(git_path)
@@ -425,6 +495,9 @@ REQUIRED_PACKAGES <- c(
   return(TRUE)
 }
 
+#' Append Line to .Rprofile
+#' @param line String.
+#' @noRd
 .add_to_rprofile <- function(line) {
   profile_path <- ".Rprofile"
   if (!file.exists(profile_path)) file.create(profile_path)

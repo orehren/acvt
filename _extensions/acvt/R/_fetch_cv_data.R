@@ -1,24 +1,24 @@
-#' Main Entry Point for CV Data Pipeline
+#' Fetch CV Data from Google Sheets or Local Files
 #'
 #' Orchestrates the extraction, transformation, and loading (ETL) of CV data.
-#' Uses a dedicated environment for helper scripts to maintain clean scoping.
+#' It reads the configuration from the QMD file, checks the cache, fetches data
+#' from configured sources (Google Sheets, Excel, CSV, JSON), and saves the
+#' result to `.cv_data.json`.
 #'
 #' @return Invisible NULL. Side effect: Creates or updates `.cv_data.json`.
-main <- function() {
+#' @export
+fetch_cv_data <- function() {
+  # Ensure runtime dependencies are available
   .ensure_dependencies(c("cli", "jsonlite", "purrr", "rlang", "tools", "readxl"))
 
   cli::cli_h1("CV Data Extension Pipeline")
-
-  # Dependency Injection: Load helpers into a dedicated environment
-  # to avoid polluting the global namespace.
-  helpers_env <- .load_helper_scripts()
 
   config <- .get_quarto_config()
   if (is.null(config)) {
     return(invisible(NULL))
   }
 
-  # Caching prevents expensive API calls during iterative rendering.
+  # Caching Logic: Check if we can skip the fetch
   if (.evaluate_cache_state(".cv_data.json", config)) {
     return(invisible(NULL))
   }
@@ -26,7 +26,8 @@ main <- function() {
   sheets_map <- .normalize_sheet_config(config[["sheets-to-load"]])
   sources <- .resolve_sources(config[["document-identifier"]])
 
-  raw_data <- .fetch_all_sources(sources, sheets_map, config[["auth-email"]], helpers_env)
+  # Pass auth_email explicitly
+  raw_data <- .fetch_all_sources(sources, sheets_map, config[["auth-email"]])
 
   if (length(raw_data) == 0) {
     cli::cli_alert_warning("No data found in any source.")
@@ -55,26 +56,6 @@ main <- function() {
   if (length(missing) > 0) {
     stop(paste("Missing required packages:", paste(missing, collapse = ", ")))
   }
-}
-
-#' Load External Helper Scripts into Isolated Environment
-#'
-#' @return An environment containing the loaded functions.
-.load_helper_scripts <- function() {
-  ext_files <- list.files("_extensions", pattern = "^load_cv_sheets\\.R$", recursive = TRUE, full.names = TRUE)
-
-  script_dir <- "R"
-  if (length(ext_files) > 0) script_dir <- dirname(ext_files[1])
-
-  if (!dir.exists(script_dir)) cli::cli_abort("Helper script directory not found.")
-
-  helpers <- list.files(script_dir, pattern = "\\.[Rr]$", full.names = TRUE)
-  helpers <- helpers[!grepl("_fetch_cv_data\\.R$", helpers)]
-
-  env <- new.env(parent = baseenv())
-  purrr::walk(helpers, source, local = env)
-
-  return(env)
 }
 
 #' Retrieve Configuration from QMD Frontmatter
@@ -121,7 +102,6 @@ main <- function() {
   }
 
   # 2. Check if caching is explicitly disabled
-  # Default is TRUE. If set to FALSE, we force a refresh.
   use_cache <- .get_conf_val(config, "sheet-cache", TRUE)
   if (isFALSE(use_cache)) {
     cli::cli_alert_info("Caching disabled by config. Forcing update.")
@@ -129,7 +109,6 @@ main <- function() {
   }
 
   # 3. Check if updates are disabled (Frozen Cache)
-  # Default is TRUE. If FALSE, we use the existing file regardless of age.
   allow_update <- .get_conf_val(config, "cache-update", TRUE)
   if (isFALSE(allow_update)) {
     cli::cli_alert_success("Cache update disabled. Using existing data from {.file {path}}.")
@@ -175,7 +154,6 @@ main <- function() {
 .resolve_sources <- function(raw_ids) {
   if (is.null(raw_ids)) cli::cli_abort("Missing 'document-identifier'.")
 
-  # Flattening is required because a directory path expands into multiple file paths.
   purrr::map(as.list(raw_ids), .expand_path_to_sources) |>
     purrr::list_flatten()
 }
@@ -222,15 +200,13 @@ main <- function() {
 #' @param sources List of source objects.
 #' @param sheets_map Named list of sheet mappings.
 #' @param auth_email Email for Google Auth.
-#' @param helpers_env Environment containing helper functions.
 #' @return List of data lists (one per source).
-.fetch_all_sources <- function(sources, sheets_map, auth_email, helpers_env) {
+.fetch_all_sources <- function(sources, sheets_map, auth_email) {
   purrr::map(sources, function(src) {
     cli::cli_h2(paste("Processing:", src$type))
 
-    # Isolation ensures that a single corrupt file doesn't crash the entire pipeline.
     tryCatch(
-      .read_source(src, sheets_map, auth_email, helpers_env),
+      .read_source(src, sheets_map, auth_email),
       error = function(e) {
         cli::cli_alert_danger("Failed to load {.val {src$path}}: {e$message}")
         list()
@@ -244,12 +220,11 @@ main <- function() {
 #' @param source Source object.
 #' @param sheets_map Config map.
 #' @param auth_email Email string.
-#' @param helpers_env Environment containing helper functions.
 #' @return Named list of DataFrames.
-.read_source <- function(source, sheets_map, auth_email, helpers_env) {
+.read_source <- function(source, sheets_map, auth_email) {
   switch(source$type,
-    "google" = .read_google(source$path, sheets_map, auth_email, helpers_env),
-    "local_xlsx" = .read_excel(source$path, sheets_map),
+    "google" = .read_google(source$path, sheets_map, auth_email),
+    "local_xlsx" = .read_xls(source$path, sheets_map),
     "local_csv" = .read_flat(source$path, "csv", sheets_map),
     "local_json" = .read_flat(source$path, "json", sheets_map),
     {
@@ -261,14 +236,16 @@ main <- function() {
 
 #' Read Google Sheet
 #'
+#' Delegates loading to the helper script.
+#'
 #' @param id Google Sheet ID or Name.
 #' @param sheets_map Config map.
 #' @param email Auth email.
-#' @param helpers_env Environment containing helper functions.
 #' @return Named list of DataFrames.
-.read_google <- function(id, sheets_map, email, helpers_env) {
-  if (is.null(helpers_env$load_cv_sheets)) {
-    stop("Function 'load_cv_sheets' not found in helper environment.")
+.read_google <- function(id, sheets_map, email) {
+  # Check if helper function is available (Package or Sourced)
+  if (!exists("load_cv_sheets", mode = "function")) {
+    stop("Function 'load_cv_sheets' not found. Ensure package is loaded or scripts are sourced.")
   }
 
   if (!googlesheets4::gs4_has_token()) {
@@ -279,8 +256,8 @@ main <- function() {
 
   cli::cli_alert_info("Fetching Google Sheet: {.val {id}}")
 
-  # load_cv_sheets handles ID resolution and sheet filtering internally.
-  helpers_env$load_cv_sheets(id, as.list(sheets_map))
+  # Direct call to the helper function
+  load_cv_sheets(id, as.list(sheets_map))
 }
 
 #' Read Local Excel File
@@ -288,14 +265,12 @@ main <- function() {
 #' @param path File path.
 #' @param sheets_map Config map.
 #' @return Named list of DataFrames (Keys = Short Names).
-.read_excel <- function(path, sheets_map) {
+.read_xls <- function(path, sheets_map) {
   cli::cli_alert_info("Reading Excel: {.file {path}}")
   available <- readxl::excel_sheets(path)
 
   data_list <- list()
 
-  # We use iwalk to explicitly assign data to the SHORT NAME key,
-  # as map/imap would default to preserving the input names (Real Names).
   purrr::iwalk(sheets_map, function(short_name, target_name) {
     match <- .find_fuzzy_match(target_name, available)
 
@@ -415,8 +390,7 @@ main <- function() {
       return(df)
     }
 
-    # Lua/JSON serialization is safer with pure strings, avoiding
-    # issues with Factors, Dates, or mixed types in the Lua filter.
+    # Ensure all data is character type for safe Lua/JSON handling
     df[] <- lapply(df, as.character)
 
     purrr::transpose(df) |>
@@ -436,6 +410,3 @@ main <- function() {
   jsonlite::write_json(output, path, auto_unbox = TRUE, pretty = FALSE)
   cli::cli_alert_success("Data successfully updated in {.file {path}}")
 }
-
-# Execute
-main()

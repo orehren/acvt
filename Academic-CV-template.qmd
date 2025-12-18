@@ -85,9 +85,9 @@ google-document:
 
 attachments:
   - name: "First Document"
-    file: "_extensions/acvt/assets/images/appendix1.png"
+    file: "_extensions/orehren/acvt/assets/images/appendix1.png"
   # - name: "Second Document"
-  #   file: "_extensions/acvt/assets/images/appendix2.png"
+  #   file: "_extensions/orehren/acvt/assets/images/appendix2.png"
 
 # -- Publication List ----------------------------------------------
 # Configuration for the publication list.
@@ -95,12 +95,12 @@ publication-list:
   author-name: "Author, A." # Optional: Will be inferred if not set
   highlight-author: "bold" # italic | color | a custom pandoc native markdown string (e.g. '[%s]{color="#4F46E5"}')
   bib-file:
-    - _extensions/acvt/assets/bib/bibliography.bib
-    - _extensions/acvt/assets/bib/bibliography.ris
-  #   - _extensions/acvt/assets/bib/bibliography.json
-  #   - _extensions/acvt/assets/bib/bibliography.xml
-  #   - _extensions/acvt/assets/bib/bibliography.yml
-  # bib-style: _extensions/acvt/assets/bib/apa-cv.csl
+    - _extensions/orehren/acvt/assets/bib/bibliography.bib
+    - _extensions/orehren/acvt/assets/bib/bibliography.ris
+  #   - _extensions/orehren/acvt/assets/bib/bibliography.json
+  #   - _extensions/orehren/acvt/assets/bib/bibliography.xml
+  #   - _extensions/orehren/acvt/assets/bib/bibliography.yml
+  # bib-style: _extensions/orehren/acvt/assets/bib/apa-cv.csl
 
 # -- Output Options ------------------------------------------------
 render-output: "combined" # "cv-only", "letter-only", or "combined"
@@ -148,7 +148,7 @@ ipsum dolor sit amet.
 ## Publications 2
 
 {{< publication-list 
-      bib-file="_extensions/acvt/assets/bib/bibliography.xml, _extensions/acvt/assets/bib/bibliography.yml" 
+      bib-file="_extensions/orehren/acvt/assets/bib/bibliography.xml, _extensions/orehren/acvt/assets/bib/bibliography.yml" 
       default-label="Anything" 
       highlight-author="bold" 
   >}}

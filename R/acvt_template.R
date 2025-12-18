@@ -70,29 +70,31 @@ acvt_template <- function(path, ...) {
 # ==============================================================================
 
 .update_template_yaml <- function(file_path, firstname, lastname) {
-  if (!requireNamespace("yaml", quietly = TRUE)) {
-    return()
-  }
-
+  # Wir lesen die Datei als reinen Text
   lines <- readLines(file_path)
-  delimiters <- which(lines == "---")
 
-  if (length(delimiters) < 2) {
-    return()
+  # Wir nutzen Regex, um die Zeilen zu finden und zu ersetzen.
+  # Das ist robuster als yaml::read_yaml, da es nicht abstürzt,
+  # wenn der Rest des YAMLs komplex ist.
+
+  # Pattern:
+  # ^       -> Start der Zeile
+  # \s*     -> Beliebig viele Leerzeichen (Einrückung)
+  # key:    -> Der Schlüssel
+  # \s*     -> Leerzeichen nach dem Doppelpunkt
+  # .*      -> Der alte Wert (wird ersetzt)
+
+  if (!is.null(firstname) && nzchar(firstname)) {
+    # Ersetzt: firstname: "AlterWert" -> firstname: "NeuerWert"
+    # \\1 behält die ursprüngliche Einrückung bei
+    lines <- gsub("^(\\s*firstname:\\s*).*", paste0("\\1\"", firstname, "\""), lines)
   }
 
-  yaml_content <- lines[(delimiters[1] + 1):(delimiters[2] - 1)]
-  body_content <- lines[(delimiters[2] + 1):length(lines)]
+  if (!is.null(lastname) && nzchar(lastname)) {
+    lines <- gsub("^(\\s*lastname:\\s*).*", paste0("\\1\"", lastname, "\""), lines)
+  }
 
-  yaml_data <- yaml::read_yaml(text = paste(yaml_content, collapse = "\n"))
-
-  if (!is.null(firstname)) yaml_data$author$firstname <- firstname
-  if (!is.null(lastname)) yaml_data$author$lastname <- lastname
-
-  new_yaml_str <- yaml::as.yaml(yaml_data, indent.mapping.sequence = TRUE)
-
-  new_content <- c("---", strsplit(new_yaml_str, "\n")[[1]], "---", body_content)
-  writeLines(new_content, file_path)
+  writeLines(lines, file_path)
 }
 
 .add_temporary_open_hook <- function(path, filename) {

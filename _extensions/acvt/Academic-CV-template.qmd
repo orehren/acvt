@@ -82,6 +82,8 @@ google-document:
       shortname: "working"
     - name: "Research Interests"
       shortname: "interests"
+    - name: "IT Skills"
+      shortname: "skills"
 
 attachments:
   - name: "First Document"

@@ -25,15 +25,23 @@ acvt_template <- function(path, ...) {
     stop("Could not find the project template skeleton in the 'acvt' package.")
   }
 
-  # 4. Copy Extension Files
-  source_ext_dir <- file.path(skeleton_dir, "_extensions")
-  dest_ext_dir <- file.path(path, "_extensions/orehren")
+  # 4. Copy Extension Files (Restructuring for Quarto Standard)
 
-  if (!dir.exists(dest_ext_dir)) dir.create(dest_ext_dir, recursive = TRUE)
-  file.copy(from = source_ext_dir, to = path, recursive = TRUE)
+  # Source in package: .../_extensions/acvt
+  source_ext_dir <- file.path(skeleton_dir, "_extensions", "acvt")
 
-  # 5. Move Template Files to Root & Rename
-  source_of_truth_dir <- file.path(dest_ext_dir, "acvt")
+  # Target in new project: [project]/_extensions/orehren/
+  dest_org_dir <- file.path(path, "_extensions", "orehren")
+
+  # Create the organization directory first
+  if (!dir.exists(dest_org_dir)) {
+    dir.create(dest_org_dir, recursive = TRUE)
+  }
+
+  file.copy(from = source_ext_dir, to = dest_org_dir, recursive = TRUE)
+
+  # 5. Move Template Files to Root
+  source_of_truth_dir <- file.path(dest_org_dir, "acvt")
 
   file.copy(
     from = file.path(source_of_truth_dir, "_quarto.yml"),

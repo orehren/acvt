@@ -50,7 +50,7 @@ Your Google Sheet should have separate tabs for each section. The first row must
 
 ### Example: Skills (Visualized)
 
-For the visual skills bar (using `visualize-skills-list`), your data **must** include a `value` column (0.0 - 1.0):
+For the visual skills bar (using the `visualize-skills` shortcode), your data **must** include a `value` column (0.0 - 1.0):
 
 | area | skill | value | level |
 | :--- | :--- | :--- | :--- |
@@ -70,7 +70,7 @@ Once your data is structured in Google Sheets, you need to tell the template whe
 This shortcode acts as a bridge: it fetches the data from the sheet you specify (e.g., `working`) and passes each row to a Typst layout function (e.g., `resume-entry`).
 
 ```markdown
-{{< cv-section sheet="working" func="resume-entry" >}}
+{{< cv-section sheet="working" >}}
 ```
 
 By default, the columns in your sheet are passed to the layout function in the order they appear. If you need to customize this mapping (e.g., if your sheet columns are in a different order than the layout expects), you can use the `column-order` argument.

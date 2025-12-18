@@ -32,7 +32,7 @@ After restarting, go to **File > New Project... > New Directory**. You will now 
 
 ## Method 2: Alternative Manual Installation
 
-If you prefer not to use the R package or the RStudio template, you can install the Quarto extension manually.
+If you prefer not to use the R package or the RStudio template, you can install the Quarto extension manually via the terminal.
 
 ## 1. Install the Extension
 
@@ -40,7 +40,7 @@ You can start a new project with the template or add it to an existing Quarto pr
 
 ### Option A: Create a New Project (Recommended)
 
-To start fresh, run this command in your terminal:
+To start fresh with the correct folder structure and files, run this command in your terminal:
 
 ```bash
 quarto use template orehren/acvt
@@ -56,26 +56,57 @@ If you already have a Quarto project, run this command in your project root:
 quarto add orehren/acvt
 ```
 
-This downloads the extension files into the `_extensions/` directory. You then need to copy the files `_quarto.yml` from the `orehren/acvt` folder to the project base folder.
+This downloads the extension files into the `_extensions/` directory.
 
-## 2. Install R Packages
+## 2. Configure the Project
 
-This extension uses R to fetch and process data from Google Sheets. Regardless of how you installed the extension, you **must** install the required R packages.
+This extension uses R to fetch and process data. Regardless of how you installed the extension, you **must** install the required R packages and authenticate with Google.
 
-Open your R console (or RStudio) and run:
+### The Easy Way: Setup Script (Recommended)
+
+The extension comes with a built-in setup wizard that handles dependencies, authentication, and file copying for you. To run it, simply execute the following command in your R console:
+
+```r
+source(list.files(pattern = "setup_acvt.R", recursive = TRUE, full.names = TRUE)[1])
+```
+
+This wizard will:
+1.  Check and install missing R packages.
+2.  Guide you through Google Drive authentication.
+3.  (If needed) Copy the template files (`Academic-CV-template.qmd`, `_quarto.yml`) to your project root.
+
+**Note:** If you use the setup script, you are done! You can skip the rest of this section.
+
+---
+
+### The Hard Way: Manual Setup
+
+If you cannot or do not want to use the setup script, you must perform these steps manually.
+
+**1. Install R Packages**
+Open your R console and run:
 
 ```r
 install.packages(c(
   "googledrive",
   "googlesheets4",
-  "yaml",
-  "rmarkdown",
+  "readxl",
+  "jsonlite",
   "cli",
   "purrr",
   "checkmate",
   "rlang"
 ))
 ```
+
+**2. Copy Template Files (Only for Option B)**
+If you used `quarto add` (Option B), the template files are hidden inside the extension folder. You need to copy them to your project root manually:
+
+*   Copy `_extensions/orehren/acvt/_quarto.yml` to your project root.
+*   Copy `_extensions/orehren/acvt/Academic-CV-template.qmd` to your project root (and rename it to `cv.qmd`).
+
+**3. Authenticate**
+You will need to handle Google authentication manually in your R session before rendering.
 
 ## 3. Next Steps
 

@@ -151,7 +151,7 @@ For users who want to modify the core layout, the Typst files are located in the
 
 | File | Purpose |
 |:---|:---|
-| `resume.typ` | **Main Entry Point.** Orchestrates the logic to switch between Cover Letter and CV modes. |
+| `typst-template.typ` | **Main Entry Point.** Orchestrates the logic to switch between Cover Letter and CV modes. |
 | `theme.typ` | **Design System.** Defines colors, fonts, sizes, and global styles. |
 | `utils.typ` | Low-level helper functions for data manipulation and icons. |
 | `letter.typ` | **Cover Letter.** Contains the specific layout logic for the Cover Letter. |

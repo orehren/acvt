@@ -1,6 +1,6 @@
 title: acvt
 author: Oliver Rehren
-version: 0.9.8
+version: 0.9.9
 description: "A Quarto extension for creating CVs and cover letters using the Academic-CV Typst Template."
 quarto-required: ">=1.8.0"
 license: MIT
@@ -19,7 +19,7 @@ contributes:
         warning: false
         error: false
       style:
-        color-accent: "#4F46E5"
+        color-accent: "#5E81AC"
         font-header: ["Roboto", "Arial", "Dejavu Sans"]
         font-text: ["Source Sans Pro", "Arial", "Dejavu Sans"]
       surpress-bibliography: true

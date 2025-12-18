@@ -46,7 +46,14 @@ quarto use template orehren/academicCVTemplate
 quarto add orehren/academicCVTemplate
 ```
 
-**Note:** With this method, you must manually install the required R packages. Please see the full documentation for the list of packages
+**Note:** With this method, you must manually install the required R packages. This can easily be done with the project setup script included in this extension.
+
+To run the project setup script and easily configure the project (install package dependencies, setup Google authentication, copy files), simply run the following command in your R console:
+
+```r
+source(dir(pattern = "setup_acvt.R", recursive = TRUE, full.names = TRUE))
+```
+
 
 ## Documentation
 

@@ -8,14 +8,8 @@
 ^docs$
 ^screenshot.png$
 
-^inst/rstudio/templates/project/skeleton/_extensions/acvt/styles.scss$
-^inst/rstudio/templates/project/skeleton/_extensions/acvt/filters/html.*
-^inst/rstudio/templates/project/skeleton/_extensions/acvt/shortcodes/cvs/html.*
-^inst/rstudio/templates/project/skeleton/_extensions/acvt/shortcodes/pbl/html.*
-^inst/rstudio/templates/project/skeleton/_extensions/acvt/shortcodes/vsl/html.*
 ^inst/rstudio/templates/project/skeleton/_extensions/acvt/R$
 
-^inst/rstudio/templates/project/skeleton/_extensions/orehren$
 ^.quartoignore$
 ^.github$
 ^.quarto$

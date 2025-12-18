@@ -58,7 +58,7 @@ famous-quote: # Optional
 # -- Template Styling ----------------------------------------------
 # These variables override the template defaults.
 style:
-  color-accent: "#4F46E5" # A custom accent color (e.g., from Nord palette)
+  color-accent: "#5E81AC" # A custom accent color (e.g., from Nord palette)
   font-header: "Lato"
   font-text: "Roboto"
 

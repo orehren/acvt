@@ -589,3 +589,13 @@ REQUIRED_PACKAGES <- c(
   prefix <- if (length(content) > 0 && nzchar(tail(content, 1))) "\n" else ""
   cat(paste0(prefix, line, "\n"), file = profile_path, append = TRUE)
 }
+
+
+# --- Auto-Start Logic ---
+# If this script is sourced directly by the user into the global environment,
+# we assume they want to run the setup immediately.
+# We check 'sys.nframe()' to ensure we are not inside a package build process.
+if (interactive() && identical(environment(), globalenv())) {
+  # Small delay to ensure function definition is complete
+  setup_acvt()
+}

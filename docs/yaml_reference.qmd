@@ -156,7 +156,7 @@ Configures the connection to your data sources. While the key is named `google-d
 
 **Fields:**
 
-*   `auth-email`: The email address used for Google authentication (only required if using Google Sheets). **Type:** String
+*   `auth-email`: The email address used for Google authentication (only required if using Google Sheets). **Type:** String | `true` (uses your already established authentication)
 *   `document-identifier`: The source(s) of your data. Can be a single string or a list of strings. **Type:** String | List of Strings
 *   `sheets-to-load`: A list of specific data sections to import from the defined sources. **Type:** List of Objects
 *   `sheet-cache`: Controls whether fetched data is saved locally to speed up future renders. **Type:** Boolean (Default: `true`)
@@ -169,7 +169,7 @@ This field tells the system *where* to look for data. You can provide a single s
 **Supported Source Types:**
 
 1.  **Google Sheet:** Provide the unique **ID** (recommended) or the exact **Name** of the file on your Google Drive or the url to that file.
-2.  **Local File:** Provide a relative path to a `.xlsx`, `.csv`, or `.json` file.
+2.  **Local File:** Provide a relative path to a `.xlsx`, `.csv`, `.yaml`, or `.json` file.
 3.  **Local Directory:** Provide a relative path to a folder (e.g., `_data/`). The system will scan it for supported files.
 
 **How Matching Works:**

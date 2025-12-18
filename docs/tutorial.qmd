@@ -122,7 +122,7 @@ The power of this template comes from its integration with Google Sheets. Instea
 
 ```yaml
 google-document:
-  auth-email: "your.email@gmail.com"
+  auth-email: "your.email@gmail.com" # or true if you want to use already established authentication credentials
   document-identifier: "Name_of_Your_Google_Sheet"
   sheets-to-load:
     - name: "Working Experiences" # Tab name in Google Sheets

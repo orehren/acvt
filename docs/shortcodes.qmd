@@ -70,7 +70,7 @@ If your spreadsheet columns are already in the correct order for the Typst funct
 >}}
 ```
 
-- **Result:** Arg 0 gets Col 1, Arg 1 gets Col 2, etc.   
+- **Result:** Arg 0 gets Col 1, Arg 1 gets Col 2, etc.   
 
 #### 2. Reordering & Interpolation
 

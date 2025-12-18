@@ -1,14 +1,22 @@
 Package: acvt
 Title: Academic-CV Typst Template for Quarto
-Version: 0.9.8
-Author: Oliver Rehren
-Maintainer: Oliver Rehren
-Description: A Quarto extension for creating academic CVs and cover letters using the Academic-CV Typst template, now available as an RStudio Project Template.
+Version: 0.9.99.9000
+Authors@R: 
+    person("Oliver", "Rehren", , "o.rehren@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-7602-8219"))
+Maintainer: Oliver Rehren <o.rehren@gmail.com>
+Description: Create academic CVs and cover letters using the Academic-CV
+    Typst template with this Quarto Extension. Includes an RStudio Project
+    Template.
+License: MIT + file LICENSE
 URL: https://github.com/orehren/acvt
 BugReports: https://github.com/orehren/acvt/issues
-License: MIT
 Encoding: UTF-8
+Language: en
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+Depends:
+    R (>= 4.1.0)
 Imports:
     yaml,
     rmarkdown,
@@ -18,8 +26,8 @@ Imports:
     purrr,
     checkmate,
     rlang,
-    readxl
+    readxl,
+    jsonlite,
+    utils
 Suggests:
-    testthat (>= 3.0.0),
     renv
-Config/testthat/edition: 3

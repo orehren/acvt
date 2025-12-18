@@ -2,7 +2,7 @@
 % Please edit documentation in R/acvt_template.R
 \name{acvt_template}
 \alias{acvt_template}
-\title{Create a new Academic CV Project}
+\title{Create a new Academic-CV Project}
 \usage{
 acvt_template(path, ...)
 }

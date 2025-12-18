@@ -2,7 +2,7 @@
 % Please edit documentation in R/zzz_dev.R
 \name{dev_sync_template}
 \alias{dev_sync_template}
-\title{Developer Tool: Sync Template to Library}
+\title{Developer Tool: Sync Academic-CV Template to Library}
 \usage{
 dev_sync_template()
 }
@@ -10,7 +10,7 @@ dev_sync_template()
 Invisible NULL.
 }
 \description{
-Copies the current template files from your source directory (`inst/`)
+Copies the current template files from your source directory (\verb{inst/})
 directly to your installed R library.
 }
 \details{

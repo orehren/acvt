@@ -9,7 +9,7 @@ contributes:
     project:
       type: website
       output-dir: _output
-      pre-render: _extensions/acvt/R/_fetch_cv_data.R
+      pre-render: _extensions/orehren/acvt/R/pre-render.R
     format:
       acvt-typst: default
   formats:

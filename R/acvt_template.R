@@ -42,7 +42,7 @@ acvt_template <- function(path, ...) {
 
   target_qmd <- file.path(path, "cv.qmd")
   file.copy(
-    from = file.path(source_of_truth_dir, "academicCV-template.qmd"),
+    from = file.path(source_of_truth_dir, "Academic-CV-template.qmd"),
     to = target_qmd
   )
 

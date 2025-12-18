@@ -27,7 +27,7 @@ acvt_template <- function(path, ...) {
 
   # 4. Copy Extension Files
   source_ext_dir <- file.path(skeleton_dir, "_extensions")
-  dest_ext_dir <- file.path(path, "_extensions")
+  dest_ext_dir <- file.path(path, "_extensions/orehren")
 
   if (!dir.exists(dest_ext_dir)) dir.create(dest_ext_dir, recursive = TRUE)
   file.copy(from = source_ext_dir, to = path, recursive = TRUE)
@@ -69,24 +69,28 @@ acvt_template <- function(path, ...) {
 # HELPER FUNCTIONS
 # ==============================================================================
 
+#' Update Template YAML Header
+#'
+#' Modifies the author details in the generated Quarto markdown file.
+#'
+#' @details
+#' This function uses Regular Expressions instead of a YAML parser to modify
+#' the file. This approach is chosen for two reasons:
+#' 1. **Robustness:** It prevents parsing errors if the Quarto YAML header contains
+#'    complex structures or tab characters that might crash standard R YAML parsers.
+#' 2. **Preservation:** It ensures that comments and specific indentation styles
+#'    in the rest of the file remain untouched.
+#'
+#' @param file_path The absolute path to the `.qmd` file to be modified.
+#' @param firstname The user's first name to inject.
+#' @param lastname The user's last name to inject.
+#'
+#' @return NULL. The function is used for its side effect of writing to the file.
+#' @noRd
 .update_template_yaml <- function(file_path, firstname, lastname) {
-  # Wir lesen die Datei als reinen Text
   lines <- readLines(file_path)
 
-  # Wir nutzen Regex, um die Zeilen zu finden und zu ersetzen.
-  # Das ist robuster als yaml::read_yaml, da es nicht abstürzt,
-  # wenn der Rest des YAMLs komplex ist.
-
-  # Pattern:
-  # ^       -> Start der Zeile
-  # \s*     -> Beliebig viele Leerzeichen (Einrückung)
-  # key:    -> Der Schlüssel
-  # \s*     -> Leerzeichen nach dem Doppelpunkt
-  # .*      -> Der alte Wert (wird ersetzt)
-
   if (!is.null(firstname) && nzchar(firstname)) {
-    # Ersetzt: firstname: "AlterWert" -> firstname: "NeuerWert"
-    # \\1 behält die ursprüngliche Einrückung bei
     lines <- gsub("^(\\s*firstname:\\s*).*", paste0("\\1\"", firstname, "\""), lines)
   }
 
@@ -97,6 +101,26 @@ acvt_template <- function(path, ...) {
   writeLines(lines, file_path)
 }
 
+#' Inject Self-Destructing File Open Hook
+#'
+#' Appends a temporary hook to the project's `.Rprofile` to ensure the main
+#' document opens automatically upon the first project launch.
+#'
+#' @details
+#' RStudio's native `OpenFiles` directive in `.dcf` templates is susceptible to
+#' race conditions, often failing to open the file if the filesystem or context
+#' switch is too slow.
+#'
+#' This function solves this by injecting code that runs on `rstudio.sessionInit`.
+#' To keep the user's project clean, the injected code contains a "Self-Destruct"
+#' mechanism: it reads the `.Rprofile`, removes its own code block, and saves
+#' the file immediately after opening the target document.
+#'
+#' @param path The root directory of the new project.
+#' @param filename The name of the file to open (e.g., "cv.qmd").
+#'
+#' @return NULL. The function is used for its side effect of modifying `.Rprofile`.
+#' @noRd
 .add_temporary_open_hook <- function(path, filename) {
   rprofile_path <- file.path(path, ".Rprofile")
 

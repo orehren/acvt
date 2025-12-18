@@ -4,24 +4,33 @@
 #' Uses the 'cli' package for a rich, colored terminal experience.
 #'
 #' @return Invisible NULL.
+#' @importFrom utils install.packages tail
 #' @export
 setup_acvt <- function() {
   if (!interactive()) stop("This function must be run in an interactive R session.")
 
   # --- STEP 1: WELCOME ---
-  if (!.step_welcome()) {
+  # Returns TRUE (next), "skip_packages" (jump to auth), or FALSE (abort)
+  welcome_result <- .step_welcome()
+
+  if (isFALSE(welcome_result)) {
     return(invisible(NULL))
   }
 
   # --- STEP 2: PACKAGES ---
-  # Returns TRUE (next), "skip_auth" (skip next), or FALSE (abort)
-  pkg_result <- .step_packages()
+  # Default to TRUE so that if we skip packages, we proceed to Auth by default
+  pkg_result <- TRUE
+
+  if (!identical(welcome_result, "skip_packages")) {
+    pkg_result <- .step_packages()
+  }
 
   if (isFALSE(pkg_result)) {
     return(invisible(NULL))
   }
 
   # --- STEP 3: AUTHENTICATION ---
+  # Only run auth if the user didn't choose to skip it in the package step
   if (!identical(pkg_result, "skip_auth")) {
     if (!.step_auth()) {
       return(invisible(NULL))
@@ -30,7 +39,12 @@ setup_acvt <- function() {
     cli::cli_alert_info("Skipping Google Authentication as requested.")
   }
 
-  # --- STEP 4: FINISH ---
+  # --- STEP 4: TEMPLATES ---
+  if (!.step_templates()) {
+    return(invisible(NULL))
+  }
+
+  # --- STEP 5: FINISH ---
   .step_finish()
 }
 
@@ -51,7 +65,7 @@ REQUIRED_PACKAGES <- c(
 # ==============================================================================
 
 #' Display Welcome Message and Confirm Start
-#' @return Logical TRUE to proceed, FALSE to abort.
+#' @return Logical TRUE (next), "skip_packages" (skip next), or FALSE (abort).
 #' @noRd
 .step_welcome <- function() {
   cli::cli_h1("CV Project Setup Wizard")
@@ -62,6 +76,7 @@ REQUIRED_PACKAGES <- c(
   cli::cli_li("{.strong Step 1:} Check if all required R packages are installed.")
   cli::cli_li("{.strong Step 2:} Install any required R package that is not installed yet.")
   cli::cli_li("{.strong Step 3:} Authenticate with your Google Drive.")
+  cli::cli_li("{.strong Step 4:} Initialize template files (cv.qmd, _quarto.yml).")
   cli::cli_end()
 
   cli::cli_alert_info("All steps are optional and you can abort this wizard at any time by selecting 'Quit'.")
@@ -83,7 +98,7 @@ REQUIRED_PACKAGES <- c(
 
   if (choice == "2") {
     cli::cli_alert_info("Skipping package check...")
-    return(TRUE)
+    return("skip_packages")
   }
 
   return(TRUE)
@@ -388,7 +403,71 @@ REQUIRED_PACKAGES <- c(
 
 
 # ==============================================================================
-# 4. FINISH STEP
+# 4. TEMPLATE INITIALIZATION STEP
+# ==============================================================================
+
+#' Execute Template Copy Step
+#'
+#' Copies the default template files (cv.qmd, _quarto.yml) from the extension
+#' folder to the project root, overwriting existing files if confirmed.
+#'
+#' @return Logical TRUE (success/skip) or FALSE (abort).
+#' @noRd
+.step_templates <- function() {
+  cli::cli_h2("Step 3: Template Initialization")
+
+  cli::cli_text("To start working, we can copy the default template files to your project root:")
+  cli::cli_ul()
+  cli::cli_li("{.file _quarto.yml} (Project Configuration)")
+  cli::cli_li("{.file cv.qmd} (The main CV document)")
+  cli::cli_end()
+
+  cli::cli_alert_warning("Warning: This will overwrite existing files with these names in the root folder.")
+
+  choice <- .ask_option(
+    question = "Do you want to copy the template files?",
+    options = c(
+      "1" = "Yes, copy files",
+      "2" = "Skip",
+      "q" = "Quit Wizard"
+    )
+  )
+
+  if (choice == "q") {
+    return(FALSE)
+  }
+  if (choice == "2") {
+    cli::cli_alert_info("Skipping template initialization.")
+    return(TRUE)
+  }
+
+  # Locate extension folder
+  # We assume the standard Quarto structure: _extensions/orehren/acvt
+  ext_path <- file.path("_extensions", "orehren", "acvt")
+
+  if (!dir.exists(ext_path)) {
+    cli::cli_alert_danger(paste0("Extension directory not found at {.path ", ext_path, "}. Please install the extension first."))
+    return(FALSE)
+  }
+
+  # Perform Copy
+  tryCatch(
+    {
+      file.copy(file.path(ext_path, "_quarto.yml"), "_quarto.yml", overwrite = TRUE)
+      file.copy(file.path(ext_path, "Academic-CV-template.qmd"), "cv.qmd", overwrite = TRUE)
+      cli::cli_alert_success("Template files copied to project root.")
+      return(TRUE)
+    },
+    error = function(e) {
+      cli::cli_alert_danger(paste("Failed to copy files:", e$message))
+      return(FALSE)
+    }
+  )
+}
+
+
+# ==============================================================================
+# 5. FINISH STEP
 # ==============================================================================
 
 #' Display Finish Message
@@ -396,7 +475,7 @@ REQUIRED_PACKAGES <- c(
 .step_finish <- function() {
   cli::cli_h1("Setup Complete")
   cli::cli_alert_success("Your CV environment is ready!")
-  cli::cli_text("You can now run {.code quarto render} to build your CV.")
+  cli::cli_text("You can now run {.code quarto render cv.qmd} to build your CV.")
 }
 
 

@@ -1,8 +1,8 @@
 ---
-title: "acvt - academicCVTemplate"
+title: "acvt - Academic-CV Template"
 ---
 
-Welcome to the documentation for the `academicCVTemplate`. This is a comprehensive **Quarto Project Extension** designed to help you create professional academic CVs and cover letters using the Typst typesetting system.
+Welcome to the documentation for the `Academic-CV Template`. This is a comprehensive **Quarto Project Extension** designed to help you create professional academic CVs and cover letters using the Typst typesetting system.
 
 ## Project Extension
 

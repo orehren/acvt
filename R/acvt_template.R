@@ -8,13 +8,12 @@
 #' @param ... Dynamic arguments passed by RStudio based on the .dcf file.
 #' @export
 acvt_template <- function(path, ...) {
-
   # 1. Capture Arguments
   dots <- list(...)
   firstname <- dots$firstname
-  lastname  <- dots$lastname
+  lastname <- dots$lastname
   renv_enabled <- isTRUE(dots$renv)
-  git_enabled  <- isTRUE(dots$git)
+  git_enabled <- isTRUE(dots$git)
 
   # 2. Create Project Directory
   path <- normalizePath(path, mustWork = FALSE)
@@ -28,20 +27,24 @@ acvt_template <- function(path, ...) {
 
   # 4. Copy Extension Files
   source_ext_dir <- file.path(skeleton_dir, "_extensions")
-  dest_ext_dir   <- file.path(path, "_extensions")
+  dest_ext_dir <- file.path(path, "_extensions")
 
   if (!dir.exists(dest_ext_dir)) dir.create(dest_ext_dir, recursive = TRUE)
   file.copy(from = source_ext_dir, to = path, recursive = TRUE)
 
   # 5. Move Template Files to Root & Rename
-  source_of_truth_dir <- file.path(dest_ext_dir, "orehren", "acvt")
+  source_of_truth_dir <- file.path(dest_ext_dir, "acvt")
 
-  file.copy(from = file.path(source_of_truth_dir, "_quarto.yml"),
-            to = file.path(path, "_quarto.yml"))
+  file.copy(
+    from = file.path(source_of_truth_dir, "_quarto.yml"),
+    to = file.path(path, "_quarto.yml")
+  )
 
   target_qmd <- file.path(path, "cv.qmd")
-  file.copy(from = file.path(source_of_truth_dir, "academicCV-template.qmd"),
-            to = target_qmd)
+  file.copy(
+    from = file.path(source_of_truth_dir, "academicCV-template.qmd"),
+    to = target_qmd
+  )
 
   # 6. Personalize YAML Header
   .update_template_yaml(target_qmd, firstname, lastname)
@@ -67,12 +70,16 @@ acvt_template <- function(path, ...) {
 # ==============================================================================
 
 .update_template_yaml <- function(file_path, firstname, lastname) {
-  if (!requireNamespace("yaml", quietly = TRUE)) return()
+  if (!requireNamespace("yaml", quietly = TRUE)) {
+    return()
+  }
 
   lines <- readLines(file_path)
   delimiters <- which(lines == "---")
 
-  if (length(delimiters) < 2) return()
+  if (length(delimiters) < 2) {
+    return()
+  }
 
   yaml_content <- lines[(delimiters[1] + 1):(delimiters[2] - 1)]
   body_content <- lines[(delimiters[2] + 1):length(lines)]
@@ -80,7 +87,7 @@ acvt_template <- function(path, ...) {
   yaml_data <- yaml::read_yaml(text = paste(yaml_content, collapse = "\n"))
 
   if (!is.null(firstname)) yaml_data$author$firstname <- firstname
-  if (!is.null(lastname))  yaml_data$author$lastname  <- lastname
+  if (!is.null(lastname)) yaml_data$author$lastname <- lastname
 
   new_yaml_str <- yaml::as.yaml(yaml_data, indent.mapping.sequence = TRUE)
 
@@ -93,7 +100,7 @@ acvt_template <- function(path, ...) {
 
   # Unique markers to identify the block for deletion
   marker_start <- "# <<< ACVT TEMPORARY HOOK START >>>"
-  marker_end   <- "# <<< ACVT TEMPORARY HOOK END >>>"
+  marker_end <- "# <<< ACVT TEMPORARY HOOK END >>>"
 
   # The code injected into the new project's .Rprofile
   hook_code <- c(

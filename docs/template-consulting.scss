@@ -51,15 +51,22 @@ $dark:          $stone-50;
 $border-color:  $slate-700;
 
 // Typography Mapping
-$font-family-serif:      "Literata", "Times New Roman", Times, serif;
-$font-family-sans-serif: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+// $font-family-serif:      "Literata", "Times New Roman", Times, serif;
+// $font-family-sans-serif: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+// $font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+// Typography Mapping 
+
+$headings-font-family:   "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+$font-family-sans-serif: "Alegreya Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 $font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
 $font-size-base:        $size-normal;
-$font-weight-base:      $weight-light;
+// $font-weight-base:      $weight-light;
+// Basis-Einstellungen anpassen (Alegreya ist etwas feiner)
+$font-weight-base:       $weight-regular;
 $line-height-base:      1.7;
 
-// Headings nutzen Literata (Serif)
+
 $headings-font-family:  $font-family-serif;
 $headings-font-weight:  $weight-bold;
 $headings-color:        $stone-50;
@@ -72,7 +79,7 @@ $link-decoration:       none;
 // $navbar-bg:             $slate-900;
 // $navbar-fg:             $stone-50;
 // $navbar-hl:             $indigo;
-$navbar-bg:             $slate-400; // Hintergrund: mittelgrau
+$navbar-bg:             $slate-300; // Hintergrund: mittelgrau
 $navbar-fg:             $slate-900; // Vordergrund: Dunkelblau (damit Text lesbar ist)
 $navbar-hl:             $indigo;    // Highlight bleibt gleich
 
@@ -87,7 +94,11 @@ $pre-color:             $slate-200;
 // 4. IMPORTS & GLOBAL RESETS
 // -----------------------------------------------------------------------------
 
-@import url('https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,200..900&family=Manrope:wght@200..800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+// Literata + Manrope + Space Mono Import
+// @import url('https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,200..900&family=Manrope:wght@200..800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+// IMPORT: Exo 2, Alegreya Sans, Space Mono
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 :root {
   --color-accent: #4F46E5;
@@ -95,8 +106,10 @@ $pre-color:             $slate-200;
   --grid-main-fr: 9fr;
 
   // Font Zuweisung
-  --font-header: "Literata", serif;      // Überschriften, Navbar, TOC
-  --font-text: "Manrope", sans-serif;    // Fließtext
+//  --font-header: "Literata", serif;      // Überschriften, Navbar, TOC
+//  --font-text: "Manrope", sans-serif;    // Fließtext
+  --font-header: "Exo 2", sans-serif;        // Überschriften, Navbar
+  --font-text: "Alegreya Sans", sans-serif;  // Fließtext
 }
 
 body {
@@ -115,7 +128,8 @@ html {
 // Überschriften
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-header);
-  letter-spacing: -0.01em;
+  // letter-spacing: -0.01em;
+  letter-spacing: 0.02em;
   margin-top: 2rem;
   margin-bottom: 1rem;
   color: $stone-50;
@@ -257,7 +271,7 @@ a {
 .navbar {
     // Vorher: border-bottom: 1px solid $slate-800;
     // Neu (Empfehlung): Etwas dunkler als der Hintergrund, aber nicht schwarz
-    border-bottom: 1px solid $slate-500;
+    border-bottom: 1px solid $slate-400;
 
     .nav-link.active,
     .nav-link:hover,
@@ -269,7 +283,7 @@ a {
     .navbar-toggler {
         // Vorher: $slate-700
         // Neu: Etwas heller, passend zum hellen Theme
-        border-color: $slate-600;
+        border-color: $slate-500;
     }
 }
 

@@ -9,9 +9,6 @@ website:
       - icon: github
         href: https://github.com/orehren/acvt
     right:
-      tools:
-        - icon: github
-          href: https://github.com/orehren/acvt
       - href: index.qmd
         text: Home
       - href: installation.qmd

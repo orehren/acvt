@@ -168,7 +168,7 @@ h2 {
 }
 
 // -----------------------------------------------------------------------------
-// 6. CODE BLÖCKE & INLINE CODE (Updated)
+// 6. CODE BLÖCKE & INLINE CODE (Final Fix)
 // -----------------------------------------------------------------------------
 
 // A. INLINE CODE (`code`)
@@ -192,62 +192,68 @@ code:not(pre > code) a {
 }
 
 // B. CODE BLÖCKE (Container)
-// Wir stylen div.sourceCode, das ist der Container um den Block
 div.sourceCode {
   font-family: $font-family-monospace;
   background-color: $slate-800 !important; 
   color: $slate-200;
   
   // RAHMEN-LOGIK:
-  border: 1px solid var(--color-accent); // $slate-700; // Feiner Rahmen oben/rechts/unten
-  border-left: 4px solid var(--color-accent) !important; // Fetter Akzent-Rahmen links
+  border: 1px solid $slate-700; 
+  border-left: 4px solid var(--color-accent) !important; 
   border-radius: 4px;
   
   margin-bottom: 1.5rem;
-  padding: 0; // Padding wird oft vom inneren pre geregelt
+  padding: 0; 
 }
 
 // Das eigentliche pre-Element im Block
 pre, .sourceCode pre {
-  background-color: transparent !important; // Hintergrund kommt vom div
-  border: none !important; // Rahmen kommt vom div
-  padding: 1rem; // Innenabstand für den Text
+  background-color: transparent !important; 
+  border: none !important; 
+  padding: 1rem; 
   margin: 0;
   color: inherit;
 }
 
-// C. COPY BUTTON (Fix)
-.code-copy-button {
-  // 1. Opacity Fix: Damit die Farbe sofort sichtbar ist
+// C. COPY BUTTON (Ultimate Fix)
+div.sourceCode .code-copy-button {
+  // 1. Basis-Styling
   opacity: 0.5 !important; 
-  
-  // 2. Farbe: Akzentfarbe für das Icon
-  color: var(--color-accent) !important;
-  
-  // 3. Rahmen & Hintergrund
-  background-color: transparent !important;
   border: 1px solid $slate-700 !important;
+  background-color: transparent !important;
   
-  transition: all 0.2s ease;
-  
-  // Icon explizit färben (manchmal nötig bei Bootstrap Icons)
-  > i, > .bi {
+  // 2. Farbe erzwingen (auf Button-Ebene)
+  color: var(--color-accent) !important;
+
+  // 3. Das Icon im Inneren zwingen
+  // Wir entfernen das '>', damit es auch greift, wenn das Icon tiefer verschachtelt ist
+  i, .bi, svg {
     color: var(--color-accent) !important;
+    fill: var(--color-accent) !important; // Falls es ein SVG ist
+    font-style: normal;
   }
 
-  // Hover State
+  // 4. HOVER STATE (Kein Quadrat!)
   &:hover {
-    background-color: var(--color-accent) !important; // Button füllen
-    border-color: var(--color-accent) !important;
-    color: $stone-50 !important; // Icon wird weiß/hell
+    opacity: 1 !important;
     
-    > i, > .bi {
-      color: $stone-50 !important;
+    // Rahmen wird farbig
+    border-color: var(--color-accent) !important;
+    
+    // WICHTIG: Hintergrund bleibt transparent (kein gefülltes Quadrat)
+    background-color: transparent !important; 
+    
+    // Icon bleibt farbig
+    color: var(--color-accent) !important;
+    
+    i, .bi, svg {
+      color: var(--color-accent) !important;
+      fill: var(--color-accent) !important;
     }
   }
 }
 
-// D. TOC CODE RESET (Damit das Inhaltsverzeichnis sauber bleibt)
+// D. TOC CODE RESET
 #quarto-margin-sidebar code {
   font-size: 0.75em !important; 
   background-color: transparent !important;
@@ -264,7 +270,6 @@ pre, .sourceCode pre {
 .token.string { color: #A5B4FC; } 
 .token.number { color: #F472B6; } 
 .token.keyword { color: var(--color-accent); font-weight: bold; }
-
 
 // -----------------------------------------------------------------------------
 // 7. DYNAMISCHE ELEMENTE (Lua Filter Integration)

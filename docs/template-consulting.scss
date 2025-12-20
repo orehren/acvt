@@ -215,47 +215,43 @@ pre, .sourceCode pre {
   color: inherit;
 }
 
-// C. COPY BUTTON (Browser Reset Fix)
-div.sourceCode .code-copy-button {
-  // 1. Browser-Defaults killen (WICHTIG!)
+// C. COPY BUTTON (HTML Structure Fix)
+// Der Button liegt im Wrapper .code-copy-outer-scaffold, nicht in .sourceCode!
+.code-copy-outer-scaffold .code-copy-button {
+  // 1. Browser-Defaults & Basis-Reset
   appearance: none !important;
-  -webkit-appearance: none !important;
   box-shadow: none !important;
-  
-  // 2. Basis-Styling
-  opacity: 0.5 !important; 
   background-color: transparent !important;
+  
+  // 2. Rahmen & Opacity (Standard)
   border: 1px solid $slate-700 !important;
   border-radius: 4px !important;
+  opacity: 0.5 !important;
   
-  // 3. Farbe erzwingen
-  // Wir setzen die Textfarbe des Buttons auf die Akzentfarbe.
-  // Da Bootstrap Icons 'currentColor' nutzen, sollte das Icon folgen.
+  // 3. Farbe erzwingen (Akzentfarbe)
   color: var(--color-accent) !important;
   
   transition: all 0.2s ease;
 
-  // 4. Das Icon im Inneren explizit ansprechen
-  > i, > .bi {
+  // 4. Das Icon im Inneren
+  i, .bi {
     color: var(--color-accent) !important;
-    font-style: normal;
-    display: inline-block; // Sicherstellen, dass es gerendert wird
   }
 
   // 5. HOVER STATE
   &:hover {
     opacity: 1 !important;
     
-    // Rahmen in Akzentfarbe
+    // Rahmen leuchtet in Akzentfarbe
     border-color: var(--color-accent) !important;
     
-    // Hintergrund transparent lassen (kein Quadrat!)
+    // WICHTIG: Hintergrund bleibt transparent (kein gefülltes Quadrat!)
     background-color: transparent !important; 
     
-    // Icon Farbe sicherstellen
+    // Icon bleibt Akzentfarbe
     color: var(--color-accent) !important;
     
-    > i, > .bi {
+    i, .bi {
       color: var(--color-accent) !important;
     }
   }

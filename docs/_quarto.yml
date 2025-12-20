@@ -4,9 +4,9 @@ project:
 
 website:
   title: "Academic-CV Template"
-  search:
-    location: sidebar
-    type: overlay
+  # search:
+  #   location: sidebar
+  #   type: overlay
   sidebar:
     style: floating
     tools: 

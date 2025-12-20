@@ -42,6 +42,7 @@ format:
     code-copy: true
     code-link: true
     code-overflow: wrap
+    code-block-border-left: true
     keep-md: true # Keep the markdown files
     number-sections: false
 

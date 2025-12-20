@@ -91,7 +91,7 @@ If you want to include a cover letter, configure the recipient details and write
 recipient:
   name: "Dr. Turing"
   salutation: "Dear"
-  valediction: "Sincerely
+  valediction: "Sincerely"
   addressee: Dr. Alan Turing"
   address: "Department of Computer Science"
   city: "Bletchley Park"

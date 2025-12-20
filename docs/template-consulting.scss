@@ -365,3 +365,30 @@ a {
     &:hover { color: var(--color-accent); }
   }
 }
+
+// -----------------------------------------------------------------------------
+// COPY BUTTON STYLING
+// -----------------------------------------------------------------------------
+
+.code-copy-button {
+  // 1. Das Symbol selbst in der Akzentfarbe
+  color: var(--color-accent) !important;
+  
+  // 2. Den Rahmen etwas subtiler machen (passend zum Code-Block Border)
+  border-color: $slate-700 !important;
+  background-color: transparent !important;
+  
+  // 3. Hover-Effekt: Symbol wird weiß, Rahmen wird Akzentfarbe
+  transition: all 0.2s ease;
+  
+  &:hover {
+    color: $stone-50 !important;             // Symbol wird weiß
+    border-color: var(--color-accent) !important; // Rahmen leuchtet
+    background-color: color-mix(in srgb, var(--color-accent), transparent 90%) !important; // Leichter Hintergrund-Glow
+  }
+  
+  // Sicherstellen, dass das Icon (<i> Tag) die Farbe erbt
+  i, .bi {
+    color: inherit !important;
+  }
+}

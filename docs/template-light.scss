@@ -59,8 +59,12 @@ $headings-color:         $slate-900; // Fast Schwarz für Überschriften
 
 // --- Navigation (Navbar) ---
 // Academia Look: Dunkle Leiste oben für Seriosität
-$navbar-bg:     $slate-900; 
-$navbar-fg:     $stone-50; 
+// $navbar-bg:     $slate-900; 
+// $navbar-fg:     $stone-50; 
+// $navbar-hl:     $indigo;
+// --- Navigation (Navbar) ---
+$navbar-bg:     $slate-400; 
+$navbar-fg:     $slate-900; 
 $navbar-hl:     $indigo;
 
 // --- Footer ---
@@ -265,7 +269,8 @@ a {
 }
 
 .navbar {
-    border-bottom: 1px solid $slate-800; // Dunkler Rand passend zum BG
+    // border-bottom: 1px solid $slate-800; // Dunkler Rand passend zum BG
+    border-bottom: 1px solid $slate-500; 
     
     .nav-link.active,
     .nav-link:hover,

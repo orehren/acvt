@@ -51,7 +51,7 @@ $dark:          $stone-50;
 $border-color:  $slate-700;
 
 // Typography Mapping
-$font-family-sans-serif-headers: "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+// $font-family-sans:
 $font-family-sans-serif: "Alegreya Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 $font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
@@ -62,7 +62,7 @@ $font-weight-base:       $weight-regular;
 $line-height-base:      1.7;
 
 
-$headings-font-family:  $font-family-serif;
+$headings-font-family:  "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 $headings-font-weight:  $weight-bold;
 $headings-color:        $stone-50;
 

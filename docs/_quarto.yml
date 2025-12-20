@@ -39,6 +39,9 @@ format:
       - cosmo
       - template-consulting.scss
     toc: true
+    code-copy: true
+    code-link: true
+    code-overflow: wrap
     keep-md: true # Keep the markdown files
     number-sections: false
 

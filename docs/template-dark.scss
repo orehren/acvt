@@ -1,7 +1,7 @@
 /*-- scss:defaults --*/
 
 // -----------------------------------------------------------------------------
-// 1. FARBPALETTE & VARIABLEN
+// 1. FARBPALETTE
 // -----------------------------------------------------------------------------
 
 $slate-900: #0F172A; 
@@ -17,7 +17,7 @@ $stone-50:  #FAFAF9;
 $indigo:    #4F46E5; 
 
 // -----------------------------------------------------------------------------
-// 2. TYPOGRAFIE DEFINITIONEN
+// 2. TYPOGRAFIE (Definitionen)
 // -----------------------------------------------------------------------------
 
 $weight-light:   300;
@@ -35,51 +35,59 @@ $size-label:  0.80rem;
 $size-skill:  0.75rem; 
 
 // -----------------------------------------------------------------------------
-// 3. QUARTO & BOOTSTRAP CONFIGURATION
+// 3. QUARTO VARIABLES (Native Configuration)
 // -----------------------------------------------------------------------------
 
-// --- General ---
+// --- Page Layout & Colors ---
 $body-bg:       $slate-900; 
 $body-color:    $stone-50;  
-$primary:       $indigo; 
-$secondary:     $slate-400; 
-$light:         $slate-800; 
-$dark:          $stone-50;  
-$border-color:  $slate-700; 
+$link-color:    $indigo;
 
-// --- Typography ---
+// --- Fonts ---
 $font-family-sans-serif: "Alegreya Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 $font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-$font-family-serif:      "Times New Roman", Times, serif; // Fallback
+// Bootstrap Variable für Headlines (Quarto nutzt diese):
+$headings-font-family:   "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+$headings-font-weight:   $weight-bold;
+$headings-color:         $stone-50;
 
-$font-size-base:        $size-normal;
-$font-weight-base:      $weight-regular; 
-$line-height-base:      1.7; 
+$font-size-root:         $size-normal;
+$line-height-base:       1.7;
 
-$headings-font-family:  "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-$headings-font-weight:  $weight-bold;
-$headings-color:        $stone-50;
+// --- Navigation (Navbar) ---
+$navbar-bg:     $slate-400; 
+$navbar-fg:     $slate-900; 
+$navbar-hl:     $indigo;
 
-// --- Navbar ---
-$navbar-bg:             $slate-400; 
-$navbar-fg:             $slate-900; 
-$navbar-hl:             $indigo;
-$link-color:            $indigo;
-$link-decoration:       none;
+// --- Footer ---
+$footer-bg:     darken($slate-900, 2%);
+$footer-fg:     $slate-500;
 
-// --- CODE BLOCKS (Die neuen Variablen!) ---
-// Hintergrund & Text
-$code-block-bg:         $slate-800;
-$code-color:            $slate-200; // Inline Code Text
+// --- Table of Contents (TOC) ---
+$toc-color:           $slate-400;
+$toc-font-size:       $size-label;
+$toc-active-border:   $indigo; // Fallback, wird unten dynamisch überschrieben
+$toc-inactive-border: transparent;
 
-// Linker Rand (Aktivieren & Stylen)
-$code-block-border-left:       true;    // Aktiviert den Rand
-$code-block-border-left-size:  4px;     // Breite
+// --- Code Blocks (Native Styling) ---
+$code-block-bg:                $slate-800;
+$code-block-border-left:       $indigo; // Fallback Farbe (wird dynamisch überschrieben)
 $code-block-border-left-style: solid;
+$code-block-border-left-size:  4px;
+$code-block-bg-padding:        1rem; // Innenabstand
 
-// Copy Button (Statische Fallbacks)
+// --- Code Copy Button ---
 $btn-code-copy-color:        $indigo;   // Icon Farbe
-$btn-code-copy-color-active: $stone-50; // Hover Farbe (Weiß)
+$btn-code-copy-color-active: $stone-50; // Hover Farbe
+
+// --- Inline Code ---
+$code-bg:       $slate-800;
+$code-color:    $slate-200;
+
+// --- Callouts ---
+$callout-border-width:  4px;
+$callout-margin-top:    2rem;
+$callout-margin-bottom: 2rem;
 
 
 /*-- scss:rules --*/
@@ -91,9 +99,7 @@ $btn-code-copy-color-active: $stone-50; // Hover Farbe (Weiß)
 @import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 :root {
-  --color-accent: #4F46E5;     
-  --grid-sidebar-fr: 3fr;      
-  --grid-main-fr: 9fr;   
+  --color-accent: #4F46E5;
   
   --font-header: "Exo 2", sans-serif;        
   --font-text: "Alegreya Sans", sans-serif;  
@@ -109,15 +115,15 @@ html {
 }
 
 // -----------------------------------------------------------------------------
-// 5. TYPOGRAFIE & UI
+// 5. TYPOGRAFIE & UI FEINSCHLIFF
 // -----------------------------------------------------------------------------
 
+// Headlines
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-header);
   letter-spacing: 0.02em; 
   margin-top: 2rem;
   margin-bottom: 1rem;
-  color: $stone-50;
 }
 
 h1 { 
@@ -132,6 +138,7 @@ h2 {
   font-weight: $weight-bold;
 }
 
+// Title Block
 #title-block-header h1.title {
   font-family: var(--font-header);
   font-weight: $weight-black;      
@@ -142,6 +149,7 @@ h2 {
   text-transform: none; 
 }
 
+// Font Zuweisungen für UI
 .navbar, .navbar-brand, .nav-link, .dropdown-item, #quarto-margin-sidebar, .footer h1, .footer h2, .footer h3 { 
   font-family: var(--font-header) !important;
 }
@@ -150,30 +158,25 @@ h2 {
   font-family: var(--font-text) !important;
 }
 
+// TOC Feinschliff (Hover & Spacing)
 #quarto-margin-sidebar {
-  font-size: $size-label; 
-  color: $slate-400;
   letter-spacing: 0.02em; 
-  
   a {
-    color: $slate-400 !important;
+    transition: color 0.2s;
     &:hover, &.active {
       color: var(--color-accent) !important;
+      border-left-color: var(--color-accent) !important; // Dynamischer Border
     }
   }
 }
 
 // -----------------------------------------------------------------------------
-// 6. CODE BLÖCKE & INLINE CODE (Cleaned Up)
+// 6. CODE STYLING (Ergänzungen zu den Defaults)
 // -----------------------------------------------------------------------------
 
-// A. INLINE CODE
-// Wir nutzen hier CSS, um die Bootstrap-Defaults zu überschreiben,
-// da $code-bg manchmal von Quarto berechnet wird.
+// A. INLINE CODE (Chip-Look)
+// Die Farben kommen aus Defaults, aber Border/Radius müssen wir hier setzen
 code:not(pre > code) {
-  font-family: $font-family-monospace;
-  color: $slate-200 !important;       
-  background-color: $slate-800 !important; 
   padding: 0.2em 0.4em;
   border-radius: 4px;
   border: 1px solid $slate-700; 
@@ -188,41 +191,38 @@ code:not(pre > code) a {
   &:hover { color: $stone-50 !important; }
 }
 
-// B. CODE BLÖCKE (Dynamische Farben)
-// Die Struktur kommt jetzt aus den Defaults ($code-block-border-left etc.)
-// Wir müssen nur die dynamische Akzentfarbe injizieren.
+// B. CODE BLÖCKE (Dynamik)
+// Border-Width und Style kommen aus Defaults, hier nur die dynamische Farbe
 div.sourceCode {
-  // Überschreibt die statische Farbe mit der Lua-Variable
-  border-left-color: var(--color-accent) !important; 
+  border: 1px solid $slate-700; // Rahmen rundherum
+  border-left-color: var(--color-accent) !important; // Linker Akzent
   border-radius: 4px;
 }
 
-// C. COPY BUTTON (Dynamik & Opacity)
-.code-copy-button {
-  // 1. Opacity erzwingen (damit es nicht ausgegraut ist)
-  opacity: 1 !important;
+// C. COPY BUTTON (Spezifisches Verhalten)
+.code-copy-outer-scaffold .code-copy-button {
+  appearance: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  border: 1px solid $slate-700 !important;
+  border-radius: 4px !important;
   
-  // 2. Dynamische Farbe zuweisen
+  // Opacity Fix & Dynamische Farbe
+  opacity: 1 !important;
   color: var(--color-accent) !important;
   
-  // 3. Icon im Inneren
-  i, .bi {
-    color: var(--color-accent) !important;
-  }
+  transition: all 0.2s ease;
 
-  // 4. Hover State
+  i, .bi { color: inherit !important; }
+
   &:hover {
-    background-color: var(--color-accent) !important; // Hintergrund füllen
     border-color: var(--color-accent) !important;
-    color: $stone-50 !important; // Icon weiß
-    
-    i, .bi {
-      color: $stone-50 !important;
-    }
+    background-color: transparent !important; 
+    color: var(--color-accent) !important;
   }
 }
 
-// D. TOC RESET
+// D. TOC CODE RESET
 #quarto-margin-sidebar code {
   font-size: 0.75em !important; 
   background-color: transparent !important;
@@ -242,16 +242,13 @@ div.sourceCode {
 
 
 // -----------------------------------------------------------------------------
-// 7. DYNAMISCHE ELEMENTE
+// 7. DYNAMISCHE ELEMENTE & NAV
 // -----------------------------------------------------------------------------
 
 a {
   color: var(--color-accent);
   transition: all 0.2s ease;
-  
-  &:hover {
-    color: color-mix(in srgb, var(--color-accent), white 30%); 
-  }
+  &:hover { color: color-mix(in srgb, var(--color-accent), white 30%); }
 }
 
 .navbar {
@@ -269,172 +266,10 @@ a {
     }
 }
 
-// -----------------------------------------------------------------------------
-// 8. CV GRID LAYOUT
-// -----------------------------------------------------------------------------
-
-.cv-section-container { margin-bottom: 3rem; }
-
-.cv-row {
-  display: grid;
-  grid-template-columns: var(--grid-sidebar-fr) var(--grid-main-fr);
-  column-gap: 2rem;
-  row-gap: 1rem;
-  margin-bottom: 2rem;
-  align-items: baseline; 
-  
-  @media (max-width: 767.98px) {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-}
-
-.cv-item-part:nth-child(odd) {
-  grid-column: 1;
-  text-align: right;
-  @media (max-width: 767.98px) { text-align: left; margin-top: 1rem; }
-}
-
-.cv-item-part:nth-child(even) {
-  grid-column: 2;
-  text-align: left;
-  @media (max-width: 767.98px) { grid-column: 1; }
-}
-
-/* -- Styling Specific Parts -- */
-.part-0 {
-  font-family: var(--font-text); 
-  font-size: $size-label;
-  font-weight: $weight-bold;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-accent);
-}
-
-.cv-item-part:nth-child(n+3):nth-child(odd) {
-  font-family: var(--font-text);
-  font-size: $size-label;
-  font-weight: $weight-regular;
-  color: $slate-400; 
-}
-
-.part-1 {
-  font-family: var(--font-header); 
-  font-size: $size-middle; 
-  font-weight: $weight-bold;
-  color: $stone-50;
-}
-
-.part-3 {
-  font-family: var(--font-text);
-  font-size: $size-normal;
-  font-weight: $weight-light;
-  color: $slate-200; 
-  line-height: 1.6;
-}
-
-.cv-item-part:nth-child(n+6):nth-child(even) {
-  font-family: var(--font-text);
-  font-size: $size-label;
-  color: $slate-400;
-  ul {
-    padding-left: 1rem;
-    margin-bottom: 0;
-    li::marker { color: var(--color-accent); }
-  }
-}
-
-// -----------------------------------------------------------------------------
-// 9. SPECIAL LAYOUTS & COMPONENTS
-// -----------------------------------------------------------------------------
-
-.cv-row.research-interests {
-  .cv-item-part:nth-child(odd) {
-    font-family: var(--font-header); 
-    font-weight: $weight-bold;
-    font-style: italic;
-    color: var(--color-accent);
-    text-transform: none; 
-    font-size: $size-normal;
-  }
-  .cv-item-part:nth-child(even) { color: $stone-50; }
-}
-
-.skills-section {
-  .skill-group {
-    margin-bottom: 3rem;
-    .cv-sidebar {
-      color: var(--color-accent);
-      font-family: var(--font-header);
-      font-weight: $weight-bold;
-      font-style: italic;
-    }
-  }
-}
-
-.skill-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 2rem;
-}
-
-.skill-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  text-align: left; 
-  background: $slate-800;
-  padding: 1rem;
-  border-radius: 4px;
-  border: 1px solid $slate-700;
-}
-
-.skill-name {
-  font-family: var(--font-text); 
-  font-weight: $weight-bold;
-  font-size: $size-small;
-  color: $stone-50;
-}
-
-.skill-level {
-  font-size: $size-skill;
-  color: $slate-400;
-  display: flex;
-  justify-content: space-between;
-}
-
-.progress {
-  height: 4px;
-  background-color: $slate-700;
-  border-radius: 2px;
-}
-
-.progress-bar {
-  background-color: var(--color-accent);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-accent), transparent 50%); 
-}
-
-.publication-list {
-  .cv-sidebar {
-    color: $slate-400;
-    font-style: normal; 
-    font-family: $font-family-monospace;
-  }
-  .cv-main {
-    color: $slate-200;
-    .pub-entry {
-      border-left: 2px solid $slate-700;
-      padding-left: 1rem;
-      margin-bottom: 1rem;
-      transition: border-color 0.2s;
-      &:hover { border-left-color: var(--color-accent); }
-    }
-  }
-}
-
+// Callouts (Farbe kommt jetzt aus Defaults, hier nur der dynamische Border)
 .callout {
   border: 1px solid $slate-700;
-  border-left: 4px solid var(--color-accent);
+  border-left-color: var(--color-accent) !important; // Dynamisch
   background-color: $slate-800; 
   color: $slate-200;
   border-radius: 4px;
@@ -449,6 +284,7 @@ a {
   }
 }
 
+// Blog / Listing Styles 
 .quarto-listing-default {
   .quarto-post {
     background: $slate-800;
@@ -497,27 +333,8 @@ a {
   }
 }
 
-.timeline-container {
-  position: relative;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 3rem 0;
-
-  &::after {
-    content: '';
-    position: absolute;
-    width: 1px;
-    background-color: $slate-700; 
-    top: 0;
-    bottom: 0;
-    left: 50%;
-  }
-}
-
 .footer {
-  background-color: darken($slate-900, 2%);
   border-top: 1px solid $slate-800;
-  color: $slate-500;
   font-family: $font-family-monospace;
   font-size: $size-small;
   padding: 4rem 0;

@@ -1,0 +1,361 @@
+/*-- scss:defaults --*/
+
+// -----------------------------------------------------------------------------
+// 1. FARBPALETTE
+// -----------------------------------------------------------------------------
+
+$slate-900: #0F172A; 
+$slate-800: #1E293B; 
+$slate-700: #334155; 
+$slate-600: #475569; 
+$slate-500: #64748B; 
+$slate-400: #94A3B8; 
+$slate-300: #CBD5E1; 
+$slate-200: #E2E8F0; 
+$slate-100: #F1F5F9; // Neu für Light Mode Code-Hintergründe
+
+$stone-50:  #FAFAF9; // Papier-Hintergrund
+$white:     #FFFFFF;
+$indigo:    #4F46E5; 
+
+// -----------------------------------------------------------------------------
+// 2. TYPOGRAFIE DEFINITIONEN
+// -----------------------------------------------------------------------------
+
+$weight-light:   300;
+$weight-regular: 400;
+$weight-medium:  500;
+$weight-bold:    700;
+$weight-black:   900; 
+
+$size-xl:     2.50rem; 
+$size-large:  1.75rem; 
+$size-middle: 1.25rem; 
+$size-normal: 1.00rem; 
+$size-small:  0.90rem; 
+$size-label:  0.80rem; 
+$size-skill:  0.75rem; 
+
+// -----------------------------------------------------------------------------
+// 3. QUARTO VARIABLES (Academia / Light Mode Config)
+// -----------------------------------------------------------------------------
+
+// --- Page Layout & Colors ---
+$body-bg:       $stone-50;  // Heller "Stein"-Hintergrund
+$body-color:    $slate-700; // Dunkelgrauer Text (weicher als Schwarz)
+$link-color:    $indigo;
+
+// --- Fonts ---
+$font-family-sans-serif: "Alegreya Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+$font-family-serif:      "Times New Roman", Times, serif; 
+
+$font-size-root:         $size-normal;
+$line-height-base:       1.7;
+
+$headings-font-family:   "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+$headings-font-weight:   $weight-bold;
+$headings-color:         $slate-900; // Fast Schwarz für Überschriften
+
+// --- Navigation (Navbar) ---
+// Academia Look: Dunkle Leiste oben für Seriosität
+$navbar-bg:     $slate-900; 
+$navbar-fg:     $stone-50; 
+$navbar-hl:     $indigo;
+
+// --- Footer ---
+$footer-bg:     $slate-900;
+$footer-fg:     $slate-400;
+
+// --- Table of Contents (TOC) ---
+$toc-color:           $slate-500;
+$toc-font-size:       $size-label;
+$toc-active-border:   $indigo;
+$toc-inactive-border: $slate-200;
+
+// --- Code Blocks (Light Mode Style) ---
+$code-block-bg:                $white;  // Weiße Box auf Stone Hintergrund
+$code-block-border-left:       $indigo; 
+$code-block-border-left-style: solid;
+$code-block-border-left-size:  4px;
+$code-block-bg-padding:        1rem;
+
+// --- Code Copy Button ---
+$btn-code-copy-color:        $indigo;
+$btn-code-copy-color-active: $white;
+
+// --- Inline Code ---
+$code-bg:       $slate-100; // Sehr helles Grau
+$code-color:    $slate-700; // Dunkler Text
+
+// --- Callouts ---
+$callout-border-width:  4px;
+$callout-margin-top:    2rem;
+$callout-margin-bottom: 2rem;
+
+
+/*-- scss:rules --*/
+
+// -----------------------------------------------------------------------------
+// 4. IMPORTS & GLOBAL RESETS
+// -----------------------------------------------------------------------------
+
+@import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+
+:root {
+  --color-accent: #4F46E5;     
+  
+  --font-header: "Exo 2", sans-serif;        
+  --font-text: "Alegreya Sans", sans-serif;  
+}
+
+body {
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased; 
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+// -----------------------------------------------------------------------------
+// 5. TYPOGRAFIE & UI FEINSCHLIFF
+// -----------------------------------------------------------------------------
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-header);
+  letter-spacing: 0.02em; 
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: $slate-900; // Dunkel im Light Mode
+}
+
+h1 { 
+  font-size: $size-xl; 
+  font-weight: $weight-black; 
+  line-height: 1.1;
+  text-transform: uppercase; 
+}
+
+h2 { 
+  font-size: $size-large; 
+  font-weight: $weight-bold;
+}
+
+#title-block-header h1.title {
+  font-family: var(--font-header);
+  font-weight: $weight-black;      
+  font-size: $size-xl; 
+  line-height: 1.1;                
+  color: $slate-900; // Dunkel               
+  margin-bottom: 0.5rem;           
+  text-transform: none; 
+}
+
+// UI Fonts
+.navbar, .navbar-brand, .nav-link, .dropdown-item, #quarto-margin-sidebar, .footer h1, .footer h2, .footer h3 { 
+  font-family: var(--font-header) !important;
+}
+
+.footer, .btn {
+  font-family: var(--font-text) !important;
+}
+
+// TOC
+#quarto-margin-sidebar {
+  font-size: $size-label; 
+  color: $slate-500; // Mittelgrau
+  letter-spacing: 0.02em; 
+  
+  a {
+    color: $slate-500 !important;
+    &:hover, &.active {
+      color: var(--color-accent) !important;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 6. CODE STYLING (Light Mode Anpassungen)
+// -----------------------------------------------------------------------------
+
+// A. INLINE CODE
+code:not(pre > code) {
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  border: 1px solid $slate-200; // Heller Rahmen
+  font-size: $size-small; 
+  white-space: nowrap; 
+  // Farben kommen aus Defaults ($code-bg, $code-color)
+}
+
+code:not(pre > code) a {
+  color: inherit !important; 
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent); 
+  &:hover { color: var(--color-accent) !important; }
+}
+
+// B. CODE BLÖCKE
+div.sourceCode {
+  border: 1px solid $slate-200; // Heller Rahmen
+  border-left-color: var(--color-accent) !important; 
+  border-radius: 4px;
+  // Background kommt aus Defaults ($white)
+}
+
+// C. COPY BUTTON (Für hellen Hintergrund angepasst)
+.code-copy-outer-scaffold .code-copy-button {
+  appearance: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  
+  border: 1px solid $slate-300 !important; // Etwas dunklerer Rahmen für Sichtbarkeit
+  border-radius: 4px !important;
+  
+  opacity: 1 !important;
+  
+  // Farbe im Ruhezustand: Akzentfarbe (dunkel genug auf Weiß)
+  color: var(--color-accent) !important;
+  
+  transition: all 0.2s ease;
+
+  i, .bi { color: inherit !important; }
+
+  &:hover {
+    background-color: var(--color-accent) !important; 
+    border-color: var(--color-accent) !important;
+    color: $white !important; // Icon wird weiß auf Akzent-Hintergrund
+    
+    i, .bi {
+      color: $white !important;
+    }
+  }
+}
+
+// D. TOC CODE RESET
+#quarto-margin-sidebar code {
+  font-size: 0.75em !important; 
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  color: inherit !important; 
+}
+#quarto-margin-sidebar a:hover code {
+  color: var(--color-accent) !important;
+}
+
+// E. SYNTAX HIGHLIGHTING (Angepasst für Light Mode)
+// Hier müssen wir sicherstellen, dass der Code auf Weiß gut aussieht
+.token.comment { color: $slate-500; font-style: italic; }
+.token.string { color: #059669; } // Emerald Green (gut lesbar auf Weiß)
+.token.number { color: #D946EF; } // Fuchsia
+.token.keyword { color: var(--color-accent); font-weight: bold; }
+.token.function { color: #D97706; } // Amber
+
+
+// -----------------------------------------------------------------------------
+// 7. DYNAMISCHE ELEMENTE & NAV
+// -----------------------------------------------------------------------------
+
+a {
+  color: var(--color-accent);
+  transition: all 0.2s ease;
+  &:hover { color: color-mix(in srgb, var(--color-accent), black 20%); } // Abdunkeln beim Hover
+}
+
+.navbar {
+    border-bottom: 1px solid $slate-800; // Dunkler Rand passend zum BG
+    
+    .nav-link.active,
+    .nav-link:hover,
+    .nav-link:focus,
+    .navbar-brand:hover {
+        color: var(--color-accent) !important;
+    }
+    
+    .navbar-toggler {
+        border-color: $slate-600; 
+    }
+}
+
+
+// Callouts (Light Mode)
+.callout {
+  border: 1px solid $slate-200;
+  border-left-color: var(--color-accent) !important; 
+  background-color: $white; 
+  color: $slate-700;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+  .callout-header {
+    background-color: $slate-100;
+    color: $slate-900;
+    font-family: var(--font-header);
+    font-weight: $weight-bold;
+    border-bottom: 1px solid $slate-200;
+  }
+}
+
+// Blog / Listing Styles 
+.quarto-listing-default {
+  .quarto-post {
+    background: $white;
+    border: 1px solid $slate-200;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      border-color: var(--color-accent);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .listing-title {
+      font-family: var(--font-header); 
+      font-size: $size-large;
+      font-weight: $weight-bold;
+      a { 
+        color: $slate-900; 
+        &:hover { color: var(--color-accent); }
+      }
+    }
+    
+    .listing-description {
+      color: $slate-500;
+      font-weight: $weight-light;
+    }
+
+    .listing-categories .listing-category {
+      background: $slate-100;
+      border: 1px solid $slate-300;
+      color: $slate-600;
+      font-family: $font-family-monospace;
+      font-size: $size-skill;
+      border-radius: 4px;
+      padding: 0.2em 0.6em;
+      
+      &:hover {
+        background: var(--color-accent);
+        border-color: var(--color-accent);
+        color: white;
+      }
+    }
+  }
+}
+
+
+.footer {
+  border-top: 1px solid $slate-800;
+  font-family: $font-family-monospace;
+  font-size: $size-small;
+  padding: 4rem 0;
+  
+  a {
+    color: $slate-400;
+    &:hover { color: var(--color-accent); }
+  }
+}

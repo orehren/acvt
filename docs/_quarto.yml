@@ -36,8 +36,8 @@ website:
 format:
   html:
     theme:
-      - cosmo
-      - template-consulting.scss
+      light: [cosmo, template-light.scss]
+      dark: [cosmo, template-dark.scss]
     toc: true
     code-copy: true
     code-link: true

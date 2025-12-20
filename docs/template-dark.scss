@@ -1,397 +1,135 @@
 /*-- scss:defaults --*/
 
 // -----------------------------------------------------------------------------
-// 1. FARBPALETTE
+// 1. DESIGN TOKENS (Farben & Schriften)
 // -----------------------------------------------------------------------------
 
-$slate-900: #0F172A; 
-$slate-800: #1E293B; 
-$slate-700: #334155; 
-$slate-600: #475569; 
-$slate-500: #64748B; 
-$slate-400: #94A3B8; 
-$slate-300: #CBD5E1; 
-$slate-200: #E2E8F0; 
+// Farben (Consulting Palette)
+$slate-900: #0F172A; // Main Background
+$slate-800: #1E293B; // Surface (Cards, Code)
+$slate-700: #334155; // Borders
+$slate-400: #94A3B8; // Muted Text
+$stone-50:  #FAFAF9; // Primary Text
+$indigo:    #4F46E5; // Accent
 
-$stone-50:  #FAFAF9; 
-$indigo:    #4F46E5; 
-
-// -----------------------------------------------------------------------------
-// 2. TYPOGRAFIE (Definitionen)
-// -----------------------------------------------------------------------------
-
-$weight-light:   300;
-$weight-regular: 400;
-$weight-medium:  500;
-$weight-bold:    700;
-$weight-black:   900; 
-
-$size-xl:     2.50rem; 
-$size-large:  1.75rem; 
-$size-middle: 1.25rem; 
-$size-normal: 1.00rem; 
-$size-small:  0.90rem; 
-$size-label:  0.80rem; 
-$size-skill:  0.75rem; 
+// Typografie Namen
+$font-sans: "Alegreya Sans", sans-serif; // Body
+$font-head: "Exo 2", sans-serif;         // Headings
+$font-mono: "Space Mono", monospace;     // Code
 
 // -----------------------------------------------------------------------------
-// 3. QUARTO VARIABLES (Native Configuration)
+// 2. BOOTSTRAP KONFIGURATION (Basis-Setup)
 // -----------------------------------------------------------------------------
 
-// --- Page Layout & Colors ---
-$body-bg:       $slate-900; 
-$body-color:    $stone-50;  
+// Globales Layout
+$body-bg:       $slate-900;
+$body-color:    $stone-50;
 $link-color:    $indigo;
+$link-decoration: none; // Clean look wie im Screenshot
 
-// --- Fonts ---
-$font-family-sans-serif: "Alegreya Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-$font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-$headings-font-family:   "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-$headings-font-weight:   $weight-bold;
+// Typografie Zuweisung
+$font-family-sans-serif: $font-sans;
+$font-family-monospace:  $font-mono;
+$line-height-base:       1.6;
+$font-weight-base:       400;
+
+// Überschriften (Exo 2)
+$headings-font-family:   $font-head;
+$headings-font-weight:   700;
 $headings-color:         $stone-50;
+$headings-margin-bottom: 1rem;
 
-$font-size-root:         $size-normal;
-$line-height-base:       1.7;
+// -----------------------------------------------------------------------------
+// 3. COMPONENT CONFIGURATION (Quarto Native Variables)
+// -----------------------------------------------------------------------------
 
-// --- Navigation (Navbar) ---
-$navbar-bg:     $slate-400; 
-$navbar-fg:     $slate-900; 
-$navbar-hl:     $indigo;
+// Navbar (Transparent / Minimalistisch wie im Screenshot)
+$navbar-bg:           $slate-900; // Gleiche Farbe wie Body für "Seamless" Look
+$navbar-fg:           $stone-50;
+$navbar-hl:           $indigo;
+$navbar-padding-y:    1.5rem;     // Mehr Luft nach oben/unten
 
-// --- Footer ---
-$footer-bg:     darken($slate-900, 2%);
-$footer-fg:     $slate-500;
-
-// --- Table of Contents (TOC) ---
-$toc-color:           $slate-400;
-$toc-font-size:       $size-label;
-$toc-active-border:   $indigo; // Fallback, wird unten dynamisch überschrieben
-$toc-inactive-border: transparent;
-
-// --- Code Blocks (Native Styling) ---
+// Code Blocks (Clean Dark Style)
 $code-block-bg:                $slate-800;
-$code-block-border-left:       $indigo; // Fallback Farbe (wird dynamisch überschrieben)
-$code-block-border-left-style: solid;
+$code-color:                   $stone-50; // Text im Codeblock
+$code-block-border-left:       $indigo;
 $code-block-border-left-size:  4px;
-$code-block-bg-padding:        1rem; // Innenabstand
+$code-block-border-left-style: solid;
 
-// --- Code Copy Button ---
-$btn-code-copy-color:        $indigo;   // Icon Farbe
-$btn-code-copy-color-active: $stone-50; // Hover Farbe
+// Inline Code
+$code-bg: $slate-800;
+$code-color: #E2E8F0; // Slate-200 für guten Kontrast
 
-// --- Inline Code ---
-$code-bg:       $slate-800;
-$code-color:    $slate-200;
-
-// --- Callouts ---
-$callout-border-width:  4px;
-$callout-margin-top:    2rem;
-$callout-margin-bottom: 2rem;
+// Copy Button
+$btn-code-copy-color:        $indigo;
+$btn-code-copy-color-active: $stone-50;
 
 
 /*-- scss:rules --*/
 
 // -----------------------------------------------------------------------------
-// 4. IMPORTS & GLOBAL RESETS
+// 4. IMPORTS & CSS VARIABLES
 // -----------------------------------------------------------------------------
 
 @import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 :root {
   --color-accent: #4F46E5;
-  
-  --font-header: "Exo 2", sans-serif;        
-  --font-text: "Alegreya Sans", sans-serif;  
+  --font-header: "Exo 2", sans-serif;
+  --font-text: "Alegreya Sans", sans-serif;
 }
 
-body {
-  font-family: var(--font-text);
-  -webkit-font-smoothing: antialiased; 
-}
+// -----------------------------------------------------------------------------
+// 5. GLOBAL STYLES (Feinschliff)
+// -----------------------------------------------------------------------------
 
 html {
   scroll-behavior: smooth;
 }
 
-// -----------------------------------------------------------------------------
-// 5. TYPOGRAFIE & UI FEINSCHLIFF
-// -----------------------------------------------------------------------------
-
-// Headlines
+// Typografie Feinschliff
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-header);
-  letter-spacing: 0.02em; 
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  letter-spacing: 0.02em; // Exo 2 braucht etwas Luft
 }
 
-h1 { 
-  font-size: $size-xl; 
-  font-weight: $weight-bold; 
-  line-height: 1.1;
-  text-transform: uppercase; 
+h1 {
+  font-weight: 900; // Black Weight für Hero-Titel
+  text-transform: uppercase; // Wie im Screenshot oft üblich für "Bold" Designs
+  letter-spacing: 0.05em;
 }
 
-h2 { 
-  font-size: $size-large; 
-  font-weight: $weight-medium;
-}
-
-// Title Block
-#title-block-header h1.title {
-  font-family: var(--font-header);
-  font-weight: $weight-bold;      
-  font-size: $size-xl; 
-  line-height: 1.1;                
-  color: $stone-50;                
-  margin-bottom: 0.5rem;           
-  text-transform: none; 
-}
-
-// Font Zuweisungen für UI
-.navbar, .navbar-brand, .nav-link, .dropdown-item, #quarto-margin-sidebar, .footer h1, .footer h2, .footer h3 { 
-  font-family: var(--font-header) !important;
-}
-
-.footer, .btn {
-  font-family: var(--font-text) !important;
-}
-
-// TOC Feinschliff (Hover & Spacing)
-#quarto-margin-sidebar {
-  letter-spacing: 0.02em; 
-  a {
-    transition: color 0.2s;
-    &:hover, &.active {
-      color: var(--color-accent) !important;
-      border-left-color: var(--color-accent) !important; // Dynamischer Border
-    }
-  }
-}
-
-// -----------------------------------------------------------------------------
-// 6. CODE STYLING (Ergänzungen zu den Defaults)
-// -----------------------------------------------------------------------------
-
-// A. INLINE CODE (Chip-Look)
-// Die Farben kommen aus Defaults, aber Border/Radius müssen wir hier setzen
-code:not(pre > code) {
-  padding: 0.2em 0.4em;
-  border-radius: 4px;
-  border: 1px solid $slate-700; 
-  font-size: $size-small; 
-  white-space: nowrap; 
-}
-
-code:not(pre > code) a {
-  color: inherit !important; 
-  text-decoration: underline;
-  text-decoration-color: var(--color-accent); 
-  &:hover { color: $stone-50 !important; }
-}
-
-// B. CODE BLÖCKE (Dynamik)
-// Border-Width und Style kommen aus Defaults, hier nur die dynamische Farbe
-div.sourceCode {
-  border: 1px solid $slate-700; // Rahmen rundherum
-  border-left-color: var(--color-accent) !important; // Linker Akzent
-  border-radius: 4px;
-}
-
-// C. COPY BUTTON (Spezifisches Verhalten)
-.code-copy-outer-scaffold .code-copy-button {
-  appearance: none !important;
-  box-shadow: none !important;
-  background-color: transparent !important;
-  border: 1px solid $slate-700 !important;
-  border-radius: 4px !important;
-  
-  // Opacity Fix & Dynamische Farbe
-  opacity: 1 !important;
-  color: var(--color-accent) !important;
-  
-  transition: all 0.2s ease;
-
-  i, .bi { color: inherit !important; }
-
-  &:hover {
-    border-color: var(--color-accent) !important;
-    background-color: transparent !important; 
-    color: var(--color-accent) !important;
-  }
-}
-
-// D. TOC CODE RESET
-#quarto-margin-sidebar code {
-  font-size: 0.75em !important; 
-  background-color: transparent !important;
-  border: none !important;
-  padding: 0 !important;
-  color: inherit !important; 
-}
-#quarto-margin-sidebar a:hover code {
-  color: var(--color-accent) !important;
-}
-
-// E. SYNTAX HIGHLIGHTING
-.token.comment { color: $slate-500; font-style: italic; }
-.token.string { color: #A5B4FC; } 
-.token.number { color: #F472B6; } 
-.token.keyword { color: var(--color-accent); font-weight: bold; }
-
-
-// -----------------------------------------------------------------------------
-// 7. DYNAMISCHE ELEMENTE & NAV
-// -----------------------------------------------------------------------------
-
-a {
-  color: var(--color-accent);
-  transition: all 0.2s ease;
-  &:hover { color: color-mix(in srgb, var(--color-accent), white 30%); }
-}
-
+// Navbar Anpassungen (Look & Feel wie im Screenshot)
 .navbar {
-    border-bottom: 1px solid $slate-500; 
-    
-    .nav-link.active,
-    .nav-link:hover,
-    .nav-link:focus,
-    .navbar-brand:hover {
-        color: var(--color-accent) !important;
-    }
-    
-    .navbar-toggler {
-        border-color: $slate-600; 
-    }
-}
-
-// -----------------------------------------------------------------------------
-// NAVBAR TOOLS FIX (Icons, Search, Toggle)
-// -----------------------------------------------------------------------------
-
-.navbar .quarto-navbar-tools {
-  // 1. Layout erzwingen: Alles in eine Reihe
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  align-items: center !important; // Vertikal mittig
-  gap: 0.75rem; // Gleichmäßiger Abstand zwischen den Elementen
+  border-bottom: none; // Keine Linie für den cleanen Look
   
-  // 2. Suche-Icon Größe bändigen
-  .quarto-search-tools .bi-search {
-    font-size: 1.1rem !important; // Größe anpassen
-    width: auto !important;
-    height: auto !important;
-    transform: translateY(1px); // Optische Korrektur
-  }
-
-  // 3. GitHub & andere Link-Icons
-  .quarto-navigation-tool > i, 
-  .quarto-navigation-tool > .bi {
-    font-size: 1.2rem !important;
-    display: flex;
-    align-items: center;
-  }
-
-  // 4. Dark Mode Toggle Switch
-  .quarto-color-scheme-toggle {
-    display: flex !important;
-    align-items: center !important;
-    
-    // Größe der Icons im Switch (Sonne/Mond)
-    .bi {
-      font-size: 1.1rem !important;
-    }
-  }
-}
-
-// Optional: Hover-Effekte für die Tools harmonisieren
-.navbar .quarto-navbar-tools a,
-.navbar .quarto-navbar-tools .quarto-color-scheme-toggle {
-  color: inherit; // Erbt die Navbar-Textfarbe ($navbar-fg)
-  transition: color 0.2s ease;
-  cursor: pointer;
-
-  &:hover {
-    color: var(--color-accent) !important;
-  }
-}
-
-// Callouts (Farbe kommt jetzt aus Defaults, hier nur der dynamische Border)
-.callout {
-  border: 1px solid $slate-700;
-  border-left-color: var(--color-accent) !important; // Dynamisch
-  background-color: $slate-800; 
-  color: $slate-200;
-  border-radius: 4px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-
-  .callout-header {
-    background-color: rgba(255,255,255,0.03);
-    color: $stone-50;
+  .navbar-brand {
     font-family: var(--font-header);
-    font-weight: $weight-bold;
-    border-bottom: 1px solid $slate-700;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 1.1rem;
   }
-}
 
-// Blog / Listing Styles 
-.quarto-listing-default {
-  .quarto-post {
-    background: $slate-800;
-    border: 1px solid $slate-700;
-    padding: 2rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    transition: all 0.3s ease;
-
-    &:hover {
-      transform: translateY(-4px);
-      border-color: var(--color-accent);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px color-mix(in srgb, var(--color-accent), transparent 80%);
-    }
-
-    .listing-title {
-      font-family: var(--font-header); 
-      font-size: $size-large;
-      font-weight: $weight-bold;
-      a { 
-        color: $stone-50; 
-        &:hover { color: var(--color-accent); }
-      }
-    }
+  .nav-link {
+    font-family: var(--font-header);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    color: $slate-400 !important; // Muted Text für inaktive Links
     
-    .listing-description {
-      color: $slate-400;
-      font-weight: $weight-light;
-    }
-
-    .listing-categories .listing-category {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid $slate-600;
-      color: $slate-200;
-      font-family: $font-family-monospace;
-      font-size: $size-skill;
-      border-radius: 4px;
-      padding: 0.2em 0.6em;
-      
-      &:hover {
-        background: var(--color-accent);
-        border-color: var(--color-accent);
-        color: white;
-      }
+    &.active, &:hover {
+      color: var(--color-accent) !important;
     }
   }
 }
 
+// Footer (Minimalistisch)
 .footer {
+  background-color: $slate-900;
   border-top: 1px solid $slate-800;
-  font-family: $font-family-monospace;
-  font-size: $size-small;
-  padding: 4rem 0;
-  
-  a {
-    color: $slate-400;
-    &:hover { color: var(--color-accent); }
-  }
+  color: $slate-400;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 3rem 0;
 }

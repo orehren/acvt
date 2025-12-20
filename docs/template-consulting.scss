@@ -68,9 +68,12 @@ $link-color:            $indigo;
 $link-decoration:       none;
 
 // Navbar
-$navbar-bg:             $slate-900;
-$navbar-fg:             $stone-50;
-$navbar-hl:             $indigo;
+// $navbar-bg:             $slate-900;
+// $navbar-fg:             $stone-50;
+// $navbar-hl:             $indigo;
+$navbar-bg:             $slate-200; // Hintergrund: Hellgrau
+$navbar-fg:             $slate-900; // Vordergrund: Dunkelblau (damit Text lesbar ist)
+$navbar-hl:             $indigo;    // Highlight bleibt gleich
 
 // Code Blocks (Bootstrap Variable Overrides)
 $code-color:            $slate-200;
@@ -154,18 +157,28 @@ h2 {
   font-family: var(--font-text) !important;
 }
 
-// TOC spezifisch (Rechte Seite)
-#quarto-margin-sidebar {
-  font-size: $size-small;
-  color: $slate-400;
-  letter-spacing: 0.01em;
 
-  a {
-    color: $slate-400 !important;
-    &:hover, &.active {
-      color: var(--color-accent) !important;
-    }
-  }
+#quarto-margin-sidebar code {
+  // 1. Größe drastisch reduzieren, damit es in die Zeile passt
+  font-size: $size-skill !important;
+
+  // 2. Den "Chip"-Look entfernen (kein fetter Hintergrund/Border)
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+
+  // 3. Farbe anpassen
+  // 'inherit' sorgt dafür, dass der Code die Farbe des Links annimmt (grau),
+  // statt hellweiß herauszustechen.
+  color: inherit !important;
+
+  // Optional: Falls du willst, dass der Code trotzdem leicht anders aussieht:
+  // color: var(--color-accent) !important;
+}
+
+// Hover-Effekt im TOC für Code korrigieren
+#quarto-margin-sidebar a:hover code {
+  color: var(--color-accent) !important;
 }
 
 // -----------------------------------------------------------------------------
@@ -239,8 +252,11 @@ a {
   }
 }
 
+// Navbar Highlight Override
 .navbar {
-    border-bottom: 1px solid $slate-800;
+    // Vorher: border-bottom: 1px solid $slate-800;
+    // Neu (Empfehlung): Etwas dunkler als der Hintergrund, aber nicht schwarz
+    border-bottom: 1px solid $slate-300;
 
     .nav-link.active,
     .nav-link:hover,
@@ -250,9 +266,12 @@ a {
     }
 
     .navbar-toggler {
-        border-color: $slate-700;
+        // Vorher: $slate-700
+        // Neu: Etwas heller, passend zum hellen Theme
+        border-color: $slate-400;
     }
 }
+
 
 // Callouts
 .callout {

@@ -4,15 +4,8 @@ project:
 
 website:
   title: "Academic-CV Template"
-  # search:
-  #   location: sidebar
-  #   type: overlay
-  sidebar:
-    style: floating
-    tools: 
-      - icon: github
-        href:  https://github.com/orehren/acvt
-    contents:
+  navbar:
+    left:
       - href: index.qmd
         text: Home
       - href: installation.qmd
@@ -33,34 +26,13 @@ website:
         text: YAML Reference
       - href: acknowledgements.qmd
         text: Acknowledgements
-  # search:
-  #   location: navbar
-  #   type: overlay
-  # navbar:
-  #   tools:
-  #     - icon: github
-  #       href:  https://github.com/orehren/acvt
-  #   left:
-  #     - href: index.qmd
-  #       text: Home
-  #     - href: installation.qmd
-  #       text: Installation
-  #     - href: tutorial.qmd
-  #       text: How to get started
-  #     - href: data_integration.qmd
-  #       text: Data Integration
-  #     - href: shortcodes.qmd
-  #       text: Shortcodes
-  #     - href: styling.qmd
-  #       text: Styling
-  #     - href: structure.qmd
-  #       text: Structure
-  #     - href: update_template.qmd
-  #       text: Template Update
-  #     - href: yaml_reference.qmd
-  #       text: YAML Reference
-  #     - href: acknowledgements.qmd
-  #       text: Acknowledgements
+  search:
+    location: sidebar
+    type: overlay
+  sidebar:
+    tools:
+      - icon: github
+        href: https://github.com/orehren/acvt
 
 format:
   html:

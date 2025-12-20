@@ -5,6 +5,9 @@ project:
 website:
   title: "Academic-CV Template"
   navbar:
+    tools:
+      - icon: github
+        href: https://github.com/orehren/acvt
     left:
       - href: index.qmd
         text: Home
@@ -26,13 +29,11 @@ website:
         text: YAML Reference
       - href: acknowledgements.qmd
         text: Acknowledgements
-  search:
-    location: sidebar
-    type: overlay
+  # search:
+  #   location: sidebar
+  #   type: overlay
   sidebar:
-    tools:
-      - icon: github
-        href: https://github.com/orehren/acvt
+    search: true
 
 format:
   html:

@@ -1,0 +1,251 @@
+/*-- scss:defaults --*/
+
+// -----------------------------------------------------------------------------
+// 1. FARBPALETTE & VARIABLEN (Consulting / Dark Theme)
+// -----------------------------------------------------------------------------
+
+// Slate Palette
+$slate-900: #0F172A; // Background Main
+$slate-800: #1E293B; // Cards / Elements
+$slate-700: #334155; // Borders / Muted
+$slate-400: #94A3B8; // Secondary Text (Lightened for Dark Mode)
+$slate-200: #E2E8F0; // Highlights
+
+$stone-50:  #FAFAF9; // Main Text Color
+$indigo:    #4F46E5; // Fallback Accent
+
+// -----------------------------------------------------------------------------
+// 2. TYPOGRAFIE DEFINITIONEN (SASS Variables)
+// -----------------------------------------------------------------------------
+
+// Weights
+$weight-thin:    100;
+$weight-light:   300;
+$weight-regular: 400;
+$weight-medium:  500;
+$weight-bold:    700;
+$weight-black:   900; // Neu für Consulting Headlines
+
+// Sizes
+$size-xl:     2.50rem; // Größer für Bold Impact
+$size-large:  1.75rem;
+$size-middle: 1.25rem;
+$size-normal: 1.00rem;
+$size-small:  0.90rem;
+$size-label:  0.80rem;
+$size-skill:  0.75rem;
+
+// -----------------------------------------------------------------------------
+// 3. BOOTSTRAP OVERRIDES (Dark Mode Settings)
+// -----------------------------------------------------------------------------
+
+$body-bg:       $slate-900; // Dark Background
+$body-color:    $stone-50;  // Light Text
+$primary:       $indigo;
+$secondary:     $slate-400; // Helleres Grau für Lesbarkeit auf Dunkel
+$light:         $slate-800; // "Light" components are now dark grey
+$dark:          $stone-50;  // "Dark" components are now white
+$border-color:  $slate-700; // Dunklere Border
+
+// Typography Mapping (Consulting = Sans Serif Dominance)
+$font-family-sans-serif: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-serif:      "Newsreader", serif; // Nur als Fallback/Akzent
+$font-family-monospace:  "JetBrains Mono", monospace;
+
+$font-size-base:        $size-normal;
+$font-weight-base:      $weight-light; // Leichterer Body-Text wirkt edler im Dark Mode
+$line-height-base:      1.7; // Etwas mehr Luft
+
+$headings-font-family:  $font-family-sans-serif; // Sans-Serif Headlines!
+$headings-font-weight:  $weight-bold;
+$headings-color:        $stone-50;
+
+// Links
+$link-color:            $indigo;
+$link-decoration:       none;
+$link-hover-decoration: none; // Clean look
+
+// Navbar
+$navbar-bg:             $slate-900;
+$navbar-fg:             $stone-50;
+$navbar-hl:             $indigo;
+
+
+/*-- scss:rules --*/
+
+// -----------------------------------------------------------------------------
+// 4. IMPORTS & GLOBAL RESETS
+// -----------------------------------------------------------------------------
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Plus+Jakarta+Sans:wght@200..800&display=swap');
+
+// Integration der Lua-Variablen
+:root {
+  --color-accent: #4F46E5;
+  --grid-sidebar-fr: 3fr;
+  --grid-main-fr: 9fr;
+  // Default Fonts für Consulting: Beide Sans-Serif
+  --font-header: "Plus Jakarta Sans", sans-serif;
+  --font-text: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased; // Wichtig für Dark Mode Rendering
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.smallcaps {
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
+}
+
+// Typografie Feinschliff (Consulting Style)
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-header);
+  letter-spacing: -0.03em; // Tighter tracking for modern look
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  color: $stone-50;
+}
+
+h1 {
+  font-size: 4rem;
+  font-weight: $weight-black;
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: 2.5rem;
+  font-weight: $weight-bold;
+}
+
+// Monospace Akzente
+.code, code, .pre, pre, .dt-tag {
+  font-family: $font-family-monospace;
+  font-size: 0.9em;
+  color: lighten($slate-400, 10%);
+}
+
+// -----------------------------------------------------------------------------
+// 5. DYNAMISCHE ELEMENTE (Lua Filter Integration)
+// -----------------------------------------------------------------------------
+
+// Links mit dynamischer Akzentfarbe (Heller auf Dunkel)
+a {
+  color: var(--color-accent);
+  transition: all 0.2s ease;
+
+  &:hover {
+    // Im Dark Mode mischen wir mit Weiß für "Glow", nicht mit Schwarz
+    color: color-mix(in srgb, var(--color-accent), white 30%);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent), transparent 60%);
+  }
+}
+
+// Navbar Highlight Override
+.navbar {
+    border-bottom: 1px solid $slate-800; // Subtile Trennung
+
+    .nav-link.active,
+    .nav-link:hover,
+    .nav-link:focus,
+    .navbar-brand:hover {
+        color: var(--color-accent) !important;
+    }
+
+    // Toggler für Mobile (angepasst an Dark Mode)
+    .navbar-toggler {
+        border-color: $slate-700;
+    }
+}
+
+
+// -----------------------------------------------------------------------------
+// 9. KOMPONENTEN (Consulting Style)
+// -----------------------------------------------------------------------------
+
+// Callouts (Dark Cards)
+.callout {
+  border: 1px solid $slate-700;
+  border-left: 4px solid var(--color-accent);
+  background-color: $slate-800; // Dark Card
+  color: $slate-200;
+  border-radius: 4px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+
+  .callout-header {
+    background-color: rgba(255,255,255,0.03);
+    color: $stone-50;
+    font-weight: $weight-bold;
+    border-bottom: 1px solid $slate-700;
+  }
+}
+
+// Blog / Listing Styles (Dark Cards)
+.quarto-listing-default {
+  .quarto-post {
+    background: $slate-800;
+    border: 1px solid $slate-700;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      border-color: var(--color-accent);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px color-mix(in srgb, var(--color-accent), transparent 80%);
+    }
+
+    .listing-title {
+      font-family: var(--font-header);
+      font-size: $size-large;
+      font-weight: $weight-bold;
+      a {
+        color: $stone-50;
+        &:hover { color: var(--color-accent); }
+      }
+    }
+
+    .listing-description {
+      color: $slate-400;
+      font-weight: $weight-light;
+    }
+
+    .listing-categories .listing-category {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid $slate-600;
+      color: $slate-200;
+      font-family: $font-family-monospace;
+      font-size: $size-skill;
+      border-radius: 4px;
+      padding: 0.2em 0.6em;
+
+      &:hover {
+        background: var(--color-accent);
+        border-color: var(--color-accent);
+        color: white;
+      }
+    }
+  }
+}
+
+
+// Footer
+.footer {
+  background-color: darken($slate-900, 2%);
+  border-top: 1px solid $slate-800;
+  color: $slate-500;
+  font-family: $font-family-monospace;
+  font-size: $size-small;
+  padding: 4rem 0;
+
+  a {
+    color: $slate-400;
+    &:hover { color: var(--color-accent); }
+  }
+}

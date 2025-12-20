@@ -72,7 +72,7 @@ $link-decoration:       none;
 // $navbar-bg:             $slate-900;
 // $navbar-fg:             $stone-50;
 // $navbar-hl:             $indigo;
-$navbar-bg:             $slate-200; // Hintergrund: Hellgrau
+$navbar-bg:             $slate-400; // Hintergrund: mittelgrau
 $navbar-fg:             $slate-900; // Vordergrund: Dunkelblau (damit Text lesbar ist)
 $navbar-hl:             $indigo;    // Highlight bleibt gleich
 
@@ -257,7 +257,7 @@ a {
 .navbar {
     // Vorher: border-bottom: 1px solid $slate-800;
     // Neu (Empfehlung): Etwas dunkler als der Hintergrund, aber nicht schwarz
-    border-bottom: 1px solid $slate-300;
+    border-bottom: 1px solid $slate-500;
 
     .nav-link.active,
     .nav-link:hover,
@@ -269,7 +269,7 @@ a {
     .navbar-toggler {
         // Vorher: $slate-700
         // Neu: Etwas heller, passend zum hellen Theme
-        border-color: $slate-400;
+        border-color: $slate-600;
     }
 }
 

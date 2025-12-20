@@ -215,42 +215,40 @@ pre, .sourceCode pre {
   color: inherit;
 }
 
-// C. COPY BUTTON (Visibility Fix)
+// C. COPY BUTTON (HTML Structure Fix)
+// Der Button liegt im Wrapper .code-copy-outer-scaffold, nicht in .sourceCode!
 .code-copy-outer-scaffold .code-copy-button {
-  // 1. Browser-Reset
+  // 1. Browser-Defaults & Basis-Reset
   appearance: none !important;
   box-shadow: none !important;
-  background-color: transparent !important;
+  background-color: var(--color-accent) !important; //transparent !important;
   
-  // 2. Rahmen
+  // 2. Rahmen & Opacity (Standard)
   border: 1px solid $slate-700 !important;
   border-radius: 4px !important;
+  opacity: 0.5 !important;
   
-  // 3. OPACITY FIX:
-  // Wir setzen Opacity auf 1, damit die Farbe nicht "vergraut".
-  opacity: 1 !important;
-  
-  // 4. FARBE IM RUHEZUSTAND:
-  // Wir mischen die Akzentfarbe mit dem Hintergrund, damit sie "inaktiv" wirkt,
-  // aber ihren Farbton behält (statt grau zu werden).
-  color: color-mix(in srgb, var(--color-accent), $slate-500 40%) !important;
+  // 3. Farbe erzwingen (Akzentfarbe)
+  color: var(--color-accent) !important;
   
   transition: all 0.2s ease;
 
-  // Icon explizit färben
+  // 4. Das Icon im Inneren
   i, .bi {
-    color: inherit !important; // Erbt die gemixte Farbe von oben
+    color: var(--color-accent) !important;
   }
 
   // 5. HOVER STATE
   &:hover {
-    // Rahmen leuchtet
+    opacity: 1 !important;
+    
+    // Rahmen leuchtet in Akzentfarbe
     border-color: var(--color-accent) !important;
     
-    // Hintergrund bleibt transparent
+    // WICHTIG: Hintergrund bleibt transparent (kein gefülltes Quadrat!)
     background-color: transparent !important; 
     
-    // Farbe wird zur vollen Akzentfarbe (Leuchteffekt)
+    // Icon bleibt Akzentfarbe
     color: var(--color-accent) !important;
     
     i, .bi {

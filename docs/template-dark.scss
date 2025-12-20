@@ -1,74 +1,49 @@
 /*-- scss:defaults --*/
 
 // -----------------------------------------------------------------------------
-// 1. DESIGN TOKENS (Farben & Schriften)
+// 1. FARBPALETTE
 // -----------------------------------------------------------------------------
 
-// Farben (Consulting Palette)
-$slate-900: #0F172A; // Main Background
-$slate-800: #1E293B; // Surface (Cards, Code)
-$slate-700: #334155; // Borders
-$slate-400: #94A3B8; // Muted Text
-$stone-50:  #FAFAF9; // Primary Text
-$indigo:    #4F46E5; // Accent
-
-// Typografie Namen
-$font-sans: "Alegreya Sans", sans-serif; // Body
-$font-head: "Exo 2", sans-serif;         // Headings
-$font-mono: "Space Mono", monospace;     // Code
+$slate-900: #0F172A; 
+$slate-800: #1E293B; 
+$slate-700: #334155; 
+$slate-400: #94A3B8; 
+$stone-50:  #FAFAF9; 
+$indigo:    #4F46E5; 
 
 // -----------------------------------------------------------------------------
-// 2. BOOTSTRAP KONFIGURATION (Basis-Setup)
+// 2. BOOTSTRAP KONFIGURATION
 // -----------------------------------------------------------------------------
 
-// Globales Layout
 $body-bg:       $slate-900;
 $body-color:    $stone-50;
 $link-color:    $indigo;
-$link-decoration: none; // Clean look wie im Screenshot
 
-// Typografie Zuweisung
-$font-family-sans-serif: $font-sans;
-$font-family-monospace:  $font-mono;
-$line-height-base:       1.6;
-$font-weight-base:       400;
-
-// Überschriften (Exo 2)
-$headings-font-family:   $font-head;
+// Fonts
+$font-family-sans-serif: "Alegreya Sans", sans-serif;
+$font-family-monospace:  "Space Mono", monospace;
+$headings-font-family:   "Exo 2", sans-serif;
 $headings-font-weight:   700;
 $headings-color:         $stone-50;
-$headings-margin-bottom: 1rem;
 
 // -----------------------------------------------------------------------------
-// 3. COMPONENT CONFIGURATION (Quarto Native Variables)
+// 3. NAVBAR CONFIGURATION (Basis)
 // -----------------------------------------------------------------------------
 
-// Navbar (Transparent / Minimalistisch wie im Screenshot)
-$navbar-bg:           $slate-900; // Gleiche Farbe wie Body für "Seamless" Look
-$navbar-fg:           $stone-50;
-$navbar-hl:           $indigo;
-$navbar-padding-y:    1.5rem;     // Mehr Luft nach oben/unten
+$navbar-bg:           $slate-900; 
+$navbar-fg:           $indigo;    // Standard-Textfarbe der Navbar ist jetzt Indigo!
+$navbar-hl:           $indigo;    // Highlight auch Indigo
 
-// Code Blocks (Clean Dark Style)
-$code-block-bg:                $slate-800;
-$code-color:                   $stone-50; // Text im Codeblock
-$code-block-border-left:       $indigo;
-$code-block-border-left-size:  4px;
-$code-block-border-left-style: solid;
-
-// Inline Code
-$code-bg: $slate-800;
-$code-color: #E2E8F0; // Slate-200 für guten Kontrast
-
-// Copy Button
-$btn-code-copy-color:        $indigo;
-$btn-code-copy-color-active: $stone-50;
+// Code Blocks Defaults
+$code-block-bg:           $slate-800;
+$code-block-border-left:  $indigo;
+$btn-code-copy-color:     $indigo;
 
 
 /*-- scss:rules --*/
 
 // -----------------------------------------------------------------------------
-// 4. IMPORTS & CSS VARIABLES
+// 4. IMPORTS & VARIABLES
 // -----------------------------------------------------------------------------
 
 @import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
@@ -79,52 +54,67 @@ $btn-code-copy-color-active: $stone-50;
   --font-text: "Alegreya Sans", sans-serif;
 }
 
+html { scroll-behavior: smooth; }
+
 // -----------------------------------------------------------------------------
-// 5. GLOBAL STYLES (Feinschliff)
+// 5. NAVBAR STYLING (Exakt nach Anforderung)
 // -----------------------------------------------------------------------------
 
-html {
-  scroll-behavior: smooth;
-}
-
-// Typografie Feinschliff
-h1, h2, h3, h4, h5, h6 {
-  letter-spacing: 0.02em; // Exo 2 braucht etwas Luft
-}
-
-h1 {
-  font-weight: 900; // Black Weight für Hero-Titel
-  text-transform: uppercase; // Wie im Screenshot oft üblich für "Bold" Designs
-  letter-spacing: 0.05em;
-}
-
-// Navbar Anpassungen (Look & Feel wie im Screenshot)
 .navbar {
-  border-bottom: none; // Keine Linie für den cleanen Look
-  
+  border-bottom: none;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+
+  // 1. Das Logo/Brand bleibt WEISS (Kontrast)
   .navbar-brand {
     font-family: var(--font-header);
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    color: $stone-50 !important; // Weiß erzwingen
   }
 
+  // 2. Die Links sind standardmäßig in AKZENTFARBE
   .nav-link {
     font-family: var(--font-header);
     text-transform: uppercase;
-    font-size: 0.9rem;
-    letter-spacing: 0.1em;
-    font-weight: 500;
-    color: $slate-400 !important; // Muted Text für inaktive Links
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
     
-    &.active, &:hover {
-      color: var(--color-accent) !important;
+    // Farbe: Indigo (via Variable)
+    color: var(--color-accent) !important;
+    
+    // Transition für die Unterstreichung
+    transition: all 0.2s ease;
+    text-decoration: none; // Standardmäßig keine Linie
+    
+    // 3. Hover & Active: Unterstreichung
+    &:hover, &.active {
+      color: var(--color-accent) !important; // Farbe bleibt gleich
+      text-decoration: underline;
+      text-decoration-color: var(--color-accent); // Linie in Akzentfarbe
+      text-decoration-thickness: 2px; // Dünne Linie (aber sichtbar)
+      text-underline-offset: 6px;     // Abstand zum Text
     }
+  }
+  
+  // Icons (GitHub, Search, Toggle) auch in Akzentfarbe
+  .quarto-navbar-tools a {
+     color: var(--color-accent) !important;
+     &:hover { opacity: 0.8; }
   }
 }
 
-// Footer (Minimalistisch)
+// -----------------------------------------------------------------------------
+// 6. RESTLICHE UI (Footer, Code etc.)
+// -----------------------------------------------------------------------------
+
+// Typografie
+h1, h2, h3, h4, h5, h6 { letter-spacing: 0.02em; }
+h1 { font-weight: 900; text-transform: uppercase; }
+
+// Footer
 .footer {
   background-color: $slate-900;
   border-top: 1px solid $slate-800;
@@ -132,4 +122,24 @@ h1 {
   font-family: var(--font-mono);
   font-size: 0.85rem;
   padding: 3rem 0;
+}
+
+// Code Copy Button Fix (aus vorherigen Schritten übernommen)
+.code-copy-outer-scaffold .code-copy-button {
+  appearance: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  border: 1px solid $slate-700 !important;
+  border-radius: 4px !important;
+  opacity: 1 !important;
+  color: var(--color-accent) !important;
+  transition: all 0.2s ease;
+
+  i, .bi { color: inherit !important; }
+
+  &:hover {
+    border-color: var(--color-accent) !important;
+    background-color: transparent !important; 
+    color: var(--color-accent) !important;
+  }
 }

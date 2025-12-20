@@ -54,7 +54,7 @@ $font-size-root:         $size-normal;
 $line-height-base:       1.7;
 
 $headings-font-family:   "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-$headings-font-weight:   $weight-bold;
+$headings-font-weight:   $weight-medium;
 $headings-color:         $slate-900; // Fast Schwarz für Überschriften
 
 // --- Navigation (Navbar) ---
@@ -136,19 +136,19 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 { 
   font-size: $size-xl; 
-  font-weight: $weight-black; 
+  font-weight: $weight-bold; 
   line-height: 1.1;
   text-transform: uppercase; 
 }
 
 h2 { 
   font-size: $size-large; 
-  font-weight: $weight-bold;
+  font-weight: $weight-medium;
 }
 
 #title-block-header h1.title {
   font-family: var(--font-header);
-  font-weight: $weight-black;      
+  font-weight: $weight-bold;      
   font-size: $size-xl; 
   line-height: 1.1;                
   color: $slate-900; // Dunkel               

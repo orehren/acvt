@@ -46,7 +46,6 @@ $link-color:    $indigo;
 // --- Fonts ---
 $font-family-sans-serif: "Alegreya Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 $font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-// Bootstrap Variable für Headlines (Quarto nutzt diese):
 $headings-font-family:   "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 $headings-font-weight:   $weight-bold;
 $headings-color:         $stone-50;
@@ -128,20 +127,20 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 { 
   font-size: $size-xl; 
-  font-weight: $weight-black; 
+  font-weight: $weight-bold; 
   line-height: 1.1;
   text-transform: uppercase; 
 }
 
 h2 { 
   font-size: $size-large; 
-  font-weight: $weight-bold;
+  font-weight: $weight-medium;
 }
 
 // Title Block
 #title-block-header h1.title {
   font-family: var(--font-header);
-  font-weight: $weight-black;      
+  font-weight: $weight-bold;      
   font-size: $size-xl; 
   line-height: 1.1;                
   color: $stone-50;                

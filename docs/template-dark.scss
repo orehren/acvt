@@ -266,6 +266,58 @@ a {
     }
 }
 
+// -----------------------------------------------------------------------------
+// NAVBAR TOOLS FIX (Icons, Search, Toggle)
+// -----------------------------------------------------------------------------
+
+.navbar .quarto-navbar-tools {
+  // 1. Layout erzwingen: Alles in eine Reihe
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important; // Vertikal mittig
+  gap: 0.75rem; // Gleichmäßiger Abstand zwischen den Elementen
+  
+  // 2. Suche-Icon Größe bändigen
+  .quarto-search-tools .bi-search {
+    font-size: 1.1rem !important; // Größe anpassen
+    width: auto !important;
+    height: auto !important;
+    transform: translateY(1px); // Optische Korrektur
+  }
+
+  // 3. GitHub & andere Link-Icons
+  .quarto-navigation-tool > i, 
+  .quarto-navigation-tool > .bi {
+    font-size: 1.2rem !important;
+    display: flex;
+    align-items: center;
+  }
+
+  // 4. Dark Mode Toggle Switch
+  .quarto-color-scheme-toggle {
+    display: flex !important;
+    align-items: center !important;
+    
+    // Größe der Icons im Switch (Sonne/Mond)
+    .bi {
+      font-size: 1.1rem !important;
+    }
+  }
+}
+
+// Optional: Hover-Effekte für die Tools harmonisieren
+.navbar .quarto-navbar-tools a,
+.navbar .quarto-navbar-tools .quarto-color-scheme-toggle {
+  color: inherit; // Erbt die Navbar-Textfarbe ($navbar-fg)
+  transition: color 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-accent) !important;
+  }
+}
+
 // Callouts (Farbe kommt jetzt aus Defaults, hier nur der dynamische Border)
 .callout {
   border: 1px solid $slate-700;

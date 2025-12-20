@@ -6,30 +6,29 @@
 
 // Slate Palette
 $slate-900: #0F172A; // Background Main
-$slate-800: #1E293B; // Cards / Elements
-$slate-700: #334155; // Borders / Muted
-$slate-600: #475569; // Borders Secondary (Listing)
+$slate-800: #1E293B; // Cards / Code Blocks
+$slate-700: #334155; // Borders
+$slate-600: #475569; // Borders Secondary
 $slate-500: #64748B; // Footer Text
-$slate-400: #94A3B8; // Secondary Text (Lightened for Dark Mode)
-$slate-200: #E2E8F0; // Highlights
+$slate-400: #94A3B8; // Muted Text
+$slate-200: #E2E8F0; // Highlights / Code Text
 
 $stone-50:  #FAFAF9; // Main Text Color
 $indigo:    #4F46E5; // Fallback Accent
 
 // -----------------------------------------------------------------------------
-// 2. TYPOGRAFIE DEFINITIONEN (SASS Variables)
+// 2. TYPOGRAFIE DEFINITIONEN
 // -----------------------------------------------------------------------------
 
 // Weights
-$weight-thin:    100;
 $weight-light:   300;
 $weight-regular: 400;
 $weight-medium:  500;
 $weight-bold:    700;
-$weight-black:   900; // Neu für Consulting Headlines
+$weight-black:   900;
 
 // Sizes
-$size-xl:     2.50rem; // Größer für Bold Impact
+$size-xl:     2.50rem;
 $size-large:  1.75rem;
 $size-middle: 1.25rem;
 $size-normal: 1.00rem;
@@ -41,36 +40,40 @@ $size-skill:  0.75rem;
 // 3. BOOTSTRAP OVERRIDES (Dark Mode Settings)
 // -----------------------------------------------------------------------------
 
-$body-bg:       $slate-900; // Dark Background
-$body-color:    $stone-50;  // Light Text
+$body-bg:       $slate-900;
+$body-color:    $stone-50;
 $primary:       $indigo;
-$secondary:     $slate-400; // Helleres Grau für Lesbarkeit auf Dunkel
-$light:         $slate-800; // "Light" components are now dark grey
-$dark:          $stone-50;  // "Dark" components are now white
-$border-color:  $slate-700; // Dunklere Border
+$secondary:     $slate-400;
+$light:         $slate-800;
+$dark:          $stone-50;
+$border-color:  $slate-700;
 
-// Typography Mapping (Consulting = Sans Serif Dominance)
+// Typography Mapping
 $font-family-sans-serif: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-$font-family-serif:      "Newsreader", serif; // Nur als Fallback/Akzent
+$font-family-serif:      "Newsreader", serif;
 $font-family-monospace:  "JetBrains Mono", monospace;
 
 $font-size-base:        $size-normal;
-$font-weight-base:      $weight-light; // Leichterer Body-Text wirkt edler im Dark Mode
-$line-height-base:      1.7; // Etwas mehr Luft
+$font-weight-base:      $weight-light;
+$line-height-base:      1.7;
 
-$headings-font-family:  $font-family-sans-serif; // Sans-Serif Headlines!
+// Standardmäßig Serifen für Headlines (wird unten via CSS Var gesteuert)
+$headings-font-family:  $font-family-serif;
 $headings-font-weight:  $weight-bold;
 $headings-color:        $stone-50;
 
 // Links
 $link-color:            $indigo;
 $link-decoration:       none;
-$link-hover-decoration: none; // Clean look
 
 // Navbar
 $navbar-bg:             $slate-900;
 $navbar-fg:             $stone-50;
 $navbar-hl:             $indigo;
+
+// Code Blocks (Bootstrap Variable Overrides)
+$code-color:            $slate-200;
+$pre-color:             $slate-200;
 
 
 /*-- scss:rules --*/
@@ -81,76 +84,128 @@ $navbar-hl:             $indigo;
 
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Plus+Jakarta+Sans:wght@200..800&display=swap');
 
-// Integration der Lua-Variablen
 :root {
   --color-accent: #4F46E5;
   --grid-sidebar-fr: 3fr;
   --grid-main-fr: 9fr;
-  // Default Fonts für Consulting: Beide Sans-Serif
-  --font-header: "Plus Jakarta Sans", sans-serif;
-  --font-text: "Plus Jakarta Sans", sans-serif;
+
+  // KORREKTUR: Wiederherstellung des Dual-Font Systems
+  --font-header: "Newsreader", serif;          // Serifen für Charakter
+  --font-text: "Plus Jakarta Sans", sans-serif; // Sans für UI/Body
 }
 
 body {
   font-family: var(--font-text);
-  -webkit-font-smoothing: antialiased; // Wichtig für Dark Mode Rendering
+  -webkit-font-smoothing: antialiased;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-.smallcaps {
-  font-variant: small-caps;
-  letter-spacing: 0.05em;
-}
+// -----------------------------------------------------------------------------
+// 5. TYPOGRAFIE & UI HARMONISIERUNG
+// -----------------------------------------------------------------------------
 
-// Typografie Feinschliff (Consulting Style)
+// Überschriften: Nutzen die Header-Variable (Newsreader)
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-header);
-  letter-spacing: -0.03em; // Tighter tracking for modern look
-  margin-top: 2.5rem;
-  margin-bottom: 1.25rem;
+  letter-spacing: -0.01em; // Etwas weniger eng bei Serifen
+  margin-top: 2rem;
+  margin-bottom: 1rem;
   color: $stone-50;
 }
 
 h1 {
-  font-size: 4rem;
-  font-weight: $weight-black;
-  line-height: 1.1;
+  font-size: 2.75rem;
+  font-weight: $weight-bold;
+  font-style: italic; // Optional: Italic bei Newsreader wirkt sehr edel als H1
+  line-height: 1.2;
 }
 
 h2 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: $weight-bold;
 }
 
-// Monospace Akzente
-.code, code, .pre, pre, .dt-tag {
-  font-family: $font-family-monospace;
-  font-size: 0.9em;
-  color: lighten($slate-400, 10%);
+// UI Elemente: MÜSSEN Sans-Serif sein für Modernität
+.navbar,
+.nav-link,
+.dropdown-item,
+#quarto-sidebar,
+#quarto-margin-sidebar, // TOC Bereich
+.footer,
+.btn { // Auch Buttons
+  font-family: var(--font-text) !important;
+}
+
+// TOC spezifisch (Rechte Seite)
+#quarto-margin-sidebar {
+  font-size: 0.85rem;
+  color: $slate-400;
+
+  a {
+    color: $slate-400 !important;
+    &:hover, &.active {
+      color: var(--color-accent) !important;
+    }
+  }
 }
 
 // -----------------------------------------------------------------------------
-// 5. DYNAMISCHE ELEMENTE (Lua Filter Integration)
+// 6. CODE BLÖCKE & INLINE CODE
 // -----------------------------------------------------------------------------
 
-// Links mit dynamischer Akzentfarbe (Heller auf Dunkel)
+// Inline Code (`code`)
+code {
+  font-family: $font-family-monospace;
+  color: lighten($indigo, 15%); // Etwas heller für Kontrast
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+// Code Blöcke (```code```)
+pre, .sourceCode {
+  background-color: $slate-800 !important;
+  border: 1px solid $slate-700;
+  border-radius: 6px;
+  color: $slate-200;
+}
+
+div.sourceCode {
+  background-color: $slate-800 !important;
+  margin-bottom: 1.5rem;
+
+  pre {
+    background-color: transparent !important;
+    border: none;
+  }
+}
+
+// Syntax Highlighting Anpassungen
+.token.comment { color: $slate-500; font-style: italic; }
+.token.string { color: #A5B4FC; } // Indigo-Light
+.token.number { color: #F472B6; } // Pinkish
+.token.keyword { color: var(--color-accent); font-weight: bold; }
+
+
+// -----------------------------------------------------------------------------
+// 7. DYNAMISCHE ELEMENTE (Lua Filter Integration)
+// -----------------------------------------------------------------------------
+
 a {
   color: var(--color-accent);
   transition: all 0.2s ease;
 
   &:hover {
-    // Im Dark Mode mischen wir mit Weiß für "Glow", nicht mit Schwarz
     color: color-mix(in srgb, var(--color-accent), white 30%);
-    text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent), transparent 60%);
   }
 }
 
-// Navbar Highlight Override
 .navbar {
-    border-bottom: 1px solid $slate-800; // Subtile Trennung
+    border-bottom: 1px solid $slate-800;
 
     .nav-link.active,
     .nav-link:hover,
@@ -159,22 +214,17 @@ a {
         color: var(--color-accent) !important;
     }
 
-    // Toggler für Mobile (angepasst an Dark Mode)
     .navbar-toggler {
         border-color: $slate-700;
     }
 }
 
 
-// -----------------------------------------------------------------------------
-// 9. KOMPONENTEN (Consulting Style)
-// -----------------------------------------------------------------------------
-
-// Callouts (Dark Cards)
+// Callouts
 .callout {
   border: 1px solid $slate-700;
   border-left: 4px solid var(--color-accent);
-  background-color: $slate-800; // Dark Card
+  background-color: $slate-800;
   color: $slate-200;
   border-radius: 4px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
@@ -182,12 +232,13 @@ a {
   .callout-header {
     background-color: rgba(255,255,255,0.03);
     color: $stone-50;
+    font-family: var(--font-text); // UI Font für Header
     font-weight: $weight-bold;
     border-bottom: 1px solid $slate-700;
   }
 }
 
-// Blog / Listing Styles (Dark Cards)
+// Blog / Listing Styles
 .quarto-listing-default {
   .quarto-post {
     background: $slate-800;
@@ -204,7 +255,7 @@ a {
     }
 
     .listing-title {
-      font-family: var(--font-header);
+      font-family: var(--font-header); // Serif für Blog Titel
       font-size: $size-large;
       font-weight: $weight-bold;
       a {
@@ -235,7 +286,6 @@ a {
     }
   }
 }
-
 
 // Footer
 .footer {

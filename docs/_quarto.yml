@@ -40,7 +40,7 @@ format:
       - template-consulting.scss
     toc: true
     keep-md: true # Keep the markdown files
-    number-sections: true
+    number-sections: false
 
 execute:
   eval: false # Don't execute code chunks for the website

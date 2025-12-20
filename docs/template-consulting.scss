@@ -215,40 +215,48 @@ pre, .sourceCode pre {
   color: inherit;
 }
 
-// C. COPY BUTTON (Ultimate Fix)
+// C. COPY BUTTON (Browser Reset Fix)
 div.sourceCode .code-copy-button {
-  // 1. Basis-Styling
-  opacity: 0.5 !important; 
-  border: 1px solid $slate-700 !important;
-  background-color: transparent !important;
+  // 1. Browser-Defaults killen (WICHTIG!)
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  box-shadow: none !important;
   
-  // 2. Farbe erzwingen (auf Button-Ebene)
+  // 2. Basis-Styling
+  opacity: 0.5 !important; 
+  background-color: transparent !important;
+  border: 1px solid $slate-700 !important;
+  border-radius: 4px !important;
+  
+  // 3. Farbe erzwingen
+  // Wir setzen die Textfarbe des Buttons auf die Akzentfarbe.
+  // Da Bootstrap Icons 'currentColor' nutzen, sollte das Icon folgen.
   color: var(--color-accent) !important;
+  
+  transition: all 0.2s ease;
 
-  // 3. Das Icon im Inneren zwingen
-  // Wir entfernen das '>', damit es auch greift, wenn das Icon tiefer verschachtelt ist
-  i, .bi, svg {
+  // 4. Das Icon im Inneren explizit ansprechen
+  > i, > .bi {
     color: var(--color-accent) !important;
-    fill: var(--color-accent) !important; // Falls es ein SVG ist
     font-style: normal;
+    display: inline-block; // Sicherstellen, dass es gerendert wird
   }
 
-  // 4. HOVER STATE (Kein Quadrat!)
+  // 5. HOVER STATE
   &:hover {
     opacity: 1 !important;
     
-    // Rahmen wird farbig
+    // Rahmen in Akzentfarbe
     border-color: var(--color-accent) !important;
     
-    // WICHTIG: Hintergrund bleibt transparent (kein gefülltes Quadrat)
+    // Hintergrund transparent lassen (kein Quadrat!)
     background-color: transparent !important; 
     
-    // Icon bleibt farbig
+    // Icon Farbe sicherstellen
     color: var(--color-accent) !important;
     
-    i, .bi, svg {
+    > i, > .bi {
       color: var(--color-accent) !important;
-      fill: var(--color-accent) !important;
     }
   }
 }

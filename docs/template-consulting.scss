@@ -107,6 +107,16 @@ html {
 // 5. TYPOGRAFIE & UI HARMONISIERUNG
 // -----------------------------------------------------------------------------
 
+#title-block-header h1.title {
+  font-family: var(--font-header); // Oder eine spezifische Schrift
+  font-weight: $weight-bold;      // Sehr fett, wie im Screenshot
+  font-size: 2.75rem;               // Größe anpassen
+  line-height: 1.1;                // Zeilenabstand (enger ist oft besser bei großen Titeln)
+  color: $stone-50;                // Farbe (oder var(--color-accent) für Akzent)
+  margin-bottom: 0.5rem;           // Abstand zum Untertitel/Datum
+}
+
+
 // Überschriften: Nutzen die Header-Variable (Newsreader)
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-header);
@@ -117,7 +127,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 2.75rem;
+  font-size: 2.25rem;
   font-weight: $weight-bold;
   font-style: italic; // Optional: Italic bei Newsreader wirkt sehr edel als H1
   line-height: 1.2;

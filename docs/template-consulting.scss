@@ -28,7 +28,8 @@ $weight-bold:    700;
 $weight-black:   900;
 
 // Sizes
-$size-xl:     2.50rem;
+$size-xxl:    2.75rem;
+$size-xl:     2.25rem;
 $size-large:  1.75rem;
 $size-middle: 1.25rem;
 $size-normal: 1.00rem;
@@ -49,15 +50,15 @@ $dark:          $stone-50;
 $border-color:  $slate-700;
 
 // Typography Mapping
-$font-family-sans-serif: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-$font-family-serif:      "Newsreader", serif;
-$font-family-monospace:  "JetBrains Mono", monospace;
+$font-family-serif:      "Literata", "Times New Roman", Times, serif;
+$font-family-sans-serif: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
 $font-size-base:        $size-normal;
 $font-weight-base:      $weight-light;
 $line-height-base:      1.7;
 
-// Standardmäßig Serifen für Headlines (wird unten via CSS Var gesteuert)
+// Headings nutzen Literata (Serif)
 $headings-font-family:  $font-family-serif;
 $headings-font-weight:  $weight-bold;
 $headings-color:        $stone-50;
@@ -82,16 +83,16 @@ $pre-color:             $slate-200;
 // 4. IMPORTS & GLOBAL RESETS
 // -----------------------------------------------------------------------------
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Plus+Jakarta+Sans:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,200..900&family=Manrope:wght@200..800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 :root {
   --color-accent: #4F46E5;
   --grid-sidebar-fr: 3fr;
   --grid-main-fr: 9fr;
 
-  // KORREKTUR: Wiederherstellung des Dual-Font Systems
-  --font-header: "Newsreader", serif;          // Serifen für Charakter
-  --font-text: "Plus Jakarta Sans", sans-serif; // Sans für UI/Body
+  // Font Zuweisung
+  --font-header: "Literata", serif;      // Überschriften, Navbar, TOC
+  --font-text: "Manrope", sans-serif;    // Fließtext
 }
 
 body {
@@ -107,52 +108,57 @@ html {
 // 5. TYPOGRAFIE & UI HARMONISIERUNG
 // -----------------------------------------------------------------------------
 
-#title-block-header h1.title {
-  font-family: var(--font-header); // Oder eine spezifische Schrift
-  font-weight: $weight-bold;      // Sehr fett, wie im Screenshot
-  font-size: 2.75rem;               // Größe anpassen
-  line-height: 1.1;                // Zeilenabstand (enger ist oft besser bei großen Titeln)
-  color: $stone-50;                // Farbe (oder var(--color-accent) für Akzent)
-  margin-bottom: 0.5rem;           // Abstand zum Untertitel/Datum
-}
-
-
-// Überschriften: Nutzen die Header-Variable (Newsreader)
+// Überschriften
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-header);
-  letter-spacing: -0.01em; // Etwas weniger eng bei Serifen
+  letter-spacing: -0.01em;
   margin-top: 2rem;
   margin-bottom: 1rem;
   color: $stone-50;
 }
 
+// H1 Anpassung (kleiner als vorher)
 h1 {
-  font-size: 2.25rem;
+  font-size: $size-xl;
   font-weight: $weight-bold;
-  font-style: italic; // Optional: Italic bei Newsreader wirkt sehr edel als H1
   line-height: 1.2;
 }
 
 h2 {
-  font-size: 2rem;
+  font-size: $size-large;
   font-weight: $weight-bold;
 }
 
-// UI Elemente: MÜSSEN Sans-Serif sein für Modernität
+// Spezifischer Titel-Block (Landingpage Title)
+#title-block-header h1.title {
+  font-family: var(--font-header);
+  font-weight: $weight-black;
+  font-size: $size-xxl;
+  line-height: 1.1;
+  color: $stone-50;
+  margin-bottom: 0.5rem;
+}
+
+// UI Elemente: Navbar & TOC -> Literata
 .navbar,
+.navbar-brand,
 .nav-link,
 .dropdown-item,
-#quarto-sidebar,
 #quarto-margin-sidebar, // TOC Bereich
-.footer,
-.btn { // Auch Buttons
+.footer h1, .footer h2, .footer h3 {
+  font-family: var(--font-header) !important;
+}
+
+// Footer Text & Buttons -> Manrope
+.footer, .btn {
   font-family: var(--font-text) !important;
 }
 
 // TOC spezifisch (Rechte Seite)
 #quarto-margin-sidebar {
-  font-size: 0.85rem;
+  font-size: $size-small;
   color: $slate-400;
+  letter-spacing: 0.01em;
 
   a {
     color: $slate-400 !important;
@@ -167,17 +173,36 @@ h2 {
 // -----------------------------------------------------------------------------
 
 // Inline Code (`code`)
-code {
+code:not(pre > code) {
   font-family: $font-family-monospace;
-  color: lighten($indigo, 15%); // Etwas heller für Kontrast
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 0.1em 0.3em;
+
+  // Lesbarkeit: Heller Text auf dunklem Chip
+  color: $slate-200 !important;
+  background-color: $slate-800 !important;
+
+  // Box-Styling
+  padding: 0.2em 0.4em;
   border-radius: 4px;
-  font-size: 0.9em;
+  border: 1px solid $slate-700;
+
+  font-size: $size-small;
+  white-space: nowrap;
+}
+
+// Links innerhalb von Inline-Code
+code:not(pre > code) a {
+  color: inherit !important; // Behält die lesbare helle Farbe
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent); // Akzent nur im Unterstrich
+
+  &:hover {
+    color: $stone-50 !important;
+  }
 }
 
 // Code Blöcke (```code```)
 pre, .sourceCode {
+  font-family: $font-family-monospace;
   background-color: $slate-800 !important;
   border: 1px solid $slate-700;
   border-radius: 6px;
@@ -229,7 +254,6 @@ a {
     }
 }
 
-
 // Callouts
 .callout {
   border: 1px solid $slate-700;
@@ -242,7 +266,7 @@ a {
   .callout-header {
     background-color: rgba(255,255,255,0.03);
     color: $stone-50;
-    font-family: var(--font-text); // UI Font für Header
+    font-family: var(--font-header); // Literata für Header
     font-weight: $weight-bold;
     border-bottom: 1px solid $slate-700;
   }
@@ -265,7 +289,7 @@ a {
     }
 
     .listing-title {
-      font-family: var(--font-header); // Serif für Blog Titel
+      font-family: var(--font-header);
       font-size: $size-large;
       font-weight: $weight-bold;
       a {
@@ -296,6 +320,7 @@ a {
     }
   }
 }
+
 
 // Footer
 .footer {

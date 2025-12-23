@@ -1,42 +1,29 @@
 /*-- scss:defaults --*/
 
 // -----------------------------------------------------------------------------
-// 1. AI AGENT PALETTE (Strict Port)
+// 1. AI GENERATED PALETTE (Hex Fallbacks for SASS)
 // -----------------------------------------------------------------------------
 
-// 1. BRAND CORE
-// oklch(34.7% 0.046 337.8)
-$brand-core:      #533D4D; 
+// 1. BRAND CORE & SURFACES
+$brand-core:      #533D4D; // Identität / Primary Actions
+$surface-light:   #FFF5F8; // Papier (nicht genutzt im Dark Mode)
+$surface-dark:    #1F1B1E; // Tinte / Main Background
 
-// 2. SURFACES
-// oklch(98% 0.01 337.8) -> Surface Light (nicht genutzt im Dark Mode)
-$surface-light:   #FDFBFD; 
-// oklch(12% 0.02 337.8) -> Surface Dark (Main BG)
-$surface-dark:    #241E22; 
+// 2. HARMONY
+$color-secondary: #615569; // Kühles Violett (Badges/Bg)
+$color-tertiary:  #5E3A3E; // Wärmeres Rot-Braun (Akzente)
 
-// 3. HARMONY
-// oklch(40% 0.05 313) -> Secondary
-$color-secondary: #604B63; 
-// oklch(32% 0.05 3) -> Tertiary
-$color-tertiary:  #5D3F42; 
+// 3. FUNCTIONAL
+$color-success:   #2E9E8E; // Teal
+$color-error:     #C95232; // Orange-Red
 
-// 4. FUNCTIONAL
-// oklch(65% 0.14 170) -> Success
-$color-success:   #00A896; 
-// oklch(55% 0.16 25) -> Error
-$color-error:     #D64636; 
-
-// 5. TEXT & READABILITY
-// oklch(10% 0.03 337.8) -> Text Primary (auf hell)
-$text-primary:    #1F161A; 
-// oklch(45% 0.04 337.8) -> Text Secondary (Sublines)
-$text-secondary:  #725B66; 
-// oklch(96% 0.01 337.8) -> Text on Dark (Main Text)
-$text-on-dark:    #F5EFF3; 
-
+// 4. TYPOGRAPHY
+$text-primary:    #1A1317; // Für hellen Hintergrund
+$text-secondary:  #75626F; // Metadaten / Muted
+$text-on-dark:    #F7F0F4; // Haupttext auf Dunkel
 
 // -----------------------------------------------------------------------------
-// 2. TYPOGRAFIE
+// 2. TYPOGRAFIE DEFINITIONEN
 // -----------------------------------------------------------------------------
 
 $weight-light:   300;
@@ -54,13 +41,13 @@ $size-label:  0.80rem;
 $size-skill:  0.75rem; 
 
 // -----------------------------------------------------------------------------
-// 3. QUARTO VARIABLES (Mapping)
+// 3. QUARTO VARIABLES (Mapping Logic)
 // -----------------------------------------------------------------------------
 
 // --- Page Layout & Colors ---
 $body-bg:       $surface-dark; 
 $body-color:    $text-on-dark;  
-$link-color:    $brand-core; // Strikt nach Palette
+$link-color:    $text-on-dark; // Lesbarkeit priorisiert! (Brand Core nur als Deko)
 
 // --- Fonts ---
 $font-family-sans-serif: "Alegreya Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -72,14 +59,14 @@ $headings-color:         $text-on-dark;
 $font-size-root:         $size-normal;
 $line-height-base:       1.7;
 
-// --- Navigation ---
+// --- Navigation (Navbar) ---
 $navbar-bg:     $surface-dark; 
-$navbar-fg:     $brand-core; // Links in Brand Core
-$navbar-hl:     $brand-core;
+$navbar-fg:     $text-secondary; // Inaktive Links sind "Metadaten" -> Secondary
+$navbar-hl:     $brand-core;     // Aktiver Zustand -> Brand Core
 
 // --- Footer ---
 $footer-bg:     $surface-dark;
-$footer-fg:     $text-secondary;
+$footer-fg:     $text-secondary; // Copyright/Meta -> Secondary
 
 // --- TOC ---
 $toc-color:           $text-secondary;
@@ -88,20 +75,20 @@ $toc-active-border:   $brand-core;
 $toc-inactive-border: transparent;
 
 // --- Code Blocks ---
-// Wir nutzen Secondary für den Hintergrund, um Abhebung zu schaffen, 
-// da Surface-Light zu hell wäre.
-$code-block-bg:                rgba($color-secondary, 0.15); 
+// Wir nutzen Surface Dark, aber heben es durch Rahmen ab
+$code-block-bg:                $surface-dark; 
 $code-block-border-left:       $brand-core;
 $code-block-border-left-style: solid;
 $code-block-border-left-size:  4px;
 $code-block-bg-padding:        1rem;
 
 // --- Copy Button ---
-$btn-code-copy-color:        $brand-core;
-$btn-code-copy-color-active: $text-on-dark;
+$btn-code-copy-color:        $text-secondary;
+$btn-code-copy-color-active: $brand-core;
 
 // --- Inline Code ---
-$code-bg:       rgba($color-secondary, 0.15);
+// Hintergrund: Secondary mit Transparenz (simuliert durch Mix)
+$code-bg:       mix($color-secondary, $surface-dark, 20%);
 $code-color:    $text-on-dark;
 
 // --- Callouts ---
@@ -113,16 +100,25 @@ $callout-margin-bottom: 2rem;
 /*-- scss:rules --*/
 
 // -----------------------------------------------------------------------------
-// 4. IMPORTS & CSS VARIABLES
+// 4. IMPORTS & CSS VARIABLES (Modern Browsers)
 // -----------------------------------------------------------------------------
 
 @import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 :root {
-  // Hier nutzen wir die Original OKLCH Werte für Browser, die es können
+  // Hier injizieren wir die OKLCH Werte für maximale Farbtreue
   --color-brand-core: oklch(34.7% 0.046 337.8);
-  --color-accent:     oklch(34.7% 0.046 337.8); // Accent = Brand Core
+  --surface-light:    oklch(98% 0.01 337.8);
+  --surface-dark:     oklch(12% 0.02 337.8);
+  --color-secondary:  oklch(40% 0.05 313);
+  --color-tertiary:   oklch(32% 0.05 3);
+  --color-success:    oklch(65% 0.14 170);
+  --color-error:      oklch(55% 0.16 25);
+  --text-primary:     oklch(10% 0.03 337.8);
+  --text-secondary:   oklch(45% 0.04 337.8);
+  --text-on-dark:     oklch(96% 0.01 337.8);
   
+  // Fonts
   --font-header: "Exo 2", sans-serif;        
   --font-text: "Alegreya Sans", sans-serif;  
 }
@@ -130,6 +126,8 @@ $callout-margin-bottom: 2rem;
 body {
   font-family: var(--font-text);
   -webkit-font-smoothing: antialiased; 
+  background-color: var(--surface-dark); // Browser nutzt OKLCH
+  color: var(--text-on-dark);
 }
 
 html {
@@ -145,6 +143,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.02em; 
   margin-top: 2rem;
   margin-bottom: 1rem;
+  color: var(--text-on-dark);
 }
 
 h1 { 
@@ -152,7 +151,6 @@ h1 {
   font-weight: $weight-black; 
   line-height: 1.1;
   text-transform: uppercase; 
-  color: $text-on-dark;
 }
 
 h2 { 
@@ -165,11 +163,12 @@ h2 {
   font-weight: $weight-black;      
   font-size: $size-xl; 
   line-height: 1.1;                
-  color: $text-on-dark;                
+  color: var(--text-on-dark);                
   margin-bottom: 0.5rem;           
   text-transform: none; 
 }
 
+// UI Fonts
 .navbar, .navbar-brand, .nav-link, .dropdown-item, #quarto-margin-sidebar, .footer h1, .footer h2, .footer h3 { 
   font-family: var(--font-header) !important;
 }
@@ -178,17 +177,18 @@ h2 {
   font-family: var(--font-text) !important;
 }
 
+// TOC
 #quarto-margin-sidebar {
   font-size: $size-label; 
-  color: $text-secondary;
+  color: var(--text-secondary);
   letter-spacing: 0.02em; 
   
   a {
-    color: $text-secondary !important;
+    color: var(--text-secondary) !important;
     transition: all 0.2s ease;
     &:hover, &.active {
-      color: var(--color-accent) !important;
-      border-left-color: var(--color-accent) !important;
+      color: var(--color-brand-core) !important;
+      border-left-color: var(--color-brand-core) !important;
     }
   }
 }
@@ -200,10 +200,12 @@ h2 {
 // A. INLINE CODE
 code:not(pre > code) {
   font-family: $font-family-monospace;
-  // Farben kommen aus Defaults ($code-bg)
+  // Fallback via SASS, Override via CSS Var
+  color: var(--text-on-dark) !important;       
+  background-color: color-mix(in srgb, var(--color-secondary), transparent 85%) !important; 
   padding: 0.2em 0.4em;
   border-radius: 4px;
-  border: 1px solid rgba($brand-core, 0.3); // Subtiler Brand-Border
+  border: 1px solid var(--color-secondary); 
   font-size: $size-small; 
   white-space: nowrap; 
 }
@@ -211,16 +213,16 @@ code:not(pre > code) {
 code:not(pre > code) a {
   color: inherit !important; 
   text-decoration: underline;
-  text-decoration-color: var(--color-accent); 
-  &:hover { color: $text-on-dark !important; }
+  text-decoration-color: var(--color-brand-core); 
+  &:hover { color: var(--text-on-dark) !important; }
 }
 
 // B. CODE BLÖCKE
 div.sourceCode {
-  border: 1px solid rgba($brand-core, 0.3); 
-  border-left-color: var(--color-brand-core) !important; 
+  border: 1px solid var(--color-secondary); // Zarter Rahmen (Secondary)
+  border-left-color: var(--color-brand-core) !important; // Identität (Brand Core)
   border-radius: 4px;
-  // Background via Defaults
+  background-color: var(--surface-dark) !important;
 }
 
 // C. COPY BUTTON
@@ -228,20 +230,20 @@ div.sourceCode {
   appearance: none !important;
   box-shadow: none !important;
   background-color: transparent !important;
-  border: 1px solid rgba($brand-core, 0.3) !important;
+  border: 1px solid var(--text-secondary) !important;
   border-radius: 4px !important;
   
   opacity: 1 !important;
-  color: var(--color-accent) !important; 
+  color: var(--text-secondary) !important; 
   
   transition: all 0.2s ease;
 
   i, .bi { color: inherit !important; }
 
   &:hover {
-    border-color: var(--color-accent) !important;
+    border-color: var(--color-brand-core) !important;
     background-color: transparent !important; 
-    color: var(--color-accent) !important;
+    color: var(--color-brand-core) !important;
   }
 }
 
@@ -254,14 +256,14 @@ div.sourceCode {
   color: inherit !important; 
 }
 #quarto-margin-sidebar a:hover code {
-  color: var(--color-accent) !important;
+  color: var(--color-brand-core) !important;
 }
 
-// E. SYNTAX HIGHLIGHTING (Angepasst an Palette)
-.token.comment { color: $text-secondary; font-style: italic; }
-.token.string { color: $color-success; } 
-.token.number { color: $color-secondary; } 
-.token.keyword { color: var(--color-accent); font-weight: bold; }
+// E. SYNTAX HIGHLIGHTING (Mapping auf Functional Colors)
+.token.comment { color: var(--text-secondary); font-style: italic; }
+.token.string { color: var(--color-success); } // Teal
+.token.number { color: var(--color-tertiary); } // Rot-Braun
+.token.keyword { color: var(--color-brand-core); font-weight: bold; } // Brand Core
 
 
 // -----------------------------------------------------------------------------
@@ -269,12 +271,15 @@ div.sourceCode {
 // -----------------------------------------------------------------------------
 
 a {
-  color: var(--color-accent);
+  color: var(--text-on-dark); // Lesbarkeit!
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-brand-core); // Identität via Unterstreichung
   transition: all 0.2s ease;
+  
   &:hover { 
-    // APCA konformer Hover: Wir nutzen Text-on-Dark für maximalen Kontrast
-    color: $text-on-dark; 
-    text-decoration-color: var(--color-accent);
+    color: var(--text-on-dark); 
+    border-bottom-width: 2px;
+    background-color: color-mix(in srgb, var(--color-brand-core), transparent 90%);
   }
 }
 
@@ -284,32 +289,32 @@ a {
     padding-bottom: 1.5rem;
 
     .navbar-brand {
-        color: $text-on-dark !important;
+        color: var(--text-on-dark) !important;
         font-weight: 700;
         letter-spacing: 0.05em;
     }
 
     .nav-link {
-        color: var(--color-accent) !important;
+        color: var(--text-secondary) !important; // Inaktiv = Metadata
         font-weight: 600;
         letter-spacing: 0.05em;
         text-transform: uppercase;
+        border-bottom: none; // Keine Linie im Menü standardmäßig
         
         &:hover, &.active {
-            text-decoration: underline;
-            text-decoration-color: var(--color-accent);
-            text-decoration-thickness: 2px;
-            text-underline-offset: 6px;
+            color: var(--color-brand-core) !important; // Aktiv = Brand Core
+            background-color: transparent;
         }
     }
     
     .navbar-toggler {
-        border-color: rgba($brand-core, 0.5); 
+        border-color: var(--text-secondary); 
     }
     
     .quarto-navbar-tools a {
-       color: var(--color-accent) !important;
-       &:hover { opacity: 0.8; }
+       color: var(--text-secondary) !important;
+       border-bottom: none;
+       &:hover { color: var(--color-brand-core) !important; }
     }
     
     // Navbar Tools Fix (Layout)
@@ -342,190 +347,28 @@ a {
     }
 }
 
-// -----------------------------------------------------------------------------
-// 8. CV GRID LAYOUT
-// -----------------------------------------------------------------------------
-
-.cv-section-container { margin-bottom: 3rem; }
-
-.cv-row {
-  display: grid;
-  grid-template-columns: var(--grid-sidebar-fr) var(--grid-main-fr);
-  column-gap: 2rem;
-  row-gap: 1rem;
-  margin-bottom: 2rem;
-  align-items: baseline; 
-  
-  @media (max-width: 767.98px) {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-}
-
-.cv-item-part:nth-child(odd) {
-  grid-column: 1;
-  text-align: right;
-  @media (max-width: 767.98px) { text-align: left; margin-top: 1rem; }
-}
-
-.cv-item-part:nth-child(even) {
-  grid-column: 2;
-  text-align: left;
-  @media (max-width: 767.98px) { grid-column: 1; }
-}
-
-/* -- Styling Specific Parts -- */
-.part-0 {
-  font-family: var(--font-text); 
-  font-size: $size-label;
-  font-weight: $weight-bold;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-accent);
-}
-
-.cv-item-part:nth-child(n+3):nth-child(odd) {
-  font-family: var(--font-text);
-  font-size: $size-label;
-  font-weight: $weight-regular;
-  color: $text-secondary; 
-}
-
-.part-1 {
-  font-family: var(--font-header); 
-  font-size: $size-middle; 
-  font-weight: $weight-bold;
-  color: $text-on-dark;
-}
-
-.part-3 {
-  font-family: var(--font-text);
-  font-size: $size-normal;
-  font-weight: $weight-light;
-  color: $text-on-dark; 
-  line-height: 1.6;
-}
-
-.cv-item-part:nth-child(n+6):nth-child(even) {
-  font-family: var(--font-text);
-  font-size: $size-label;
-  color: $text-secondary;
-  ul {
-    padding-left: 1rem;
-    margin-bottom: 0;
-    li::marker { color: var(--color-accent); }
-  }
-}
-
-// -----------------------------------------------------------------------------
-// 9. SPECIAL LAYOUTS & COMPONENTS
-// -----------------------------------------------------------------------------
-
-.cv-row.research-interests {
-  .cv-item-part:nth-child(odd) {
-    font-family: var(--font-header); 
-    font-weight: $weight-bold;
-    font-style: italic;
-    color: var(--color-accent);
-    text-transform: none; 
-    font-size: $size-normal;
-  }
-  .cv-item-part:nth-child(even) { color: $text-on-dark; }
-}
-
-.skills-section {
-  .skill-group {
-    margin-bottom: 3rem;
-    .cv-sidebar {
-      color: var(--color-accent);
-      font-family: var(--font-header);
-      font-weight: $weight-bold;
-      font-style: italic;
-    }
-  }
-}
-
-.skill-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 2rem;
-}
-
-.skill-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  text-align: left; 
-  background: rgba($color-secondary, 0.1); // Transparenter Hintergrund
-  padding: 1rem;
-  border-radius: 4px;
-  border: 1px solid rgba($brand-core, 0.3);
-}
-
-.skill-name {
-  font-family: var(--font-text); 
-  font-weight: $weight-bold;
-  font-size: $size-small;
-  color: $text-on-dark;
-}
-
-.skill-level {
-  font-size: $size-skill;
-  color: $text-secondary;
-  display: flex;
-  justify-content: space-between;
-}
-
-.progress {
-  height: 4px;
-  background-color: rgba($brand-core, 0.3);
-  border-radius: 2px;
-}
-
-.progress-bar {
-  background-color: var(--color-accent);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-accent), transparent 50%); 
-}
-
-.publication-list {
-  .cv-sidebar {
-    color: $text-secondary;
-    font-style: normal; 
-    font-family: $font-family-monospace;
-  }
-  .cv-main {
-    color: $text-on-dark;
-    .pub-entry {
-      border-left: 2px solid rgba($brand-core, 0.3);
-      padding-left: 1rem;
-      margin-bottom: 1rem;
-      transition: border-color 0.2s;
-      &:hover { border-left-color: var(--color-accent); }
-    }
-  }
-}
 
 .callout {
-  border: 1px solid rgba($brand-core, 0.3);
+  border: 1px solid var(--color-secondary);
   border-left-color: var(--color-brand-core) !important; 
-  background-color: rgba($color-secondary, 0.1); 
-  color: $text-on-dark;
+  background-color: var(--surface-dark); 
+  color: var(--text-on-dark);
   border-radius: 4px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
 
   .callout-header {
-    background-color: rgba($brand-core, 0.2);
-    color: $text-on-dark;
+    background-color: color-mix(in srgb, var(--color-brand-core), transparent 90%);
+    color: var(--text-on-dark);
     font-family: var(--font-header);
     font-weight: $weight-bold;
-    border-bottom: 1px solid rgba($brand-core, 0.3);
+    border-bottom: 1px solid var(--color-secondary);
   }
 }
 
 .quarto-listing-default {
   .quarto-post {
-    background: rgba($color-secondary, 0.1);
-    border: 1px solid rgba($brand-core, 0.3);
+    background: var(--surface-dark);
+    border: 1px solid var(--color-secondary);
     padding: 2rem;
     border-radius: 8px;
     margin-bottom: 2rem;
@@ -533,8 +376,8 @@ a {
 
     &:hover {
       transform: translateY(-4px);
-      border-color: var(--color-accent);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px color-mix(in srgb, var(--color-accent), transparent 80%);
+      border-color: var(--color-brand-core);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
     }
 
     .listing-title {
@@ -542,61 +385,47 @@ a {
       font-size: $size-large;
       font-weight: $weight-bold;
       a { 
-        color: $text-on-dark; 
-        &:hover { color: var(--color-accent); }
+        color: var(--text-on-dark); 
+        border-bottom: none;
+        &:hover { color: var(--color-brand-core); }
       }
     }
     
     .listing-description {
-      color: $text-secondary;
+      color: var(--text-secondary);
       font-weight: $weight-light;
     }
 
     .listing-categories .listing-category {
-      background: rgba($brand-core, 0.2);
-      border: 1px solid rgba($brand-core, 0.5);
-      color: $text-on-dark;
+      background: transparent;
+      border: 1px solid var(--color-secondary);
+      color: var(--text-secondary);
       font-family: $font-family-monospace;
       font-size: $size-skill;
       border-radius: 4px;
       padding: 0.2em 0.6em;
       
       &:hover {
-        background: var(--color-accent);
-        border-color: var(--color-accent);
-        color: white;
+        background: var(--color-brand-core);
+        border-color: var(--color-brand-core);
+        color: var(--text-on-dark);
       }
     }
   }
 }
 
-.timeline-container {
-  position: relative;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 3rem 0;
-
-  &::after {
-    content: '';
-    position: absolute;
-    width: 1px;
-    background-color: rgba($brand-core, 0.5); 
-    top: 0;
-    bottom: 0;
-    left: 50%;
-  }
-}
 
 .footer {
-  background-color: $surface-dark;
-  border-top: 1px solid rgba($brand-core, 0.3);
-  color: $text-secondary;
+  background-color: var(--surface-dark);
+  border-top: 1px solid var(--color-secondary);
+  color: var(--text-secondary);
   font-family: $font-family-monospace;
   font-size: $size-small;
   padding: 4rem 0;
   
   a {
-    color: $text-secondary;
-    &:hover { color: var(--color-accent); }
+    color: var(--text-secondary);
+    border-bottom: none;
+    &:hover { color: var(--color-brand-core); }
   }
 }

@@ -1,138 +1,239 @@
 /*-- scss:defaults --*/
 
 // -----------------------------------------------------------------------------
-// 1. FARBPALETTE
+// 1. AI GENERATED PALETTE (OKLCH Port)
 // -----------------------------------------------------------------------------
 
-$slate-900: #0e171e; // #0F172A; 
-$slate-800: #1E293B; 
-$slate-700: #334155; 
-$slate-400: #94A3B8; 
-$stone-50:  #FAFAF9; 
-$indigo:    #4F46E5; 
+// Core Colors (aus dem AI Generator)
+$brand-core:      oklch(34.7% 0.046 337.8); // #533D4D (Mauve)
+$surface-light:   oklch(98% 0.01 337.8);    // #FDFBFD (Lavendel Weiß)
+$surface-dark:    oklch(12% 0.02 337.8);    // #241E22 (Tiefes Aubergine)
+
+// Harmony
+$color-secondary: oklch(40% 0.05 313);      // Violett-Grau
+$color-tertiary:  oklch(32% 0.05 3);        // Weinrot-Grau
+
+// Text Colors
+$text-primary:    oklch(10% 0.03 337.8);    // Für hellen Hintergrund
+$text-secondary:  oklch(45% 0.04 337.8);    // Sublines
+$text-on-dark:    oklch(96% 0.01 337.8);    // Für dunklen Hintergrund
+
+// Functional
+$color-success:   oklch(65% 0.14 170);      // Teal
+$color-error:     oklch(55% 0.16 25);       // Orange-Red
+
+// --- ABGELEITETE FARBEN FÜR UI (Manuell ergänzt für Tiefe) ---
+// Ein etwas helleres Aubergine für Cards/Code-Blöcke (L=18% statt 12%)
+$surface-raised:  oklch(18% 0.025 337.8); 
+// Ein Rand-Ton (L=25%)
+$surface-border:  oklch(25% 0.03 337.8);
+// Eine hellere Version des Brand-Core für Hover-Effekte (L=45%)
+$brand-light:     oklch(45% 0.06 337.8);
+
 
 // -----------------------------------------------------------------------------
-// 2. BOOTSTRAP KONFIGURATION
+// 2. TYPOGRAFIE (Bleibt wie gehabt: Exo 2 & Alegreya)
 // -----------------------------------------------------------------------------
 
-$body-bg:       $slate-900;
-$body-color:    $stone-50;
-$link-color:    $indigo;
+$weight-light:   300;
+$weight-regular: 400;
+$weight-medium:  500;
+$weight-bold:    700;
+$weight-black:   900; 
 
-// Fonts
-$font-family-sans-serif: "Alegreya Sans", sans-serif;
-$font-family-monospace:  "Space Mono", monospace;
-$headings-font-family:   "Exo 2", sans-serif;
-$headings-font-weight:   700;
-$headings-color:         $stone-50;
+$size-xl:     2.50rem; 
+$size-large:  1.75rem; 
+$size-middle: 1.25rem; 
+$size-normal: 1.00rem; 
+$size-small:  0.90rem; 
+$size-label:  0.80rem; 
+$size-skill:  0.75rem; 
 
 // -----------------------------------------------------------------------------
-// 3. NAVBAR CONFIGURATION (Basis)
+// 3. QUARTO VARIABLES (Mapping auf neue Palette)
 // -----------------------------------------------------------------------------
 
-$navbar-bg:           $slate-900; 
-$navbar-fg:           $indigo;    // Standard-Textfarbe der Navbar ist jetzt Indigo!
-$navbar-hl:           $indigo;    // Highlight auch Indigo
+// --- Page Layout & Colors ---
+$body-bg:       $surface-dark; 
+$body-color:    $text-on-dark;  
+$link-color:    $brand-light; // Helleres Mauve für Lesbarkeit auf Dunkel
 
-// Code Blocks Defaults
-$code-block-bg:           $slate-800;
-$code-block-border-left:  $indigo;
-$btn-code-copy-color:     $indigo;
+// --- Fonts ---
+$font-family-sans-serif: "Alegreya Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+$headings-font-family:   "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+$headings-font-weight:   $weight-bold;
+$headings-color:         $text-on-dark;
+
+$font-size-root:         $size-normal;
+$line-height-base:       1.7;
+
+// --- Navigation (Navbar) ---
+// Wir nutzen Surface Dark für Seamless Look
+$navbar-bg:     $surface-dark; 
+$navbar-fg:     $brand-light; // Links in hellem Mauve
+$navbar-hl:     $brand-light;
+
+// --- Footer ---
+$footer-bg:     $surface-dark;
+$footer-fg:     $text-secondary; // Muted Text
+
+// --- Table of Contents (TOC) ---
+$toc-color:           $text-secondary;
+$toc-font-size:       $size-label;
+$toc-active-border:   $brand-core;
+$toc-inactive-border: transparent;
+
+// --- Code Blocks ---
+$code-block-bg:                $surface-raised; // Leicht heller als Hintergrund
+$code-block-border-left:       $brand-core;     // Der dunkle Mauve-Ton
+$code-block-border-left-style: solid;
+$code-block-border-left-size:  4px;
+$code-block-bg-padding:        1rem;
+
+// --- Code Copy Button ---
+$btn-code-copy-color:        $brand-light;
+$btn-code-copy-color-active: $text-on-dark;
+
+// --- Inline Code ---
+$code-bg:       $surface-raised;
+$code-color:    $text-on-dark;
+
+// --- Callouts ---
+$callout-border-width:  4px;
+$callout-margin-top:    2rem;
+$callout-margin-bottom: 2rem;
 
 
 /*-- scss:rules --*/
 
 // -----------------------------------------------------------------------------
-// 4. IMPORTS & VARIABLES
+// 4. IMPORTS & CSS VARIABLES
 // -----------------------------------------------------------------------------
 
 @import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 :root {
-  --color-accent: #4F46E5;
-  --font-header: "Exo 2", sans-serif;
-  --font-text: "Alegreya Sans", sans-serif;
+  // Wir mappen die SASS-Variablen auf CSS-Vars für Laufzeit-Nutzung
+  --color-brand-core: #{$brand-core};
+  --color-accent:     #{$brand-light}; // Hellerer Akzent für Links/Hover
+  --surface-dark:     #{$surface-dark};
+  --surface-raised:   #{$surface-raised};
+  
+  --font-header: "Exo 2", sans-serif;        
+  --font-text: "Alegreya Sans", sans-serif;  
 }
 
-html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased; 
+}
+
+html {
+  scroll-behavior: smooth;
+}
 
 // -----------------------------------------------------------------------------
-// 5. NAVBAR STYLING (Exakt nach Anforderung)
+// 5. TYPOGRAFIE & UI FEINSCHLIFF
 // -----------------------------------------------------------------------------
 
-.navbar {
-  border-bottom: none;
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-header);
+  letter-spacing: 0.02em; 
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
 
-  // 1. Das Logo/Brand bleibt WEISS (Kontrast)
-  .navbar-brand {
-    font-family: var(--font-header);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: $stone-50 !important; // Weiß erzwingen
-  }
+h1 { 
+  font-size: $size-xl; 
+  font-weight: $weight-black; 
+  line-height: 1.1;
+  text-transform: uppercase; 
+  color: $text-on-dark;
+}
 
-  // 2. Die Links sind standardmäßig in AKZENTFARBE
-  .nav-link {
-    font-family: var(--font-header);
-    text-transform: uppercase;
-    font-size: 0.95rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    
-    // Farbe: Indigo (via Variable)
-    color: var(--color-accent) !important;
-    
-    // Transition für die Unterstreichung
+h2 { 
+  font-size: $size-large; 
+  font-weight: $weight-bold;
+}
+
+#title-block-header h1.title {
+  font-family: var(--font-header);
+  font-weight: $weight-black;      
+  font-size: $size-xl; 
+  line-height: 1.1;                
+  color: $text-on-dark;                
+  margin-bottom: 0.5rem;           
+  text-transform: none; 
+}
+
+// UI Fonts
+.navbar, .navbar-brand, .nav-link, .dropdown-item, #quarto-margin-sidebar, .footer h1, .footer h2, .footer h3 { 
+  font-family: var(--font-header) !important;
+}
+
+.footer, .btn {
+  font-family: var(--font-text) !important;
+}
+
+// TOC
+#quarto-margin-sidebar {
+  font-size: $size-label; 
+  color: $text-secondary;
+  letter-spacing: 0.02em; 
+  
+  a {
+    color: $text-secondary !important;
     transition: all 0.2s ease;
-    text-decoration: none; // Standardmäßig keine Linie
-    
-    // 3. Hover & Active: Unterstreichung
     &:hover, &.active {
-      color: var(--color-accent) !important; // Farbe bleibt gleich
-      text-decoration: underline;
-      text-decoration-color: var(--color-accent); // Linie in Akzentfarbe
-      text-decoration-thickness: 2px; // Dünne Linie (aber sichtbar)
-      text-underline-offset: 6px;     // Abstand zum Text
+      color: var(--color-accent) !important;
+      border-left-color: var(--color-accent) !important;
     }
   }
-  
-  // Icons (GitHub, Search, Toggle) auch in Akzentfarbe
-  .quarto-navbar-tools a {
-     color: var(--color-accent) !important;
-     &:hover { opacity: 0.8; }
-  }
 }
 
 // -----------------------------------------------------------------------------
-// 6. RESTLICHE UI (Footer, Code etc.)
+// 6. CODE STYLING (Aubergine Theme)
 // -----------------------------------------------------------------------------
 
-// Typografie
-h1, h2, h3, h4, h5, h6 { letter-spacing: 0.02em; }
-h1 { font-weight: 900; text-transform: uppercase; }
-
-// Footer
-.footer {
-  background-color: $slate-900;
-  border-top: 1px solid $slate-800;
-  color: $slate-400;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  padding: 3rem 0;
+// A. INLINE CODE
+code:not(pre > code) {
+  font-family: $font-family-monospace;
+  color: $text-on-dark !important;       
+  background-color: $surface-raised !important; 
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  border: 1px solid $surface-border; 
+  font-size: $size-small; 
+  white-space: nowrap; 
 }
 
-// Code Copy Button Fix (aus vorherigen Schritten übernommen)
+code:not(pre > code) a {
+  color: inherit !important; 
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent); 
+  &:hover { color: $text-on-dark !important; }
+}
+
+// B. CODE BLÖCKE
+div.sourceCode {
+  border: 1px solid $surface-border; 
+  border-left-color: var(--color-brand-core) !important; // Dunklerer Brand-Ton
+  border-radius: 4px;
+  background-color: $surface-raised !important;
+}
+
+// C. COPY BUTTON
 .code-copy-outer-scaffold .code-copy-button {
   appearance: none !important;
   box-shadow: none !important;
   background-color: transparent !important;
-  border: 1px solid $slate-700 !important;
+  border: 1px solid $surface-border !important;
   border-radius: 4px !important;
+  
   opacity: 1 !important;
-  color: var(--color-accent) !important;
+  color: var(--color-accent) !important; // Hellerer Ton für Sichtbarkeit
+  
   transition: all 0.2s ease;
 
   i, .bi { color: inherit !important; }
@@ -141,5 +242,154 @@ h1 { font-weight: 900; text-transform: uppercase; }
     border-color: var(--color-accent) !important;
     background-color: transparent !important; 
     color: var(--color-accent) !important;
+  }
+}
+
+// D. TOC CODE RESET
+#quarto-margin-sidebar code {
+  font-size: 0.75em !important; 
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  color: inherit !important; 
+}
+#quarto-margin-sidebar a:hover code {
+  color: var(--color-accent) !important;
+}
+
+// E. SYNTAX HIGHLIGHTING (Angepasst an Aubergine)
+.token.comment { color: $text-secondary; font-style: italic; }
+.token.string { color: $color-success; } // Teal (aus Palette)
+.token.number { color: $color-secondary; } // Violett-Grau
+.token.keyword { color: var(--color-accent); font-weight: bold; }
+
+
+// -----------------------------------------------------------------------------
+// 7. DYNAMISCHE ELEMENTE & NAV
+// -----------------------------------------------------------------------------
+
+a {
+  color: var(--color-accent);
+  transition: all 0.2s ease;
+  &:hover { 
+    // Heller werden beim Hover (da Hintergrund dunkel ist)
+    color: color-mix(in srgb, var(--color-accent), white 20%); 
+    text-decoration-color: color-mix(in srgb, var(--color-accent), white 20%);
+  }
+}
+
+.navbar {
+    border-bottom: none;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+
+    .navbar-brand {
+        color: $text-on-dark !important;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
+
+    .nav-link {
+        color: var(--color-accent) !important;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        
+        &:hover, &.active {
+            text-decoration: underline;
+            text-decoration-color: var(--color-accent);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 6px;
+        }
+    }
+    
+    .navbar-toggler {
+        border-color: $surface-border; 
+    }
+    
+    // Icons
+    .quarto-navbar-tools a {
+       color: var(--color-accent) !important;
+       &:hover { opacity: 0.8; }
+    }
+}
+
+.callout {
+  border: 1px solid $surface-border;
+  border-left-color: var(--color-brand-core) !important; 
+  background-color: $surface-raised; 
+  color: $text-on-dark;
+  border-radius: 4px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+
+  .callout-header {
+    background-color: rgba(255,255,255,0.03);
+    color: $text-on-dark;
+    font-family: var(--font-header);
+    font-weight: $weight-bold;
+    border-bottom: 1px solid $surface-border;
+  }
+}
+
+.quarto-listing-default {
+  .quarto-post {
+    background: $surface-raised;
+    border: 1px solid $surface-border;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      border-color: var(--color-accent);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px color-mix(in srgb, var(--color-accent), transparent 80%);
+    }
+
+    .listing-title {
+      font-family: var(--font-header); 
+      font-size: $size-large;
+      font-weight: $weight-bold;
+      a { 
+        color: $text-on-dark; 
+        &:hover { color: var(--color-accent); }
+      }
+    }
+    
+    .listing-description {
+      color: $text-secondary;
+      font-weight: $weight-light;
+    }
+
+    .listing-categories .listing-category {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid $surface-border;
+      color: $text-on-dark;
+      font-family: $font-family-monospace;
+      font-size: $size-skill;
+      border-radius: 4px;
+      padding: 0.2em 0.6em;
+      
+      &:hover {
+        background: var(--color-accent);
+        border-color: var(--color-accent);
+        color: white;
+      }
+    }
+  }
+}
+
+
+.footer {
+  background-color: $surface-dark;
+  border-top: 1px solid $surface-border;
+  color: $text-secondary;
+  font-family: $font-family-monospace;
+  font-size: $size-small;
+  padding: 4rem 0;
+  
+  a {
+    color: $text-secondary;
+    &:hover { color: var(--color-accent); }
   }
 }

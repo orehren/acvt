@@ -1,22 +1,26 @@
 /*-- scss:defaults --*/
 
 // -----------------------------------------------------------------------------
-// 1. FARBPALETTE
+// 1. AI GENERATED PALETTE (Hex Fallbacks for SASS)
 // -----------------------------------------------------------------------------
 
-$slate-900: #0F172A; 
-$slate-800: #1E293B; 
-$slate-700: #334155; 
-$slate-600: #475569; 
-$slate-500: #64748B; 
-$slate-400: #94A3B8; 
-$slate-300: #CBD5E1; 
-$slate-200: #E2E8F0; 
-$slate-100: #F1F5F9; // Neu für Light Mode Code-Hintergründe
+// 1. BRAND CORE & SURFACES
+$brand-core:      #533D4D; 
+$surface-light:   #FFF5F8; 
+$surface-dark:    #1F1B1E; 
 
-$stone-50:  #FAFAF9; // Papier-Hintergrund
-$white:     #FFFFFF;
-$indigo:    #4F46E5; 
+// 2. HARMONY
+$color-secondary: #615569; 
+$color-tertiary:  #5E3A3E; 
+
+// 3. FUNCTIONAL
+$color-success:   #2E9E8E; 
+$color-error:     #C95232; 
+
+// 4. TYPOGRAPHY
+$text-primary:    #1A1317; // Haupttext (Dunkel)
+$text-secondary:  #75626F; // Metadaten (Mittel)
+$text-on-dark:    #F7F0F4; // (Nur für Buttons/Badges/Hover nötig)
 
 // -----------------------------------------------------------------------------
 // 2. TYPOGRAFIE DEFINITIONEN
@@ -37,60 +41,55 @@ $size-label:  0.80rem;
 $size-skill:  0.75rem; 
 
 // -----------------------------------------------------------------------------
-// 3. QUARTO VARIABLES (Academia / Light Mode Config)
+// 3. QUARTO VARIABLES (LIGHT MODE MAPPING)
 // -----------------------------------------------------------------------------
 
 // --- Page Layout & Colors ---
-$body-bg:       $stone-50;  // Heller "Stein"-Hintergrund
-$body-color:    $slate-700; // Dunkelgrauer Text (weicher als Schwarz)
-$link-color:    $indigo;
+$body-bg:       $surface-light; // Helles Papier
+$body-color:    $text-primary;  // Dunkle Tinte
+$link-color:    $brand-core;    // Links in Brand Color
 
 // --- Fonts ---
 $font-family-sans-serif: "Alegreya Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 $font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-$font-family-serif:      "Times New Roman", Times, serif; 
+$headings-font-family:   "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+$headings-font-weight:   $weight-bold;
+$headings-color:         $text-primary;
 
 $font-size-root:         $size-normal;
 $line-height-base:       1.7;
 
-$headings-font-family:   "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-$headings-font-weight:   $weight-medium;
-$headings-color:         $slate-900; // Fast Schwarz für Überschriften
-
 // --- Navigation (Navbar) ---
-// Academia Look: Dunkle Leiste oben für Seriosität
-// $navbar-bg:     $slate-900; 
-// $navbar-fg:     $stone-50; 
-// $navbar-hl:     $indigo;
-// --- Navigation (Navbar) ---
-$navbar-bg:     $slate-400; 
-$navbar-fg:     $slate-900; 
-$navbar-hl:     $indigo;
+$navbar-bg:     $surface-light; 
+$navbar-fg:     $text-secondary; // Dunkelgrau auf Weiß
+$navbar-hl:     $brand-core;
 
 // --- Footer ---
-$footer-bg:     $slate-900;
-$footer-fg:     $slate-400;
+$footer-bg:     $surface-light;
+$footer-fg:     $text-secondary; 
 
-// --- Table of Contents (TOC) ---
-$toc-color:           $slate-500;
+// --- TOC ---
+$toc-color:           $text-secondary;
 $toc-font-size:       $size-label;
-$toc-active-border:   $indigo;
-$toc-inactive-border: $slate-200;
+$toc-active-border:   $brand-core;
+$toc-inactive-border: transparent;
 
-// --- Code Blocks (Light Mode Style) ---
-$code-block-bg:                $white;  // Weiße Box auf Stone Hintergrund
-$code-block-border-left:       $indigo; 
+// --- Code Blocks ---
+// Mix: Surface Light mit 5% Dunkelheit für Abgrenzung
+$code-block-bg:                #F2EFF1; 
+$code-block-border-left:       $brand-core;
 $code-block-border-left-style: solid;
 $code-block-border-left-size:  4px;
 $code-block-bg-padding:        1rem;
 
-// --- Code Copy Button ---
-$btn-code-copy-color:        $indigo;
-$btn-code-copy-color-active: $white;
+// --- Copy Button ---
+$btn-code-copy-color:        $text-secondary;
+$btn-code-copy-color-active: $brand-core;
 
 // --- Inline Code ---
-$code-bg:       $slate-100; // Sehr helles Grau
-$code-color:    $slate-700; // Dunkler Text
+// Hintergrund: Brand Color extrem transparent (Tint)
+$code-bg:       rgba($brand-core, 0.08); 
+$code-color:    $brand-core;
 
 // --- Callouts ---
 $callout-border-width:  4px;
@@ -101,14 +100,47 @@ $callout-margin-bottom: 2rem;
 /*-- scss:rules --*/
 
 // -----------------------------------------------------------------------------
-// 4. IMPORTS & GLOBAL RESETS
+// 4. IMPORTS & CSS VARIABLES
 // -----------------------------------------------------------------------------
 
 @import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 :root {
-  --color-accent: #4F46E5;     
+  // 1. BRAND & SURFACES
+  --color-brand-core: #533D4D;
+  --color-brand-core: oklch(34.7% 0.046 337.8);
+
+  --surface-light:    #FFF5F8;
+  --surface-light:    oklch(98% 0.01 337.8);
   
+  --surface-dark:     #1F1B1E;
+  --surface-dark:     oklch(12% 0.02 337.8);
+
+  // 2. HARMONY
+  --color-secondary:  #615569;
+  --color-secondary:  oklch(40% 0.05 313);
+  
+  --color-tertiary:   #5E3A3E;
+  --color-tertiary:   oklch(32% 0.05 3);
+
+  // 3. FUNCTIONAL
+  --color-success:    #2E9E8E;
+  --color-success:    oklch(65% 0.14 170);
+  
+  --color-error:      #C95232;
+  --color-error:      oklch(55% 0.16 25);
+
+  // 4. TYPOGRAPHY
+  // Hier nutzen wir die ursprünglichen Definitionen für Light Mode
+  --text-primary:     #1A1317;
+  --text-primary:     oklch(10% 0.03 337.8);
+  
+  --text-secondary:   #75626F;
+  --text-secondary:   oklch(45% 0.04 337.8);
+  
+  --text-on-dark:     oklch(96% 0.01 337.8);
+  
+  // Fonts
   --font-header: "Exo 2", sans-serif;        
   --font-text: "Alegreya Sans", sans-serif;  
 }
@@ -116,6 +148,8 @@ $callout-margin-bottom: 2rem;
 body {
   font-family: var(--font-text);
   -webkit-font-smoothing: antialiased; 
+  background-color: var(--surface-light); 
+  color: var(--text-primary);
 }
 
 html {
@@ -123,7 +157,7 @@ html {
 }
 
 // -----------------------------------------------------------------------------
-// 5. TYPOGRAFIE & UI FEINSCHLIFF
+// 5. TYPOGRAFIE & UI
 // -----------------------------------------------------------------------------
 
 h1, h2, h3, h4, h5, h6 {
@@ -131,27 +165,27 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.02em; 
   margin-top: 2rem;
   margin-bottom: 1rem;
-  color: $slate-900; // Dunkel im Light Mode
+  color: var(--text-primary);
 }
 
 h1 { 
   font-size: $size-xl; 
-  font-weight: $weight-bold; 
+  font-weight: $weight-black; 
   line-height: 1.1;
   text-transform: uppercase; 
 }
 
 h2 { 
   font-size: $size-large; 
-  font-weight: $weight-medium;
+  font-weight: $weight-bold;
 }
 
 #title-block-header h1.title {
   font-family: var(--font-header);
-  font-weight: $weight-bold;      
+  font-weight: $weight-black;      
   font-size: $size-xl; 
   line-height: 1.1;                
-  color: $slate-900; // Dunkel               
+  color: var(--text-primary);                
   margin-bottom: 0.5rem;           
   text-transform: none; 
 }
@@ -168,76 +202,76 @@ h2 {
 // TOC
 #quarto-margin-sidebar {
   font-size: $size-label; 
-  color: $slate-500; // Mittelgrau
+  color: var(--text-secondary) !important;
   letter-spacing: 0.02em; 
   
   a {
-    color: $slate-500 !important;
+    color: var(--text-secondary) !important;
+    transition: all 0.2s ease;
     &:hover, &.active {
-      color: var(--color-accent) !important;
+      color: var(--color-brand-core) !important;
+      border-left-color: var(--color-brand-core) !important;
     }
   }
 }
 
 // -----------------------------------------------------------------------------
-// 6. CODE STYLING (Light Mode Anpassungen)
+// 6. CODE STYLING
 // -----------------------------------------------------------------------------
 
 // A. INLINE CODE
 code:not(pre > code) {
+  font-family: $font-family-monospace;
+  color: var(--color-brand-core) !important; 
+  // Zarter Background (Brand Core mit 8% Opacity)
+  background-color: rgba($brand-core, 0.08) !important; 
   padding: 0.2em 0.4em;
   border-radius: 4px;
-  border: 1px solid $slate-200; // Heller Rahmen
+  // Zarter Rahmen
+  border: 1px solid rgba($brand-core, 0.2); 
   font-size: $size-small; 
   white-space: nowrap; 
-  // Farben kommen aus Defaults ($code-bg, $code-color)
 }
 
 code:not(pre > code) a {
   color: inherit !important; 
   text-decoration: underline;
-  text-decoration-color: var(--color-accent); 
-  &:hover { color: var(--color-accent) !important; }
+  text-decoration-color: var(--color-secondary); 
+  &:hover { color: var(--text-primary) !important; }
 }
 
 // B. CODE BLÖCKE
 div.sourceCode {
-  border: 1px solid $slate-200; // Heller Rahmen
-  border-left-color: var(--color-accent) !important; 
+  // Rahmen nötig im Light Mode zur Abgrenzung vom weißen Body
+  border: 1px solid rgba($color-secondary, 0.3); 
+  border-left-color: var(--color-brand-core) !important; 
   border-radius: 4px;
-  // Background kommt aus Defaults ($white)
+  
+  // Mix aus Surface Light und 4% Dunkelheit für "Off-White"
+  background-color: color-mix(in srgb, var(--surface-light), var(--surface-dark) 4%) !important;
 }
 
-// C. COPY BUTTON (Für hellen Hintergrund angepasst)
+// C. COPY BUTTON
 .code-copy-outer-scaffold .code-copy-button {
   appearance: none !important;
   box-shadow: none !important;
   background-color: transparent !important;
-  
-  border: 1px solid $slate-300 !important; // Etwas dunklerer Rahmen für Sichtbarkeit
+  border: 1px solid var(--text-secondary) !important;
   border-radius: 4px !important;
-  
   opacity: 1 !important;
-  
-  // Farbe im Ruhezustand: Akzentfarbe (dunkel genug auf Weiß)
-  color: var(--color-accent) !important;
-  
+  color: var(--text-secondary) !important; 
   transition: all 0.2s ease;
 
   i, .bi { color: inherit !important; }
 
   &:hover {
-    background-color: var(--color-accent) !important; 
-    border-color: var(--color-accent) !important;
-    color: $white !important; // Icon wird weiß auf Akzent-Hintergrund
-    
-    i, .bi {
-      color: $white !important;
-    }
+    border-color: var(--color-brand-core) !important;
+    background-color: transparent !important; 
+    color: var(--color-brand-core) !important;
   }
 }
 
-// D. TOC CODE RESET
+// D. TOC RESET
 #quarto-margin-sidebar code {
   font-size: 0.75em !important; 
   background-color: transparent !important;
@@ -246,16 +280,35 @@ div.sourceCode {
   color: inherit !important; 
 }
 #quarto-margin-sidebar a:hover code {
-  color: var(--color-accent) !important;
+  color: var(--color-brand-core) !important;
 }
 
-// E. SYNTAX HIGHLIGHTING (Angepasst für Light Mode)
-// Hier müssen wir sicherstellen, dass der Code auf Weiß gut aussieht
-.token.comment { color: $slate-500; font-style: italic; }
-.token.string { color: #059669; } // Emerald Green (gut lesbar auf Weiß)
-.token.number { color: #D946EF; } // Fuchsia
-.token.keyword { color: var(--color-accent); font-weight: bold; }
-.token.function { color: #D97706; } // Amber
+// E. SYNTAX HIGHLIGHTING (Light Mode Optimized)
+// Im Light Mode nutzen wir dunklere Töne, um Kontrast auf Weiß zu sichern.
+
+// Comment: Secondary Color
+.token.comment { 
+    color: var(--text-secondary); 
+    font-style: italic; 
+}
+
+// String: Success (Teal) L=65% ist auf Weiß oft zu blass.
+// Wir nutzen hier eine dunklere Variante für Text-Lesbarkeit.
+.token.string { 
+    color: #257a6e; // Fallback
+    color: oklch(50% 0.14 170); 
+} 
+
+// Number: Tertiary L=32% ist dunkel genug und gut lesbar.
+.token.number { 
+    color: var(--color-tertiary); 
+} 
+
+// Keyword: Brand Core L=34% ist perfekt lesbar.
+.token.keyword { 
+    color: var(--color-brand-core); 
+    font-weight: bold; 
+} 
 
 
 // -----------------------------------------------------------------------------
@@ -263,103 +316,107 @@ div.sourceCode {
 // -----------------------------------------------------------------------------
 
 a {
-  color: var(--color-accent);
+  color: var(--color-brand-core); 
+  text-decoration: none;
+  // Unterstreichung als Secondary Color
+  border-bottom: 1px solid rgba($color-secondary, 0.4); 
   transition: all 0.2s ease;
-  &:hover { color: color-mix(in srgb, var(--color-accent), black 20%); } // Abdunkeln beim Hover
+  
+  &:hover { 
+    color: var(--color-brand-core); 
+    border-bottom-width: 2px;
+    background-color: rgba($brand-core, 0.05);
+  }
 }
 
 .navbar {
-    // border-bottom: 1px solid $slate-800; // Dunkler Rand passend zum BG
-    border-bottom: 1px solid $slate-500; 
-    
-    .nav-link.active,
-    .nav-link:hover,
-    .nav-link:focus,
-    .navbar-brand:hover {
-        color: var(--color-accent) !important;
+    // WICHTIG: Visuelle Trennung im Light Mode
+    border-bottom: 1px solid rgba($color-secondary, 0.2); 
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+
+    .navbar-brand {
+        color: var(--text-primary) !important;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
+
+    .nav-link {
+        color: var(--text-secondary) !important; 
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        border-bottom: none; 
+        
+        &:hover, &.active {
+            color: var(--color-brand-core) !important; 
+            background-color: transparent;
+        }
     }
     
     .navbar-toggler {
-        border-color: $slate-600; 
+        border-color: var(--text-secondary); 
     }
-}
-
-
-// -----------------------------------------------------------------------------
-// NAVBAR TOOLS FIX (Icons, Search, Toggle)
-// -----------------------------------------------------------------------------
-
-.navbar .quarto-navbar-tools {
-  // 1. Layout erzwingen: Alles in eine Reihe
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  align-items: center !important; // Vertikal mittig
-  gap: 0.75rem; // Gleichmäßiger Abstand zwischen den Elementen
-  
-  // 2. Suche-Icon Größe bändigen
-  .quarto-search-tools .bi-search {
-    font-size: 1.1rem !important; // Größe anpassen
-    width: auto !important;
-    height: auto !important;
-    transform: translateY(1px); // Optische Korrektur
-  }
-
-  // 3. GitHub & andere Link-Icons
-  .quarto-navigation-tool > i, 
-  .quarto-navigation-tool > .bi {
-    font-size: 1.2rem !important;
-    display: flex;
-    align-items: center;
-  }
-
-  // 4. Dark Mode Toggle Switch
-  .quarto-color-scheme-toggle {
-    display: flex !important;
-    align-items: center !important;
     
-    // Größe der Icons im Switch (Sonne/Mond)
-    .bi {
-      font-size: 1.1rem !important;
+    .quarto-navbar-tools a {
+       color: var(--text-secondary) !important; 
+       border-bottom: none;
+       &:hover { color: var(--color-brand-core) !important; }
     }
-  }
+    
+    // Navbar Tools Layout (Komplett übernommen)
+    .quarto-navbar-tools {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      align-items: center !important;
+      gap: 0.75rem;
+      
+      .quarto-search-tools .bi-search {
+        font-size: 1.1rem !important;
+        width: auto !important;
+        height: auto !important;
+        transform: translateY(1px);
+      }
+
+      .quarto-navigation-tool > i, 
+      .quarto-navigation-tool > .bi {
+        font-size: 1.2rem !important;
+        display: flex;
+        align-items: center;
+      }
+
+      .quarto-color-scheme-toggle {
+        display: flex !important;
+        align-items: center !important;
+        .bi { font-size: 1.1rem !important; }
+      }
+    }
 }
 
-// Optional: Hover-Effekte für die Tools harmonisieren
-.navbar .quarto-navbar-tools a,
-.navbar .quarto-navbar-tools .quarto-color-scheme-toggle {
-  color: inherit; // Erbt die Navbar-Textfarbe ($navbar-fg)
-  transition: color 0.2s ease;
-  cursor: pointer;
 
-  &:hover {
-    color: var(--color-accent) !important;
-  }
-}
-
-// Callouts (Light Mode)
 .callout {
-  border: 1px solid $slate-200;
-  border-left-color: var(--color-accent) !important; 
-  background-color: $white; 
-  color: $slate-700;
+  border: 1px solid var(--color-secondary);
+  border-left-color: var(--color-brand-core) !important; 
+  background-color: var(--surface-light); 
+  color: var(--text-primary);
   border-radius: 4px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  // Schatten im Light Mode sanfter
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
 
   .callout-header {
-    background-color: $slate-100;
-    color: $slate-900;
+    background-color: rgba($brand-core, 0.05);
+    color: var(--color-brand-core);
     font-family: var(--font-header);
     font-weight: $weight-bold;
-    border-bottom: 1px solid $slate-200;
+    border-bottom: 1px solid rgba($color-secondary, 0.2);
   }
 }
 
-// Blog / Listing Styles 
 .quarto-listing-default {
   .quarto-post {
-    background: $white;
-    border: 1px solid $slate-200;
+    background: var(--surface-light);
+    border: 1px solid rgba($color-secondary, 0.3);
     padding: 2rem;
     border-radius: 8px;
     margin-bottom: 2rem;
@@ -367,7 +424,8 @@ a {
 
     &:hover {
       transform: translateY(-4px);
-      border-color: var(--color-accent);
+      border-color: var(--color-brand-core);
+      // Schatten für "Lift"-Effekt auf Weiß
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
 
@@ -376,29 +434,30 @@ a {
       font-size: $size-large;
       font-weight: $weight-bold;
       a { 
-        color: $slate-900; 
-        &:hover { color: var(--color-accent); }
+        color: var(--text-primary); 
+        border-bottom: none;
+        &:hover { color: var(--color-brand-core); }
       }
     }
     
     .listing-description {
-      color: $slate-500;
+      color: var(--text-secondary);
       font-weight: $weight-light;
     }
 
     .listing-categories .listing-category {
-      background: $slate-100;
-      border: 1px solid $slate-300;
-      color: $slate-600;
+      background: transparent;
+      border: 1px solid var(--text-secondary);
+      color: var(--text-secondary);
       font-family: $font-family-monospace;
       font-size: $size-skill;
       border-radius: 4px;
       padding: 0.2em 0.6em;
       
       &:hover {
-        background: var(--color-accent);
-        border-color: var(--color-accent);
-        color: white;
+        background: var(--color-brand-core);
+        border-color: var(--color-brand-core);
+        color: var(--text-on-dark); // Inverser Text bei Hover
       }
     }
   }
@@ -406,13 +465,16 @@ a {
 
 
 .footer {
-  border-top: 1px solid $slate-800;
+  background-color: var(--surface-light);
+  border-top: 1px solid rgba($color-secondary, 0.3);
+  color: var(--text-secondary);
   font-family: $font-family-monospace;
   font-size: $size-small;
   padding: 4rem 0;
   
   a {
-    color: $slate-400;
-    &:hover { color: var(--color-accent); }
+    color: var(--text-secondary);
+    border-bottom: none;
+    &:hover { color: var(--color-brand-core); }
   }
 }

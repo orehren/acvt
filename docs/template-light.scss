@@ -1,15 +1,15 @@
 /*-- scss:defaults --*/
 
 // -----------------------------------------------------------------------------
-// 1. AI GENERATED PALETTE (Hex Fallbacks for SASS)
+// 1. AI GENERATED PALETTE (Hex Fallbacks)
 // -----------------------------------------------------------------------------
 
 // 1. BRAND CORE & SURFACES
-$brand-core:      #81a1c1; // "Nordic Blue"
-$surface-light:   #F5F8FA; // Ice White
-$surface-dark:    #1D2024; // Deep Nordic Grey
+$brand-core:      #81a1c1; // Nordic Blue (zu hell für Text auf Weiß!)
+$surface-light:   #F5F8FA; // Ice White (Main Background)
+$surface-dark:    #1D2024; // Deep Nordic Grey (Code Background Mix)
 
-// 2. HARMONY (Analogous)
+// 2. HARMONY
 $color-secondary: #749DB0; // Cyan-ish Grey
 $color-tertiary:  #8F90B3; // Lavender-ish Grey
 
@@ -17,13 +17,10 @@ $color-tertiary:  #8F90B3; // Lavender-ish Grey
 $color-success:   #5EBFAD; // Soft Teal
 $color-error:     #D06F59; // Muted Brick Red
 
-// 4. TYPOGRAPHY
-$text-primary:    #16191D; // Deep Ink (für Light Mode Hintergrund)
-$text-secondary:  #5C6570; // Muted Ink (für Light Mode Hintergrund)
-$text-on-dark:    #ECEFF4; // Snow White
-
-// NEU: Muted Text explizit für Dark Mode (L=75% für guten Kontrast auf L=13%)
-$text-muted-on-dark-hex: #9DA8B5; 
+// 4. TYPOGRAPHY (Light Mode Optimized)
+$text-primary:    #2E3440; // Polar Night Dark (Haupttext)
+$text-secondary:  #4C566A; // Polar Night Light (Metadaten)
+$text-on-dark:    #ECEFF4; // Snow White (für Badges/Buttons)
 
 // -----------------------------------------------------------------------------
 // 2. TYPOGRAFIE DEFINITIONEN
@@ -44,54 +41,57 @@ $size-label:  0.80rem;
 $size-skill:  0.75rem; 
 
 // -----------------------------------------------------------------------------
-// 3. QUARTO VARIABLES (Mapping Logic)
+// 3. QUARTO VARIABLES (LIGHT MODE MAPPING)
 // -----------------------------------------------------------------------------
 
 // --- Page Layout & Colors ---
-$body-bg:       $surface-dark; 
-$body-color:    $text-on-dark;  
-$link-color:    $brand-core; // L=69% ist perfekt lesbar auf Dark Bg
+$body-bg:       $surface-light; 
+$body-color:    $text-primary;  
+$link-color:    $text-primary; // Text bleibt dunkel für Lesbarkeit!
+// (Unterstreichung in Brand Color wird via CSS geregelt)
 
 // --- Fonts ---
 $font-family-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 $font-family-monospace:  "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
 $headings-font-family:   "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 $headings-font-weight:   $weight-bold;
-$headings-color:         $text-on-dark;
+$headings-color:         $text-primary;
 
 $font-size-root:         $size-normal;
 $line-height-base:       1.6;
 
-// --- Navigation ---
-$navbar-bg:     $surface-dark; 
-$navbar-fg:     $text-muted-on-dark-hex; 
+// --- Navigation (Navbar) ---
+$navbar-bg:     $surface-light; 
+$navbar-fg:     $text-secondary; // Mittelgrau auf Weiß
 $navbar-hl:     $brand-core;
 
 // --- Footer ---
-$footer-bg:     $surface-dark;
-$footer-fg:     $text-muted-on-dark-hex; 
+$footer-bg:     $surface-light;
+$footer-fg:     $text-secondary; 
 
 // --- TOC ---
-$toc-color:           $text-muted-on-dark-hex;
+$toc-color:           $text-secondary;
 $toc-font-size:       $size-label;
 $toc-active-border:   $brand-core;
 $toc-inactive-border: transparent;
 
 // --- Code Blocks ---
-// Mix: Surface Dark mit 5% Surface Light (Leichte Aufhellung)
-$code-block-bg:                #24282E; 
+// Im Light Mode brauchen wir Kontrast zum weißen Body.
+// Wir nehmen Surface Light und dunkeln es minimal ab (#ECEFF4 Style)
+$code-block-bg:                #ECEFF4; 
 $code-block-border-left:       $brand-core;
 $code-block-border-left-style: solid;
 $code-block-border-left-size:  4px;
 $code-block-bg-padding:        1rem;
 
 // --- Copy Button ---
-$btn-code-copy-color:        $text-muted-on-dark-hex; 
+$btn-code-copy-color:        $text-secondary;
 $btn-code-copy-color-active: $brand-core;
 
 // --- Inline Code ---
-$code-bg:       mix($brand-core, $surface-dark, 15%); // Bläulicher Hint
-$code-color:    $brand-core; // In diesem Fall Brand Color nutzen, da L=69% gut lesbar
+// Hintergrund: Brand Color extrem transparent
+$code-bg:       rgba($brand-core, 0.12); 
+$code-color:    $text-primary; // Dunkler Text! Brand Core wäre unlesbar.
 
 // --- Callouts ---
 $callout-border-width:  4px;
@@ -102,56 +102,50 @@ $callout-margin-bottom: 2rem;
 /*-- scss:rules --*/
 
 // -----------------------------------------------------------------------------
-// 4. IMPORTS & CSS VARIABLES (Evidenzbasiert OKLCH)
+// 4. IMPORTS & CSS VARIABLES
 // -----------------------------------------------------------------------------
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap");
 
 :root {
-  // 1. BRAND CORE (#81a1c1)
-  // L=68.7%, C=0.076, H=244.7
+  // 1. BRAND CORE
   --color-brand-core: #81a1c1;
   --color-brand-core: oklch(68.7% 0.076 244.7);
 
-  // 2. SURFACES (Derived from Hue 244.7)
-  // Light: Ice White (L=98%)
+  // NEU: Deep Brand (für Text im Light Mode)
+  // Gleicher Hue, aber dunkel genug für APCA Lc 75+
+  --color-brand-deep: #435A70; 
+  --color-brand-deep: oklch(40% 0.08 244.7);
+
+  // 2. SURFACES
   --surface-light:    #F5F8FA;
   --surface-light:    oklch(98% 0.01 244.7);
   
-  // Dark: Nordic Night (L=13%)
   --surface-dark:     #1D2024;
   --surface-dark:     oklch(13% 0.03 244.7);
 
-  // 3. HARMONY (Analogous, Low Chroma)
-  // Secondary: Hue 220 (Cyan-Shift)
+  // 3. HARMONY
   --color-secondary:  #749DB0;
   --color-secondary:  oklch(65% 0.06 220);
   
-  // Tertiary: Hue 270 (Purple-Shift)
   --color-tertiary:   #8F90B3;
   --color-tertiary:   oklch(65% 0.06 270);
 
   // 4. FUNCTIONAL
-  // Success: Teal (Hue 170)
   --color-success:    #5EBFAD;
   --color-success:    oklch(70% 0.12 170);
   
-  // Error: Brick Red (Hue 30)
   --color-error:      #D06F59;
   --color-error:      oklch(65% 0.15 30);
 
-  // 5. TYPOGRAPHY
-  // Primary Text (Dark Mode) - Snow White
-  --text-on-dark:     #ECEFF4;
-  --text-on-dark:     oklch(97% 0.01 244.7);
+  // 5. TYPOGRAPHY (Light Mode Definition)
+  --text-primary:     #2E3440;
+  --text-primary:     oklch(25% 0.04 244.7); // Dunkles Graublau
   
-  // Muted Text (Dark Mode) - Blue Grey (L=75%)
-  --text-muted-on-dark: #9DA8B5; 
-  --text-muted-on-dark: oklch(75% 0.03 244.7);
-
-  // Legacy (Light Mode Contexts)
-  --text-primary:     oklch(15% 0.03 244.7);
-  --text-secondary:   oklch(50% 0.04 244.7);
+  --text-secondary:   #4C566A;
+  --text-secondary:   oklch(45% 0.05 244.7); // Mittelgraublau
+  
+  --text-on-dark:     oklch(97% 0.01 244.7); // Falls Dark Mode Elemente genutzt werden
   
   // Fonts
   --font-header: "Inter", sans-serif;        
@@ -162,8 +156,8 @@ $callout-margin-bottom: 2rem;
 body {
   font-family: var(--font-text);
   -webkit-font-smoothing: antialiased; 
-  background-color: var(--surface-dark); 
-  color: var(--text-on-dark);
+  background-color: var(--surface-light); 
+  color: var(--text-primary);
 }
 
 html {
@@ -176,23 +170,24 @@ html {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-header);
-  letter-spacing: -0.02em; // Inter sieht enger besser aus
+  letter-spacing: -0.02em; 
   margin-top: 2rem;
   margin-bottom: 1rem;
-  color: var(--text-on-dark);
+  color: var(--text-primary);
 }
 
 h1 { 
   font-size: $size-xl; 
   font-weight: $weight-black; 
   line-height: 1.1;
-  text-transform: none; // Bei "Seriös/Nordic" oft lowercase oder normal
+  text-transform: none; 
 }
 
 h2 { 
   font-size: $size-large; 
   font-weight: $weight-bold;
-  color: var(--color-brand-core); // Akzentuierung der H2
+  // Im Light Mode nutzen wir die Deep Brand Color für Headlines, nicht das helle Pastell
+  color: var(--color-brand-deep); 
 }
 
 #title-block-header h1.title {
@@ -200,7 +195,7 @@ h2 {
   font-weight: $weight-black;      
   font-size: $size-xl; 
   line-height: 1.1;                
-  color: var(--text-on-dark);                
+  color: var(--text-primary);                
   margin-bottom: 0.5rem;           
 }
 
@@ -216,15 +211,15 @@ h2 {
 // TOC
 #quarto-margin-sidebar {
   font-size: $size-label; 
-  color: var(--text-muted-on-dark) !important;
+  color: var(--text-secondary) !important;
   letter-spacing: 0.01em; 
   
   a {
-    color: var(--text-muted-on-dark) !important;
+    color: var(--text-secondary) !important;
     transition: all 0.2s ease;
     &:hover, &.active {
-      color: var(--color-brand-core) !important;
-      border-left-color: var(--color-brand-core) !important;
+      color: var(--color-brand-deep) !important; // Dunklerer Hover
+      border-left-color: var(--color-brand-core) !important; // Helle Linie ok
     }
   }
 }
@@ -236,7 +231,9 @@ h2 {
 // A. INLINE CODE
 code:not(pre > code) {
   font-family: var(--font-mono);
-  color: var(--color-brand-core) !important; // L=69% ist hier gut lesbar
+  color: var(--color-brand-deep) !important; // Wichtig: Dunkler Text
+  
+  // Background: Zartes Pastelblau
   background-color: rgba($brand-core, 0.15) !important; 
   padding: 0.2em 0.4em;
   border-radius: 4px;
@@ -248,16 +245,19 @@ code:not(pre > code) {
 code:not(pre > code) a {
   color: inherit !important; 
   text-decoration: underline;
-  text-decoration-color: var(--color-secondary); 
-  &:hover { color: var(--text-on-dark) !important; }
+  text-decoration-color: var(--color-brand-core); 
+  &:hover { color: var(--text-primary) !important; }
 }
 
 // B. CODE BLÖCKE
 div.sourceCode {
-  border: 1px solid var(--text-muted-on-dark); // Subtiler Rahmen
+  // Rahmen im Light Mode zur Abgrenzung
+  border: 1px solid rgba($color-secondary, 0.3); 
   border-left-color: var(--color-brand-core) !important; 
   border-radius: 4px;
-  background-color: color-mix(in srgb, var(--surface-dark), var(--surface-light) 5%) !important;
+  
+  // Hintergrund: "Off-White" Blau-Grau
+  background-color: color-mix(in srgb, var(--surface-light), var(--surface-dark) 4%) !important;
 }
 
 // C. COPY BUTTON
@@ -265,18 +265,18 @@ div.sourceCode {
   appearance: none !important;
   box-shadow: none !important;
   background-color: transparent !important;
-  border: 1px solid var(--text-muted-on-dark) !important;
+  border: 1px solid var(--text-secondary) !important;
   border-radius: 4px !important;
   opacity: 1 !important;
-  color: var(--text-muted-on-dark) !important;
+  color: var(--text-secondary) !important; 
   transition: all 0.2s ease;
 
   i, .bi { color: inherit !important; }
 
   &:hover {
-    border-color: var(--color-brand-core) !important;
+    border-color: var(--color-brand-deep) !important;
     background-color: transparent !important; 
-    color: var(--color-brand-core) !important;
+    color: var(--color-brand-deep) !important;
   }
 }
 
@@ -289,27 +289,36 @@ div.sourceCode {
   color: inherit !important; 
 }
 #quarto-margin-sidebar a:hover code {
-  color: var(--color-brand-core) !important;
+  color: var(--color-brand-deep) !important;
 }
 
-// E. SYNTAX HIGHLIGHTING (Nordic Palette Adaptation)
-// Da Brand Core L=69% ist, können wir es direkt nutzen.
+// E. SYNTAX HIGHLIGHTING (Light Mode Optimized)
+// 🚨 Kritischer Bereich: Pastellfarben auf Weiß sind unlesbar.
+// Wir nutzen abgedunkelte Versionen.
 
 .token.comment { 
-    color: var(--text-muted-on-dark); 
+    color: var(--text-secondary); 
     font-style: italic; 
 }
 
 .token.string { 
-    color: var(--color-success); // Soft Teal
+    // Success Color (#5EBFAD) ist zu hell.
+    // Wir nutzen eine dunklere Teal-Variante.
+    color: #2F7A6E; 
+    color: oklch(50% 0.12 170);
 } 
 
 .token.number { 
-    color: var(--color-tertiary); // Soft Purple
+    // Tertiary (#8F90B3) ist grenzwertig.
+    // Wir nutzen eine dunklere Violett-Variante.
+    color: #5D5E80;
+    color: oklch(45% 0.10 270);
 } 
 
 .token.keyword { 
-    color: var(--color-brand-core); // Nordic Blue
+    // Brand Core (#81a1c1) unlesbar.
+    // Wir nutzen die Deep Brand Variante.
+    color: var(--color-brand-deep); 
     font-weight: bold; 
 } 
 
@@ -319,50 +328,52 @@ div.sourceCode {
 // -----------------------------------------------------------------------------
 
 a {
-  color: var(--text-on-dark); 
+  color: var(--text-primary); // Dunkler Text für Kontrast
   text-decoration: none;
+  // Die Identität kommt über die Unterstreichung
   border-bottom: 1px solid var(--color-brand-core); 
   transition: all 0.2s ease;
   
   &:hover { 
-    color: var(--color-brand-core); 
+    color: var(--text-primary); 
     border-bottom-width: 2px;
-    background-color: rgba($brand-core, 0.1);
+    border-bottom-color: var(--color-brand-deep);
+    background-color: rgba($brand-core, 0.15);
   }
 }
 
 .navbar {
-    border-bottom: none;
+    border-bottom: 1px solid rgba($color-secondary, 0.2); 
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
 
     .navbar-brand {
-        color: var(--text-on-dark) !important;
+        color: var(--text-primary) !important;
         font-weight: 700;
         letter-spacing: 0.05em;
     }
 
     .nav-link {
-        color: var(--text-muted-on-dark) !important; 
+        color: var(--text-secondary) !important; 
         font-weight: 600;
         letter-spacing: 0.05em;
         text-transform: uppercase;
         border-bottom: none; 
         
         &:hover, &.active {
-            color: var(--color-brand-core) !important; 
+            color: var(--color-brand-deep) !important; // Deep Color statt Pastell
             background-color: transparent;
         }
     }
     
     .navbar-toggler {
-        border-color: var(--text-muted-on-dark); 
+        border-color: var(--text-secondary); 
     }
     
     .quarto-navbar-tools a {
-       color: var(--text-muted-on-dark) !important; 
+       color: var(--text-secondary) !important; 
        border-bottom: none;
-       &:hover { color: var(--color-brand-core) !important; }
+       &:hover { color: var(--color-brand-deep) !important; }
     }
     
     .quarto-navbar-tools {
@@ -398,24 +409,24 @@ a {
 .callout {
   border: 1px solid var(--color-secondary);
   border-left-color: var(--color-brand-core) !important; 
-  background-color: var(--surface-dark); 
-  color: var(--text-on-dark);
+  background-color: var(--surface-light); 
+  color: var(--text-primary);
   border-radius: 4px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); 
 
   .callout-header {
-    background-color: rgba($brand-core, 0.15); // Transparenz statt Mix
-    color: var(--text-on-dark);
+    background-color: rgba($brand-core, 0.15); // Pastell Background ok für Fläche
+    color: var(--color-brand-deep); // Text muss dunkel sein
     font-family: var(--font-header);
     font-weight: $weight-bold;
-    border-bottom: 1px solid var(--color-secondary);
+    border-bottom: 1px solid rgba($color-secondary, 0.2);
   }
 }
 
 .quarto-listing-default {
   .quarto-post {
-    background: var(--surface-dark);
-    border: 1px solid var(--color-secondary);
+    background: var(--surface-light);
+    border: 1px solid rgba($color-secondary, 0.3);
     padding: 2rem;
     border-radius: 8px;
     margin-bottom: 2rem;
@@ -424,7 +435,7 @@ a {
     &:hover {
       transform: translateY(-4px);
       border-color: var(--color-brand-core);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
     }
 
     .listing-title {
@@ -432,30 +443,30 @@ a {
       font-size: $size-large;
       font-weight: $weight-bold;
       a { 
-        color: var(--text-on-dark); 
+        color: var(--text-primary); 
         border-bottom: none;
-        &:hover { color: var(--color-brand-core); }
+        &:hover { color: var(--color-brand-deep); }
       }
     }
     
     .listing-description {
-      color: var(--text-muted-on-dark); 
+      color: var(--text-secondary);
       font-weight: $weight-light;
     }
 
     .listing-categories .listing-category {
       background: transparent;
-      border: 1px solid var(--text-muted-on-dark); 
-      color: var(--text-muted-on-dark); 
+      border: 1px solid var(--text-secondary);
+      color: var(--text-secondary);
       font-family: var(--font-mono);
       font-size: $size-skill;
       border-radius: 4px;
       padding: 0.2em 0.6em;
       
       &:hover {
-        background: var(--color-brand-core);
+        background: var(--color-brand-core); // Hintergrund darf hell sein
         border-color: var(--color-brand-core);
-        color: var(--text-on-dark); // Wichtig: Text wird hell
+        color: var(--text-primary); // Text dunkel lassen oder sehr dunkles Weiß
       }
     }
   }
@@ -463,16 +474,16 @@ a {
 
 
 .footer {
-  background-color: var(--surface-dark);
-  border-top: 1px solid var(--color-secondary);
-  color: var(--text-muted-on-dark); 
+  background-color: var(--surface-light);
+  border-top: 1px solid rgba($color-secondary, 0.3);
+  color: var(--text-secondary);
   font-family: var(--font-mono);
   font-size: $size-small;
   padding: 4rem 0;
   
   a {
-    color: var(--text-muted-on-dark); 
+    color: var(--text-secondary);
     border-bottom: none;
-    &:hover { color: var(--color-brand-core); }
+    &:hover { color: var(--color-brand-deep); }
   }
 }

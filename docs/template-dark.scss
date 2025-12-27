@@ -1,30 +1,29 @@
 /*-- scss:defaults --*/
 
 // -----------------------------------------------------------------------------
-// 1. AI GENERATED PALETTE (Hex Fallbacks for SASS/Older Browsers)
+// 1. AI GENERATED PALETTE (Hex Fallbacks for SASS)
 // -----------------------------------------------------------------------------
 
 // 1. BRAND CORE & SURFACES
-$brand-core:      #533D4D; // Identität / Primary Actions
-$surface-light:   #FFF5F8; // Papier (nicht genutzt im Dark Mode Body)
-$surface-dark:    #1F1B1E; // Tinte / Main Background
+$brand-core:      #81a1c1; // "Nordic Blue"
+$surface-light:   #F5F8FA; // Ice White
+$surface-dark:    #1D2024; // Deep Nordic Grey
 
-// 2. HARMONY
-$color-secondary: #615569; // Kühles Violett (Badges/Bg)
-$color-tertiary:  #5E3A3E; // Wärmeres Rot-Braun (Akzente)
+// 2. HARMONY (Analogous)
+$color-secondary: #749DB0; // Cyan-ish Grey
+$color-tertiary:  #8F90B3; // Lavender-ish Grey
 
 // 3. FUNCTIONAL
-$color-success:   #2E9E8E; // Teal
-$color-error:     #C95232; // Orange-Red
+$color-success:   #5EBFAD; // Soft Teal
+$color-error:     #D06F59; // Muted Brick Red
 
 // 4. TYPOGRAPHY
-$text-primary:    #1A1317; // Für hellen Hintergrund (nicht genutzt im Dark Mode)
-$text-secondary:  #75626F; // Für hellen Hintergrund (nicht genutzt im Dark Mode)
-$text-on-dark:    #F7F0F4; // Haupttext auf Dunkel
+$text-primary:    #16191D; // Deep Ink (für Light Mode Hintergrund)
+$text-secondary:  #5C6570; // Muted Ink (für Light Mode Hintergrund)
+$text-on-dark:    #ECEFF4; // Snow White
 
-// NEU: Muted Text explizit für Dark Mode (Hellgrau/Mauve statt Dunkelgrau)
-// Hex-Approximation von OKLCH L=70%
-$text-muted-on-dark-hex: #B5A8B0; 
+// NEU: Muted Text explizit für Dark Mode (L=75% für guten Kontrast auf L=13%)
+$text-muted-on-dark-hex: #9DA8B5; 
 
 // -----------------------------------------------------------------------------
 // 2. TYPOGRAFIE DEFINITIONEN
@@ -51,51 +50,48 @@ $size-skill:  0.75rem;
 // --- Page Layout & Colors ---
 $body-bg:       $surface-dark; 
 $body-color:    $text-on-dark;  
-$link-color:    $text-on-dark; 
+$link-color:    $brand-core; // L=69% ist perfekt lesbar auf Dark Bg
 
 // --- Fonts ---
-$font-family-sans-serif: "Alegreya Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-$font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-$headings-font-family:   "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+$font-family-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+$font-family-monospace:  "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+$headings-font-family:   "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 $headings-font-weight:   $weight-bold;
 $headings-color:         $text-on-dark;
 
 $font-size-root:         $size-normal;
-$line-height-base:       1.7;
+$line-height-base:       1.6;
 
-// --- Navigation (Navbar) ---
+// --- Navigation ---
 $navbar-bg:     $surface-dark; 
-// FIX: Nutzung der helleren Muted-Farbe für Lesbarkeit
 $navbar-fg:     $text-muted-on-dark-hex; 
 $navbar-hl:     $brand-core;
 
 // --- Footer ---
 $footer-bg:     $surface-dark;
-// FIX: Nutzung der helleren Muted-Farbe
 $footer-fg:     $text-muted-on-dark-hex; 
 
 // --- TOC ---
-// FIX: Nutzung der helleren Muted-Farbe
 $toc-color:           $text-muted-on-dark-hex;
 $toc-font-size:       $size-label;
 $toc-active-border:   $brand-core;
 $toc-inactive-border: transparent;
 
 // --- Code Blocks ---
-// Fallback Background für alte Browser
-$code-block-bg:                #262225; 
+// Mix: Surface Dark mit 5% Surface Light (Leichte Aufhellung)
+$code-block-bg:                #24282E; 
 $code-block-border-left:       $brand-core;
 $code-block-border-left-style: solid;
 $code-block-border-left-size:  4px;
 $code-block-bg-padding:        1rem;
 
 // --- Copy Button ---
-$btn-code-copy-color:        $text-muted-on-dark-hex; // FIX
+$btn-code-copy-color:        $text-muted-on-dark-hex; 
 $btn-code-copy-color-active: $brand-core;
 
 // --- Inline Code ---
-$code-bg:       mix($color-secondary, $surface-dark, 20%);
-$code-color:    $text-on-dark;
+$code-bg:       mix($brand-core, $surface-dark, 15%); // Bläulicher Hint
+$code-color:    $brand-core; // In diesem Fall Brand Color nutzen, da L=69% gut lesbar
 
 // --- Callouts ---
 $callout-border-width:  4px;
@@ -106,53 +102,61 @@ $callout-margin-bottom: 2rem;
 /*-- scss:rules --*/
 
 // -----------------------------------------------------------------------------
-// 4. IMPORTS & CSS VARIABLES (Modern Browsers)
+// 4. IMPORTS & CSS VARIABLES (Evidenzbasiert OKLCH)
 // -----------------------------------------------------------------------------
 
-@import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap");
 
 :root {
-  // 1. BRAND & SURFACES
-  --color-brand-core: #533D4D;
-  --color-brand-core: oklch(34.7% 0.046 337.8);
+  // 1. BRAND CORE (#81a1c1)
+  // L=68.7%, C=0.076, H=244.7
+  --color-brand-core: #81a1c1;
+  --color-brand-core: oklch(68.7% 0.076 244.7);
 
-  --surface-light:    #FFF5F8;
-  --surface-light:    oklch(98% 0.01 337.8);
+  // 2. SURFACES (Derived from Hue 244.7)
+  // Light: Ice White (L=98%)
+  --surface-light:    #F5F8FA;
+  --surface-light:    oklch(98% 0.01 244.7);
   
-  --surface-dark:     #1F1B1E;
-  --surface-dark:     oklch(12% 0.02 337.8);
+  // Dark: Nordic Night (L=13%)
+  --surface-dark:     #1D2024;
+  --surface-dark:     oklch(13% 0.03 244.7);
 
-  // 2. HARMONY
-  --color-secondary:  #615569;
-  --color-secondary:  oklch(40% 0.05 313);
+  // 3. HARMONY (Analogous, Low Chroma)
+  // Secondary: Hue 220 (Cyan-Shift)
+  --color-secondary:  #749DB0;
+  --color-secondary:  oklch(65% 0.06 220);
   
-  --color-tertiary:   #5E3A3E;
-  --color-tertiary:   oklch(32% 0.05 3);
+  // Tertiary: Hue 270 (Purple-Shift)
+  --color-tertiary:   #8F90B3;
+  --color-tertiary:   oklch(65% 0.06 270);
 
-  // 3. FUNCTIONAL
-  --color-success:    #2E9E8E;
-  --color-success:    oklch(65% 0.14 170);
+  // 4. FUNCTIONAL
+  // Success: Teal (Hue 170)
+  --color-success:    #5EBFAD;
+  --color-success:    oklch(70% 0.12 170);
   
-  --color-error:      #C95232;
-  --color-error:      oklch(55% 0.16 25);
+  // Error: Brick Red (Hue 30)
+  --color-error:      #D06F59;
+  --color-error:      oklch(65% 0.15 30);
 
-  // 4. TYPOGRAPHY
-  // Primary Text (Dark Mode)
-  --text-on-dark:     #F7F0F4;
-  --text-on-dark:     oklch(96% 0.01 337.8);
+  // 5. TYPOGRAPHY
+  // Primary Text (Dark Mode) - Snow White
+  --text-on-dark:     #ECEFF4;
+  --text-on-dark:     oklch(97% 0.01 244.7);
   
-  // FIX: Muted Text für Dark Mode (L=70%)
-  // Dies ersetzt --text-secondary auf dunklen Flächen
-  --text-muted-on-dark: #B5A8B0; 
-  --text-muted-on-dark: oklch(70% 0.03 337.8);
+  // Muted Text (Dark Mode) - Blue Grey (L=75%)
+  --text-muted-on-dark: #9DA8B5; 
+  --text-muted-on-dark: oklch(75% 0.03 244.7);
 
-  // (Legacy Variables für Light Mode Contexts falls nötig)
-  --text-primary:     oklch(10% 0.03 337.8);
-  --text-secondary:   oklch(45% 0.04 337.8);
+  // Legacy (Light Mode Contexts)
+  --text-primary:     oklch(15% 0.03 244.7);
+  --text-secondary:   oklch(50% 0.04 244.7);
   
   // Fonts
-  --font-header: "Exo 2", sans-serif;        
-  --font-text: "Alegreya Sans", sans-serif;  
+  --font-header: "Inter", sans-serif;        
+  --font-text: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;  
 }
 
 body {
@@ -172,7 +176,7 @@ html {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-header);
-  letter-spacing: 0.02em; 
+  letter-spacing: -0.02em; // Inter sieht enger besser aus
   margin-top: 2rem;
   margin-bottom: 1rem;
   color: var(--text-on-dark);
@@ -182,12 +186,13 @@ h1 {
   font-size: $size-xl; 
   font-weight: $weight-black; 
   line-height: 1.1;
-  text-transform: uppercase; 
+  text-transform: none; // Bei "Seriös/Nordic" oft lowercase oder normal
 }
 
 h2 { 
   font-size: $size-large; 
   font-weight: $weight-bold;
+  color: var(--color-brand-core); // Akzentuierung der H2
 }
 
 #title-block-header h1.title {
@@ -197,7 +202,6 @@ h2 {
   line-height: 1.1;                
   color: var(--text-on-dark);                
   margin-bottom: 0.5rem;           
-  text-transform: none; 
 }
 
 // UI Fonts
@@ -212,9 +216,8 @@ h2 {
 // TOC
 #quarto-margin-sidebar {
   font-size: $size-label; 
-  // FIX: Mapping auf Muted-On-Dark
   color: var(--text-muted-on-dark) !important;
-  letter-spacing: 0.02em; 
+  letter-spacing: 0.01em; 
   
   a {
     color: var(--text-muted-on-dark) !important;
@@ -232,12 +235,12 @@ h2 {
 
 // A. INLINE CODE
 code:not(pre > code) {
-  font-family: $font-family-monospace;
-  color: var(--text-on-dark) !important;       
-  background-color: color-mix(in srgb, var(--color-secondary), transparent 85%) !important; 
+  font-family: var(--font-mono);
+  color: var(--color-brand-core) !important; // L=69% ist hier gut lesbar
+  background-color: rgba($brand-core, 0.15) !important; 
   padding: 0.2em 0.4em;
   border-radius: 4px;
-  border: 1px solid var(--color-secondary); 
+  border: 1px solid rgba($brand-core, 0.3); 
   font-size: $size-small; 
   white-space: nowrap; 
 }
@@ -245,18 +248,15 @@ code:not(pre > code) {
 code:not(pre > code) a {
   color: inherit !important; 
   text-decoration: underline;
-  text-decoration-color: var(--color-brand-core); 
+  text-decoration-color: var(--color-secondary); 
   &:hover { color: var(--text-on-dark) !important; }
 }
 
 // B. CODE BLÖCKE
 div.sourceCode {
-  border: 1px solid var(--color-secondary); 
+  border: 1px solid var(--text-muted-on-dark); // Subtiler Rahmen
   border-left-color: var(--color-brand-core) !important; 
   border-radius: 4px;
-  
-  // FIX: Hintergrund leicht aufhellen für Kontrast zum Body
-  // Nutzt color-mix um 5% Light Surface in Dark Surface zu mischen
   background-color: color-mix(in srgb, var(--surface-dark), var(--surface-light) 5%) !important;
 }
 
@@ -265,12 +265,10 @@ div.sourceCode {
   appearance: none !important;
   box-shadow: none !important;
   background-color: transparent !important;
-  border: 1px solid var(--text-muted-on-dark) !important; // FIX
+  border: 1px solid var(--text-muted-on-dark) !important;
   border-radius: 4px !important;
-  
   opacity: 1 !important;
-  color: var(--text-muted-on-dark) !important; // FIX
-  
+  color: var(--text-muted-on-dark) !important;
   transition: all 0.2s ease;
 
   i, .bi { color: inherit !important; }
@@ -294,30 +292,24 @@ div.sourceCode {
   color: var(--color-brand-core) !important;
 }
 
-// E. SYNTAX HIGHLIGHTING (High-Contrast Fixes for Dark Mode)
-// Comment: Muss heller sein als der Hintergrund
+// E. SYNTAX HIGHLIGHTING (Nordic Palette Adaptation)
+// Da Brand Core L=69% ist, können wir es direkt nutzen.
+
 .token.comment { 
-    color: var(--text-muted-on-dark); // FIX
+    color: var(--text-muted-on-dark); 
     font-style: italic; 
 }
 
-// String: Success Color (L=65%) ist hell genug -> OK
 .token.string { 
-    color: var(--color-success); 
+    color: var(--color-success); // Soft Teal
 } 
 
-// Number: Tertiary (Original L=32% zu dunkel).
-// FIX: Manuelle, aufgehellte Variante (L=65%)
 .token.number { 
-    color: #D98A8E; // Fallback
-    color: oklch(65% 0.12 3); 
+    color: var(--color-tertiary); // Soft Purple
 } 
 
-// Keyword: Brand Core (Original L=34% zu dunkel).
-// FIX: Manuelle, aufgehellte "Neon"-Variante (L=60%)
 .token.keyword { 
-    color: #C85C8D; // Fallback
-    color: oklch(60% 0.14 337.8); 
+    color: var(--color-brand-core); // Nordic Blue
     font-weight: bold; 
 } 
 
@@ -333,9 +325,9 @@ a {
   transition: all 0.2s ease;
   
   &:hover { 
-    color: var(--text-on-dark); 
+    color: var(--color-brand-core); 
     border-bottom-width: 2px;
-    background-color: color-mix(in srgb, var(--color-brand-core), transparent 90%);
+    background-color: rgba($brand-core, 0.1);
   }
 }
 
@@ -351,7 +343,7 @@ a {
     }
 
     .nav-link {
-        color: var(--text-muted-on-dark) !important; // FIX
+        color: var(--text-muted-on-dark) !important; 
         font-weight: 600;
         letter-spacing: 0.05em;
         text-transform: uppercase;
@@ -364,11 +356,11 @@ a {
     }
     
     .navbar-toggler {
-        border-color: var(--text-muted-on-dark); // FIX
+        border-color: var(--text-muted-on-dark); 
     }
     
     .quarto-navbar-tools a {
-       color: var(--text-muted-on-dark) !important; // FIX
+       color: var(--text-muted-on-dark) !important; 
        border-bottom: none;
        &:hover { color: var(--color-brand-core) !important; }
     }
@@ -393,8 +385,8 @@ a {
         display: flex;
         align-items: center;
       }
-
-      .quarto-color-scheme-toggle {
+      
+       .quarto-color-scheme-toggle {
         display: flex !important;
         align-items: center !important;
         .bi { font-size: 1.1rem !important; }
@@ -412,7 +404,7 @@ a {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
 
   .callout-header {
-    background-color: color-mix(in srgb, var(--color-brand-core), transparent 90%);
+    background-color: rgba($brand-core, 0.15); // Transparenz statt Mix
     color: var(--text-on-dark);
     font-family: var(--font-header);
     font-weight: $weight-bold;
@@ -447,15 +439,15 @@ a {
     }
     
     .listing-description {
-      color: var(--text-muted-on-dark); // FIX
+      color: var(--text-muted-on-dark); 
       font-weight: $weight-light;
     }
 
     .listing-categories .listing-category {
       background: transparent;
-      border: 1px solid var(--text-muted-on-dark); // FIX: besserer Kontrast Rahmen
-      color: var(--text-muted-on-dark); // FIX
-      font-family: $font-family-monospace;
+      border: 1px solid var(--text-muted-on-dark); 
+      color: var(--text-muted-on-dark); 
+      font-family: var(--font-mono);
       font-size: $size-skill;
       border-radius: 4px;
       padding: 0.2em 0.6em;
@@ -463,7 +455,7 @@ a {
       &:hover {
         background: var(--color-brand-core);
         border-color: var(--color-brand-core);
-        color: var(--text-on-dark);
+        color: var(--text-on-dark); // Wichtig: Text wird hell
       }
     }
   }
@@ -473,13 +465,13 @@ a {
 .footer {
   background-color: var(--surface-dark);
   border-top: 1px solid var(--color-secondary);
-  color: var(--text-muted-on-dark); // FIX
-  font-family: $font-family-monospace;
+  color: var(--text-muted-on-dark); 
+  font-family: var(--font-mono);
   font-size: $size-small;
   padding: 4rem 0;
   
   a {
-    color: var(--text-muted-on-dark); // FIX
+    color: var(--text-muted-on-dark); 
     border-bottom: none;
     &:hover { color: var(--color-brand-core); }
   }

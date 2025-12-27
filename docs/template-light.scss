@@ -1,33 +1,35 @@
 /*-- scss:defaults --*/
 
 // -----------------------------------------------------------------------------
-// 1. AI GENERATED PALETTE (Hybrid: Dynamic & Serious)
+// 1. AI GENERATED PALETTE (The "Iron & Clay" System)
 // -----------------------------------------------------------------------------
 
 // 1. BRAND COLORS
-$brand-accent:        #81a1c1; // "Nordic Blue" (Deko & Flächen)
-$brand-foundation:    #24293E; // "Midnight Indigo" (Seriöse Basis für Text)
-$brand-accent-deep:   #406080; // "Deep Nordic" (Für Links/Text Lesbarkeit)
+$brand-accent:        #d96e34; // "Dynamic Terracotta" (Deko, Buttons, Linien)
+$brand-foundation:    #20242B; // "Iron Navy" (Die seriöse Text-Basis)
+
+// GENERIERT: Für Lesbarkeit auf Weiß (APCA Safe Link Color)
+$brand-accent-deep:   #9C4B20; // "Burnt Umber"
 
 // 2. SURFACES
-$surface-light:       #F7F8FC; // Ghost Indigo White
-$surface-dark:        #1A1D2B; // Deepest Indigo (für Code Mix)
+$surface-light:       #F7F8F9; // "Crisp Paper" (Minimal kühl getönt)
+$surface-dark:        #1A1D23; // "Deep Iron" (für Code Background Mix)
 
-// 3. HARMONY (Matsuda Type L - The Kick)
-$color-secondary:     #855C75; // "Muted Plum" (Der dynamische 90° Shift)
-$color-tertiary:      #5C6F85; // "Steel Blue" (Verbindungselement)
+// 3. HARMONY (Matsuda Type L)
+$color-secondary:     #3D5A5C; // "Deep Petrol" (Der intellektuelle Kick)
+$color-tertiary:      #6E7278; // "Steel Grey" (Neutraler Vermittler)
 
-// 4. FUNCTIONAL (CVD Safe & Contrast Rich)
-$color-success:       #2D8A76; // Jade Green (Dunkel genug für Text)
-$color-error:         #B85042; // Rust Red
+// 4. FUNCTIONAL (CVD Safe)
+$color-success:       #2E8555; // "Forest Green"
+$color-error:         #C93D45; // "Crimson"
 
-// 5. TYPOGRAPHY
-$text-primary:        $brand-foundation; // Indigo-Black
-$text-secondary:      #5A6278;           // Cool Grey
-$text-on-dark:        #F7F8FC;           // White
+// 5. TYPOGRAPHY (Mapped to Foundation)
+$text-primary:        $brand-foundation; 
+$text-secondary:      #545B66; // Cool Muted Grey
+$text-on-dark:        #F7F8F9; 
 
 // -----------------------------------------------------------------------------
-// 2. TYPOGRAFIE DEFINITIONEN
+// 2. TYPOGRAFIE DEFINITIONEN (RESTORED ORIGINAL)
 // -----------------------------------------------------------------------------
 
 $weight-light:   300;
@@ -51,23 +53,22 @@ $size-skill:  0.75rem;
 // --- Page Layout & Colors ---
 $body-bg:       $surface-light; 
 $body-color:    $text-primary;  
-$link-color:    $brand-accent-deep; // APCA Safe Link Color
+$link-color:    $brand-accent-deep; // Dunkle Variante für Text!
 
-// --- Fonts ---
-$font-family-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-$font-family-monospace:  "JetBrains Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-$headings-font-family:   "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+// --- Fonts (RESTORED) ---
+$font-family-sans-serif: "Alegreya Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+$headings-font-family:   "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 $headings-font-weight:   $weight-bold;
-// Headlines nutzen die Foundation für Autorität
 $headings-color:         $brand-foundation; 
 
 $font-size-root:         $size-normal;
-$line-height-base:       1.6;
+$line-height-base:       1.7; // Wieder Original Line-Height
 
 // --- Navigation ---
 $navbar-bg:     $surface-light; 
 $navbar-fg:     $text-secondary; 
-$navbar-hl:     $brand-accent-deep; // Hover wird blau
+$navbar-hl:     $brand-accent-deep;
 
 // --- Footer ---
 $footer-bg:     $surface-light;
@@ -76,13 +77,13 @@ $footer-fg:     $text-secondary;
 // --- TOC ---
 $toc-color:           $text-secondary;
 $toc-font-size:       $size-label;
-$toc-active-border:   $color-secondary; // DYNAMIK: Der "Plum"-Kick im TOC
+$toc-active-border:   $color-secondary; // Der "Petrol"-Kick im TOC
 $toc-inactive-border: transparent;
 
 // --- Code Blocks ---
-// Background: Mix aus Surface Light und einem Hauch Indigo
-$code-block-bg:                #EEF0F5; 
-$code-block-border-left:       $brand-accent; // Nordic Blue Linie
+// Background: Mix aus Surface Light und Foundation
+$code-block-bg:                #EEF0F2; 
+$code-block-border-left:       $brand-accent; 
 $code-block-border-left-style: solid;
 $code-block-border-left-size:  4px;
 $code-block-bg-padding:        1rem;
@@ -92,8 +93,8 @@ $btn-code-copy-color:        $text-secondary;
 $btn-code-copy-color-active: $brand-accent-deep;
 
 // --- Inline Code ---
-// Hintergrund: Plum (Secondary) ganz zart -> Spannung zum blauen Rest
-$code-bg:       rgba($color-secondary, 0.1); 
+// Hintergrund: Orange mit starker Transparenz
+$code-bg:       mix($color-secondary, $surface-light, 15%); // Petrol-Tint für Inline Code (passend zu Mono Font)
 $code-color:    $brand-foundation; 
 
 // --- Callouts ---
@@ -105,59 +106,54 @@ $callout-margin-bottom: 2rem;
 /*-- scss:rules --*/
 
 // -----------------------------------------------------------------------------
-// 4. IMPORTS & CSS VARIABLES
+// 4. IMPORTS & CSS VARIABLES (RESTORED ORIGINAL FONTS)
 // -----------------------------------------------------------------------------
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 :root {
-  // 1. FOUNDATION (Midnight Indigo)
-  // Basis für Text & Struktur (L=20%)
-  --color-foundation: #24293E;
-  --color-foundation: oklch(20% 0.06 275);
+  // 1. FOUNDATION (Iron Navy)
+  --color-foundation: #20242B;
+  --color-foundation: oklch(18% 0.03 260);
 
-  // 2. ACCENT (Nordic Blue)
-  // Deko & Highlights (L=69%)
-  --color-accent:     #81a1c1;
-  --color-accent:     oklch(68.7% 0.076 244.7);
+  // 2. ACCENT (Terracotta)
+  --color-accent:     #d96e34;
+  --color-accent:     oklch(60% 0.18 45);
 
-  // 3. ACCENT DEEP (For Text)
-  // Abgedunkeltes Blau für Links
-  --color-accent-deep: #406080;
-  --color-accent-deep: oklch(45% 0.09 250);
+  // 3. ACCENT DEEP (Burnt Umber - Link Text)
+  --color-accent-deep: #9C4B20;
+  --color-accent-deep: oklch(40% 0.12 45);
 
   // 4. SURFACES
-  --surface-light:    #F7F8FC;
-  --surface-light:    oklch(98% 0.01 275); // Tinted with Foundation Hue
+  --surface-light:    #F7F8F9;
+  --surface-light:    oklch(98% 0.005 260); 
   
-  --surface-dark:     #1A1D2B;
-  --surface-dark:     oklch(15% 0.04 275);
+  --surface-dark:     #1A1D23;
+  --surface-dark:     oklch(15% 0.02 260);
 
   // 5. HARMONY (Matsuda Type L)
-  // Secondary: Muted Plum (Der Kick)
-  --color-secondary:  #855C75;
-  --color-secondary:  oklch(50% 0.08 330); 
+  --color-secondary:  #3D5A5C;
+  --color-secondary:  oklch(45% 0.08 190); 
   
-  // Tertiary: Steel Blue (Der Übergang)
-  --color-tertiary:   #5C6F85;
-  --color-tertiary:   oklch(50% 0.05 230);
+  --color-tertiary:   #6E7278;
+  --color-tertiary:   oklch(55% 0.02 260);
 
   // 6. FUNCTIONAL
-  --color-success:    #2D8A76;
-  --color-success:    oklch(55% 0.12 160); // Jade
+  --color-success:    #2E8555;
+  --color-success:    oklch(52% 0.14 150); 
   
-  --color-error:      #B85042;
-  --color-error:      oklch(50% 0.15 35);  // Rust
+  --color-error:      #C93D45;
+  --color-error:      oklch(55% 0.18 20);
 
   // 7. TYPOGRAPHY
   --text-primary:     var(--color-foundation);
-  --text-secondary:   #5A6278; // Cool Grey
-  --text-on-dark:     oklch(98% 0.01 275);
+  --text-secondary:   #545B66; 
+  --text-on-dark:     #F7F8F9;
   
-  // Fonts
-  --font-header: "Inter", sans-serif;        
-  --font-text: "Inter", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;  
+  // Fonts (RESTORED)
+  --font-header: "Exo 2", sans-serif;        
+  --font-text: "Alegreya Sans", sans-serif;  
+  --font-mono: "Space Mono", monospace;      
 }
 
 body {
@@ -177,7 +173,7 @@ html {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-header);
-  letter-spacing: -0.02em; 
+  letter-spacing: 0.02em; // Original Spacing
   margin-top: 2rem;
   margin-bottom: 1rem;
   color: var(--text-primary);
@@ -187,13 +183,12 @@ h1 {
   font-size: $size-xl; 
   font-weight: $weight-black; 
   line-height: 1.1;
-  text-transform: none; 
+  text-transform: uppercase; // Original Style
 }
 
 h2 { 
   font-size: $size-large; 
   font-weight: $weight-bold;
-  // Seriosität: Headlines in Indigo-Schwarz
   color: var(--color-foundation); 
 }
 
@@ -204,9 +199,10 @@ h2 {
   line-height: 1.1;                
   color: var(--text-primary);                
   margin-bottom: 0.5rem;           
+  text-transform: none; 
 }
 
-// UI Fonts
+// UI Fonts (Header Font Apply)
 .navbar, .navbar-brand, .nav-link, .dropdown-item, #quarto-margin-sidebar, .footer h1, .footer h2, .footer h3 { 
   font-family: var(--font-header) !important;
 }
@@ -219,13 +215,13 @@ h2 {
 #quarto-margin-sidebar {
   font-size: $size-label; 
   color: var(--text-secondary) !important;
-  letter-spacing: 0.01em; 
+  letter-spacing: 0.02em; 
   
   a {
     color: var(--text-secondary) !important;
     transition: all 0.2s ease;
     &:hover, &.active {
-      color: var(--color-secondary) !important; // DYNAMIK: Plum im Menü
+      color: var(--color-secondary) !important; // Petrol im Menü!
       border-left-color: var(--color-secondary) !important; 
     }
   }
@@ -237,15 +233,15 @@ h2 {
 
 // A. INLINE CODE
 code:not(pre > code) {
-  font-family: var(--font-mono);
-  // Wir nutzen die Foundation Farbe für den Text, aber...
+  font-family: var(--font-mono); // Space Mono
+  // Text: Foundation
   color: var(--color-foundation) !important; 
   
-  // ... einen Hauch von Plum im Hintergrund für den "Hybrid Vibe"
-  background-color: rgba($color-secondary, 0.12) !important; 
+  // Background: Mix aus Secondary (Petrol) und Light Surface
+  background-color: mix(#3D5A5C, #F7F8F9, 15%) !important; 
   padding: 0.2em 0.4em;
   border-radius: 4px;
-  border: 1px solid rgba($color-secondary, 0.2); 
+  border: 1px solid rgba($color-secondary, 0.3); 
   font-size: $size-small; 
   white-space: nowrap; 
 }
@@ -259,13 +255,12 @@ code:not(pre > code) a {
 
 // B. CODE BLÖCKE
 div.sourceCode {
-  border: 1px solid rgba($color-tertiary, 0.2); 
-  // Die Linie links bleibt in deiner Startfarbe (Branding)
-  border-left-color: var(--color-accent) !important; 
+  border: 1px solid rgba($color-tertiary, 0.3); 
+  border-left-color: var(--color-accent) !important; // Orange Line
   border-radius: 4px;
   
-  // Cool Indigo-Grey Background
-  background-color: color-mix(in srgb, var(--surface-light), var(--surface-dark) 4%) !important;
+  // Background
+  background-color: #EEF0F2 !important;
 }
 
 // C. COPY BUTTON
@@ -300,8 +295,8 @@ div.sourceCode {
   color: var(--color-secondary) !important;
 }
 
-// E. SYNTAX HIGHLIGHTING (Type L Optimized)
-// Dynamischer Kontrast durch Nutzung der Sekundärfarben
+// E. SYNTAX HIGHLIGHTING (Light Mode Optimized)
+// Farben müssen auf #EEF0F2 lesbar sein
 
 .token.comment { 
     color: var(--text-secondary); 
@@ -309,18 +304,15 @@ div.sourceCode {
 }
 
 .token.string { 
-    // Jade Green (Success)
-    color: var(--color-success); 
+    color: var(--color-success); // Forest Green
 } 
 
 .token.number { 
-    // Muted Plum (Secondary) - bringt Farbe in den Code
-    color: var(--color-secondary); 
+    color: var(--color-secondary); // Deep Petrol
 } 
 
 .token.keyword { 
-    // Accent Deep (Blue) - Struktur
-    color: var(--color-accent-deep); 
+    color: var(--color-accent-deep); // Burnt Umber
     font-weight: bold; 
 } 
 
@@ -330,22 +322,23 @@ div.sourceCode {
 // -----------------------------------------------------------------------------
 
 a {
-  color: var(--color-accent-deep); // Seriöser Link Text
+  color: var(--color-accent-deep); // Lesbarer Textlink
   text-decoration: none;
-  // Dynamische, helle Unterstreichung
+  // Dynamische Unterstreichung im Original-Orange
   border-bottom: 1px solid var(--color-accent); 
   transition: all 0.2s ease;
   
   &:hover { 
     color: var(--color-accent-deep); 
     border-bottom-width: 2px;
-    border-bottom-color: var(--color-secondary); // Hover wird Plum! (Dynamik)
-    background-color: rgba($color-secondary, 0.05);
+    // Der Hover wird Petrol!
+    border-bottom-color: var(--color-secondary); 
+    background-color: rgba($color-secondary, 0.08);
   }
 }
 
 .navbar {
-    border-bottom: 1px solid rgba($color-tertiary, 0.15); 
+    border-bottom: 1px solid rgba($color-tertiary, 0.2); 
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
 
@@ -418,7 +411,7 @@ a {
 
   .callout-header {
     background-color: rgba($brand-accent, 0.1); 
-    color: var(--color-foundation); // Seriöse Headline
+    color: var(--color-foundation);
     font-family: var(--font-header);
     font-weight: $weight-bold;
     border-bottom: 1px solid rgba($color-tertiary, 0.2);
@@ -428,7 +421,7 @@ a {
 .quarto-listing-default {
   .quarto-post {
     background: var(--surface-light);
-    border: 1px solid rgba($color-tertiary, 0.2);
+    border: 1px solid rgba($color-tertiary, 0.3);
     padding: 2rem;
     border-radius: 8px;
     margin-bottom: 2rem;
@@ -436,7 +429,7 @@ a {
 
     &:hover {
       transform: translateY(-4px);
-      border-color: var(--color-accent); // Akzent-Rahmen
+      border-color: var(--color-accent); // Rahmen Orange
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
     }
 
@@ -460,15 +453,15 @@ a {
       background: transparent;
       border: 1px solid var(--text-secondary);
       color: var(--text-secondary);
-      font-family: var(--font-mono);
+      font-family: var(--font-mono); // Space Mono
       font-size: $size-skill;
       border-radius: 4px;
       padding: 0.2em 0.6em;
       
       &:hover {
-        background: var(--color-secondary); // Dynamik: Plum bei Hover!
+        background: var(--color-secondary); // Kick: Petrol Background
         border-color: var(--color-secondary);
-        color: var(--text-on-dark); // Text Weiß
+        color: var(--text-on-dark); // White Text
       }
     }
   }

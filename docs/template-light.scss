@@ -1,33 +1,33 @@
 /*-- scss:defaults --*/
 
 // -----------------------------------------------------------------------------
-// 1. AI GENERATED PALETTE (Hybrid: Dynamic & Serious)
+// 1. AI GENERATED PALETTE (Hybrid: Dynamic & Serious - LIGHT BODY / DARK NAV)
 // -----------------------------------------------------------------------------
 
 // 1. BRAND COLORS
-$brand-accent:        #81a1c1; // "Nordic Blue" (Deko & Flächen)
-$brand-foundation:    #24293E; // "Midnight Indigo" (Seriöse Basis für Text)
-$brand-accent-deep:   #406080; // "Deep Nordic" (Für Links/Text Lesbarkeit)
+$brand-accent:        #81a1c1; // "Nordic Blue"
+$brand-foundation:    #24293E; // "Midnight Indigo" (Basis für Light Mode Text)
+$brand-accent-deep:   #406080; // "Deep Nordic" (Für Links im Content)
 
 // 2. SURFACES
-$surface-light:       #F7F8FC; // Ghost Indigo White
-$surface-dark:        #1A1D2B; // Deepest Indigo (für Code Mix)
+$surface-light:       #F7F8FC; // Ghost Indigo White (Body Background)
+$surface-dark:        #1A1D2B; // Deepest Indigo (Code Mix)
 
-// 3. HARMONY (Matsuda Type L - The Kick)
-$color-secondary:     #855C75; // "Muted Plum" (Der dynamische 90° Shift)
-$color-tertiary:      #5C6F85; // "Steel Blue" (Verbindungselement)
+// 3. HARMONY
+$color-secondary:     #855C75; // "Muted Plum"
+$color-tertiary:      #5C6F85; // "Steel Blue"
 
-// 4. FUNCTIONAL (CVD Safe & Contrast Rich)
+// 4. FUNCTIONAL
 $color-success:       #2D8A76; // Jade Green
 $color-error:         #B85042; // Rust Red
 
 // 5. TYPOGRAPHY
-$text-primary:        $brand-foundation; // Indigo-Black
-$text-secondary:      #5A6278;           // Cool Grey
+$text-primary:        $brand-foundation; // Indigo-Black (Content Text)
+$text-secondary:      #5A6278;           // Cool Grey (Content Meta)
 $text-on-dark:        #F7F8FC;           // White
 
 // -----------------------------------------------------------------------------
-// 2. TYPOGRAFIE DEFINITIONEN (ORIGINAL FONTS RESTORED)
+// 2. TYPOGRAFIE DEFINITIONEN (ORIGINAL FONTS)
 // -----------------------------------------------------------------------------
 
 $weight-light:   300;
@@ -45,29 +45,29 @@ $size-label:  0.80rem;
 $size-skill:  0.75rem; 
 
 // -----------------------------------------------------------------------------
-// 3. QUARTO VARIABLES (LIGHT MODE MAPPING)
+// 3. QUARTO VARIABLES (MIXED MODE MAPPING)
 // -----------------------------------------------------------------------------
 
 // --- Page Layout & Colors ---
 $body-bg:       $surface-light; 
 $body-color:    $text-primary;  
-$link-color:    $brand-accent-deep; // APCA Safe Link Color
+$link-color:    $brand-accent-deep; // Dunkle Links im hellen Content
 
 // --- Fonts (RESTORED) ---
 $font-family-sans-serif: "Alegreya Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 $font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 $headings-font-family:   "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 $headings-font-weight:   $weight-bold;
-// Headlines nutzen die Foundation für Autorität
 $headings-color:         $brand-foundation; 
 
 $font-size-root:         $size-normal;
-$line-height-base:       1.7; // Zurück auf 1.7 für Alegreya
+$line-height-base:       1.7; 
 
-// --- Navigation ---
-$navbar-bg:     $surface-light; 
-$navbar-fg:     $text-secondary; 
-$navbar-hl:     $brand-accent-deep; // Hover wird blau
+// --- Navigation (FORCED DARK MODE STYLE) ---
+// Wir nutzen hier Hardcoded Values aus dem Dark Template (#161925)
+$navbar-bg:     #161925; 
+$navbar-fg:     #949BB0; // Helles Grau für Inaktive Links
+$navbar-hl:     #81a1c1; // Leuchtendes Nordic Blue für Hover
 
 // --- Footer ---
 $footer-bg:     $surface-light;
@@ -76,13 +76,12 @@ $footer-fg:     $text-secondary;
 // --- TOC ---
 $toc-color:           $text-secondary;
 $toc-font-size:       $size-label;
-$toc-active-border:   $color-secondary; // DYNAMIK: Der "Plum"-Kick im TOC
+$toc-active-border:   $color-secondary; 
 $toc-inactive-border: transparent;
 
 // --- Code Blocks ---
-// Background: Mix aus Surface Light und einem Hauch Indigo
 $code-block-bg:                #EEF0F5; 
-$code-block-border-left:       $brand-accent; // Nordic Blue Linie
+$code-block-border-left:       $brand-accent; 
 $code-block-border-left-style: solid;
 $code-block-border-left-size:  4px;
 $code-block-bg-padding:        1rem;
@@ -92,7 +91,6 @@ $btn-code-copy-color:        $text-secondary;
 $btn-code-copy-color-active: $brand-accent-deep;
 
 // --- Inline Code ---
-// Hintergrund: Plum (Secondary) ganz zart -> Spannung zum blauen Rest
 $code-bg:       rgba($color-secondary, 0.1); 
 $code-color:    $brand-foundation; 
 
@@ -105,46 +103,41 @@ $callout-margin-bottom: 2rem;
 /*-- scss:rules --*/
 
 // -----------------------------------------------------------------------------
-// 4. IMPORTS & CSS VARIABLES (RESTORED ORIGINAL FONTS)
+// 4. IMPORTS & CSS VARIABLES
 // -----------------------------------------------------------------------------
 
 @import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 :root {
-  // 1. FOUNDATION (Midnight Indigo)
+  // 1. COLORS
   --color-foundation: #24293E;
   --color-foundation: oklch(20% 0.06 275);
 
-  // 2. ACCENT (Nordic Blue)
   --color-accent:     #81a1c1;
   --color-accent:     oklch(68.7% 0.076 244.7);
 
-  // 3. ACCENT DEEP (For Text)
   --color-accent-deep: #406080;
   --color-accent-deep: oklch(45% 0.09 250);
 
-  // 4. SURFACES
+  // 2. SURFACES
   --surface-light:    #F7F8FC;
   --surface-light:    oklch(98% 0.01 275); 
   
   --surface-dark:     #1A1D2B;
   --surface-dark:     oklch(15% 0.04 275);
 
-  // 5. HARMONY (Matsuda Type L)
+  // 3. HARMONY
   --color-secondary:  #855C75;
   --color-secondary:  oklch(50% 0.08 330); 
   
   --color-tertiary:   #5C6F85;
   --color-tertiary:   oklch(50% 0.05 230);
 
-  // 6. FUNCTIONAL
+  // 4. FUNCTIONAL
   --color-success:    #2D8A76;
-  --color-success:    oklch(55% 0.12 160); 
-  
   --color-error:      #B85042;
-  --color-error:      oklch(50% 0.15 35);
 
-  // 7. TYPOGRAPHY
+  // 5. TYPOGRAPHY
   --text-primary:     var(--color-foundation);
   --text-secondary:   #5A6278; 
   --text-on-dark:     #F7F8FC;
@@ -182,13 +175,12 @@ h1 {
   font-size: $size-xl; 
   font-weight: $weight-black; 
   line-height: 1.1;
-  text-transform: uppercase; // Original Style restored
+  text-transform: none; 
 }
 
 h2 { 
   font-size: $size-large; 
   font-weight: $weight-bold;
-  // Seriosität: Headlines in Indigo-Schwarz
   color: var(--color-foundation); 
 }
 
@@ -221,7 +213,7 @@ h2 {
     color: var(--text-secondary) !important;
     transition: all 0.2s ease;
     &:hover, &.active {
-      color: var(--color-secondary) !important; // DYNAMIK: Plum im Menü
+      color: var(--color-secondary) !important; 
       border-left-color: var(--color-secondary) !important; 
     }
   }
@@ -233,11 +225,8 @@ h2 {
 
 // A. INLINE CODE
 code:not(pre > code) {
-  font-family: var(--font-mono); // Space Mono
-  // Wir nutzen die Foundation Farbe für den Text, aber...
+  font-family: var(--font-mono); 
   color: var(--color-foundation) !important; 
-  
-  // ... einen Hauch von Plum im Hintergrund für den "Hybrid Vibe"
   background-color: rgba($color-secondary, 0.1) !important; 
   padding: 0.2em 0.4em;
   border-radius: 4px;
@@ -256,11 +245,8 @@ code:not(pre > code) a {
 // B. CODE BLÖCKE
 div.sourceCode {
   border: 1px solid rgba($color-tertiary, 0.2); 
-  // Die Linie links bleibt in deiner Startfarbe (Branding)
   border-left-color: var(--color-accent) !important; 
   border-radius: 4px;
-  
-  // Cool Indigo-Grey Background
   background-color: #EEF0F5 !important;
 }
 
@@ -296,82 +282,55 @@ div.sourceCode {
   color: var(--color-secondary) !important;
 }
 
-// E. SYNTAX HIGHLIGHTING (Type L Optimized)
-// Dynamischer Kontrast durch Nutzung der Sekundärfarben
-
-.token.comment { 
-    color: var(--text-secondary); 
-    font-style: italic; 
-}
-
-.token.string { 
-    // Jade Green (Success)
-    color: var(--color-success); 
-} 
-
-.token.number { 
-    // Muted Plum (Secondary) - bringt Farbe in den Code
-    color: var(--color-secondary); 
-} 
-
-.token.keyword { 
-    // Accent Deep (Blue) - Struktur
-    color: var(--color-accent-deep); 
-    font-weight: bold; 
-} 
+// E. SYNTAX HIGHLIGHTING
+.token.comment { color: var(--text-secondary); font-style: italic; }
+.token.string { color: var(--color-success); } 
+.token.number { color: var(--color-secondary); } 
+.token.keyword { color: var(--color-accent-deep); font-weight: bold; } 
 
 
 // -----------------------------------------------------------------------------
-// 7. DYNAMISCHE ELEMENTE & NAV
+// 7. NAV (DARK MODE OVERRIDES)
 // -----------------------------------------------------------------------------
 
-a {
-  color: var(--color-accent-deep); // Seriöser Link Text
-  text-decoration: none;
-  // Dynamische, helle Unterstreichung
-  border-bottom: 1px solid var(--color-accent); 
-  transition: all 0.2s ease;
-  
-  &:hover { 
-    color: var(--color-accent-deep); 
-    border-bottom-width: 2px;
-    border-bottom-color: var(--color-secondary); // Hover wird Plum! (Dynamik)
-    background-color: rgba($color-secondary, 0.05);
-  }
-}
+// WICHTIG: Hier überschreiben wir die globale Link-Farbe für die Navbar,
+// da die Navbar dunkel ist (wie im Dark Mode), der Rest aber hell.
 
 .navbar {
-    border-bottom: 1px solid rgba($color-tertiary, 0.15); 
+    border-bottom: none; 
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
 
     .navbar-brand {
-        color: var(--color-foundation) !important;
+        // Snow White (aus Dark Template) erzwingen
+        color: #ECEFF4 !important; 
         font-weight: 700;
         letter-spacing: 0.05em;
     }
 
     .nav-link {
-        color: var(--text-secondary) !important; 
+        // Muted Grey (aus Dark Template)
+        color: #949BB0 !important; 
         font-weight: 600;
         letter-spacing: 0.05em;
         text-transform: uppercase;
         border-bottom: none; 
         
         &:hover, &.active {
-            color: var(--color-accent-deep) !important; 
+            // Nordic Blue leuchtend
+            color: #81a1c1 !important; 
             background-color: transparent;
         }
     }
     
     .navbar-toggler {
-        border-color: var(--text-secondary); 
+        border-color: #949BB0; 
     }
     
     .quarto-navbar-tools a {
-       color: var(--text-secondary) !important; 
+       color: #949BB0 !important; 
        border-bottom: none;
-       &:hover { color: var(--color-accent-deep) !important; }
+       &:hover { color: #81a1c1 !important; }
     }
     
     .quarto-navbar-tools {
@@ -386,6 +345,7 @@ a {
         width: auto !important;
         height: auto !important;
         transform: translateY(1px);
+        fill: #949BB0 !important; // Icon Farbe fixen
       }
 
       .quarto-navigation-tool > i, 
@@ -393,6 +353,7 @@ a {
         font-size: 1.2rem !important;
         display: flex;
         align-items: center;
+        color: #949BB0 !important;
       }
       
        .quarto-color-scheme-toggle {
@@ -404,6 +365,24 @@ a {
 }
 
 
+// -----------------------------------------------------------------------------
+// 8. DYNAMISCHE ELEMENTE (BODY)
+// -----------------------------------------------------------------------------
+
+a {
+  color: var(--color-accent-deep); // Content Links dunkel
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-accent); 
+  transition: all 0.2s ease;
+  
+  &:hover { 
+    color: var(--color-accent-deep); 
+    border-bottom-width: 2px;
+    border-bottom-color: var(--color-secondary); 
+    background-color: rgba($color-secondary, 0.05);
+  }
+}
+
 .callout {
   border: 1px solid var(--color-tertiary);
   border-left-color: var(--color-accent) !important; 
@@ -414,7 +393,7 @@ a {
 
   .callout-header {
     background-color: rgba($brand-accent, 0.1); 
-    color: var(--color-foundation); // Seriöse Headline
+    color: var(--color-foundation);
     font-family: var(--font-header);
     font-weight: $weight-bold;
     border-bottom: 1px solid rgba($color-tertiary, 0.2);
@@ -432,7 +411,7 @@ a {
 
     &:hover {
       transform: translateY(-4px);
-      border-color: var(--color-accent); // Akzent-Rahmen
+      border-color: var(--color-accent); 
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
     }
 
@@ -462,14 +441,13 @@ a {
       padding: 0.2em 0.6em;
       
       &:hover {
-        background: var(--color-secondary); // Dynamik: Plum bei Hover!
+        background: var(--color-secondary); 
         border-color: var(--color-secondary);
         color: var(--text-on-dark); // Text Weiß
       }
     }
   }
 }
-
 
 .footer {
   background-color: var(--surface-light);

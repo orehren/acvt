@@ -1,26 +1,35 @@
 /*-- scss:defaults --*/
 
 // -----------------------------------------------------------------------------
-// 1. AI GENERATED PALETTE (Hex Fallbacks)
+// 1. AI GENERATED PALETTE (Scenario: Accent defined, Foundation generated)
 // -----------------------------------------------------------------------------
 
-// 1. BRAND CORE & SURFACES
-$brand-core:      #81a1c1; // Nordic Blue (zu hell für Text auf Weiß!)
-$surface-light:   #F5F8FA; // Ice White (Main Background)
-$surface-dark:    #1D2024; // Deep Nordic Grey (Code Background Mix)
+// 1. BRAND COLORS
+// Deine Startfarbe (Nur für Deko/Flächen/Badges)
+$brand-accent:        #81a1c1; 
 
-// 2. HARMONY
-$color-secondary: #749DB0; // Cyan-ish Grey
-$color-tertiary:  #8F90B3; // Lavender-ish Grey
+// GENERIERT: Das Fundament (Tiefes Schieferblau für Text/Struktur)
+$brand-foundation:    #2E3440; 
 
-// 3. FUNCTIONAL
-$color-success:   #5EBFAD; // Soft Teal
-$color-error:     #D06F59; // Muted Brick Red
+// GENERIERT: Akzent für Text (Abgedunkelte Version von #81a1c1 für Lesbarkeit)
+$brand-accent-deep:   #4C7A94; 
 
-// 4. TYPOGRAPHY (Light Mode Optimized)
-$text-primary:    #2E3440; // Polar Night Dark (Haupttext)
-$text-secondary:  #4C566A; // Polar Night Light (Metadaten)
-$text-on-dark:    #ECEFF4; // Snow White (für Badges/Buttons)
+// 2. SURFACES
+$surface-light:       #F8F9FB; // Cool Paper
+$surface-dark:        #232730; // Deep Slate (für Code Background Mix)
+
+// 3. HARMONY (Analog zur Foundation)
+$color-secondary:     #5E697D; // Blue-Grey (Mittel)
+$color-tertiary:      #6B6E85; // Lavender-Grey (Mittel)
+
+// 4. FUNCTIONAL (CVD Safe)
+$color-success:       #48A697; // Teal Green (Dunkler für Light Mode Kontrast)
+$color-error:         #C45A45; // Terracotta Red
+
+// 5. TYPOGRAPHY
+$text-primary:        $brand-foundation; // Nutzung der Foundation als Haupttext
+$text-secondary:      #5E697D;           // Muted Text
+$text-on-dark:        #F8F9FB;           // Text auf Badges/Buttons
 
 // -----------------------------------------------------------------------------
 // 2. TYPOGRAFIE DEFINITIONEN
@@ -47,23 +56,22 @@ $size-skill:  0.75rem;
 // --- Page Layout & Colors ---
 $body-bg:       $surface-light; 
 $body-color:    $text-primary;  
-$link-color:    $text-primary; // Text bleibt dunkel für Lesbarkeit!
-// (Unterstreichung in Brand Color wird via CSS geregelt)
+$link-color:    $brand-accent-deep; // WICHTIG: Dunklere Variante für APCA Score > 60
 
 // --- Fonts ---
-$font-family-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-$font-family-monospace:  "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+$font-family-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-monospace:  "JetBrains Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 $headings-font-family:   "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 $headings-font-weight:   $weight-bold;
-$headings-color:         $text-primary;
+$headings-color:         $brand-foundation; 
 
 $font-size-root:         $size-normal;
-$line-height-base:       1.6;
+$line-height-base:       1.65;
 
-// --- Navigation (Navbar) ---
+// --- Navigation ---
 $navbar-bg:     $surface-light; 
-$navbar-fg:     $text-secondary; // Mittelgrau auf Weiß
-$navbar-hl:     $brand-core;
+$navbar-fg:     $text-secondary; 
+$navbar-hl:     $brand-accent-deep;
 
 // --- Footer ---
 $footer-bg:     $surface-light;
@@ -72,26 +80,25 @@ $footer-fg:     $text-secondary;
 // --- TOC ---
 $toc-color:           $text-secondary;
 $toc-font-size:       $size-label;
-$toc-active-border:   $brand-core;
+$toc-active-border:   $brand-accent; // Hier darf der helle Akzent als Linie stehen
 $toc-inactive-border: transparent;
 
 // --- Code Blocks ---
-// Im Light Mode brauchen wir Kontrast zum weißen Body.
-// Wir nehmen Surface Light und dunkeln es minimal ab (#ECEFF4 Style)
-$code-block-bg:                #ECEFF4; 
-$code-block-border-left:       $brand-core;
+// Mix: Surface Light mit 5% Foundation
+$code-block-bg:                #EDF0F5; 
+$code-block-border-left:       $brand-accent;
 $code-block-border-left-style: solid;
 $code-block-border-left-size:  4px;
 $code-block-bg-padding:        1rem;
 
 // --- Copy Button ---
 $btn-code-copy-color:        $text-secondary;
-$btn-code-copy-color-active: $brand-core;
+$btn-code-copy-color-active: $brand-accent-deep;
 
 // --- Inline Code ---
-// Hintergrund: Brand Color extrem transparent
-$code-bg:       rgba($brand-core, 0.12); 
-$code-color:    $text-primary; // Dunkler Text! Brand Core wäre unlesbar.
+// Hintergrund: Accent Color sehr transparent
+$code-bg:       rgba($brand-accent, 0.15); 
+$code-color:    $brand-accent-deep; 
 
 // --- Callouts ---
 $callout-border-width:  4px;
@@ -108,44 +115,46 @@ $callout-margin-bottom: 2rem;
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap");
 
 :root {
-  // 1. BRAND CORE
-  --color-brand-core: #81a1c1;
-  --color-brand-core: oklch(68.7% 0.076 244.7);
+  // 1. THE FOUNDATION (Generiert aus Hue 244.7)
+  // Ein tiefes Schieferblau (L=25%) ersetzt die zu helle Startfarbe als Basis
+  --color-foundation: #2E3440;
+  --color-foundation: oklch(25% 0.04 244.7);
 
-  // NEU: Deep Brand (für Text im Light Mode)
-  // Gleicher Hue, aber dunkel genug für APCA Lc 75+
-  --color-brand-deep: #435A70; 
-  --color-brand-deep: oklch(40% 0.08 244.7);
+  // 2. THE ACCENT (Deine Startfarbe: #81a1c1)
+  // L=68.7% -> Nur für Deko, Badges, Flächen
+  --color-accent:     #81a1c1;
+  --color-accent:     oklch(68.7% 0.076 244.7);
 
-  // 2. SURFACES
-  --surface-light:    #F5F8FA;
+  // 3. ACCENT DEEP (Für Text/Links)
+  // Abgeleitet vom Akzent, aber dunkel genug für Lesbarkeit (L=45%)
+  --color-accent-deep: #4C7A94;
+  --color-accent-deep: oklch(45% 0.09 244.7);
+
+  // 4. SURFACES
+  --surface-light:    #F8F9FB;
   --surface-light:    oklch(98% 0.01 244.7);
   
-  --surface-dark:     #1D2024;
-  --surface-dark:     oklch(13% 0.03 244.7);
+  --surface-dark:     #232730;
+  --surface-dark:     oklch(15% 0.03 244.7);
 
-  // 3. HARMONY
-  --color-secondary:  #749DB0;
-  --color-secondary:  oklch(65% 0.06 220);
+  // 5. HARMONY (Analog zur Foundation)
+  --color-secondary:  #5E697D;
+  --color-secondary:  oklch(50% 0.04 225); // Blue-Grey Shift
   
-  --color-tertiary:   #8F90B3;
-  --color-tertiary:   oklch(65% 0.06 270);
+  --color-tertiary:   #6B6E85;
+  --color-tertiary:   oklch(50% 0.04 265); // Lavender Shift
 
-  // 4. FUNCTIONAL
-  --color-success:    #5EBFAD;
-  --color-success:    oklch(70% 0.12 170);
+  // 6. FUNCTIONAL
+  --color-success:    #48A697;
+  --color-success:    oklch(60% 0.11 170); // Darker Teal for Light Mode
   
-  --color-error:      #D06F59;
-  --color-error:      oklch(65% 0.15 30);
+  --color-error:      #C45A45;
+  --color-error:      oklch(55% 0.14 30);  // Darker Red for Light Mode
 
-  // 5. TYPOGRAPHY (Light Mode Definition)
-  --text-primary:     #2E3440;
-  --text-primary:     oklch(25% 0.04 244.7); // Dunkles Graublau
-  
-  --text-secondary:   #4C566A;
-  --text-secondary:   oklch(45% 0.05 244.7); // Mittelgraublau
-  
-  --text-on-dark:     oklch(97% 0.01 244.7); // Falls Dark Mode Elemente genutzt werden
+  // 7. TYPOGRAPHY
+  --text-primary:     var(--color-foundation);
+  --text-secondary:   var(--color-secondary);
+  --text-on-dark:     oklch(98% 0.01 244.7);
   
   // Fonts
   --font-header: "Inter", sans-serif;        
@@ -186,8 +195,8 @@ h1 {
 h2 { 
   font-size: $size-large; 
   font-weight: $weight-bold;
-  // Im Light Mode nutzen wir die Deep Brand Color für Headlines, nicht das helle Pastell
-  color: var(--color-brand-deep); 
+  // Hier nutzen wir die Foundation, nicht den Akzent, für Seriosität
+  color: var(--color-foundation); 
 }
 
 #title-block-header h1.title {
@@ -218,8 +227,9 @@ h2 {
     color: var(--text-secondary) !important;
     transition: all 0.2s ease;
     &:hover, &.active {
-      color: var(--color-brand-deep) !important; // Dunklerer Hover
-      border-left-color: var(--color-brand-core) !important; // Helle Linie ok
+      color: var(--color-accent-deep) !important; 
+      // Die Linie darf den hellen Akzent nutzen (dekorativ)
+      border-left-color: var(--color-accent) !important; 
     }
   }
 }
@@ -231,13 +241,13 @@ h2 {
 // A. INLINE CODE
 code:not(pre > code) {
   font-family: var(--font-mono);
-  color: var(--color-brand-deep) !important; // Wichtig: Dunkler Text
+  color: var(--color-accent-deep) !important; // Lesbarkeit!
   
-  // Background: Zartes Pastelblau
-  background-color: rgba($brand-core, 0.15) !important; 
+  // Background: Helle Akzentfarbe mit Transparenz
+  background-color: rgba($brand-accent, 0.15) !important; 
   padding: 0.2em 0.4em;
   border-radius: 4px;
-  border: 1px solid rgba($brand-core, 0.3); 
+  border: 1px solid rgba($brand-accent, 0.3); 
   font-size: $size-small; 
   white-space: nowrap; 
 }
@@ -245,18 +255,18 @@ code:not(pre > code) {
 code:not(pre > code) a {
   color: inherit !important; 
   text-decoration: underline;
-  text-decoration-color: var(--color-brand-core); 
+  text-decoration-color: var(--color-accent); 
   &:hover { color: var(--text-primary) !important; }
 }
 
 // B. CODE BLÖCKE
 div.sourceCode {
-  // Rahmen im Light Mode zur Abgrenzung
-  border: 1px solid rgba($color-secondary, 0.3); 
-  border-left-color: var(--color-brand-core) !important; 
+  // Rahmen im Light Mode zur Abgrenzung vom weißen Body
+  border: 1px solid rgba($color-secondary, 0.2); 
+  border-left-color: var(--color-accent) !important; 
   border-radius: 4px;
   
-  // Hintergrund: "Off-White" Blau-Grau
+  // Background: Cool Grey (Mix aus Light & Dark Surface)
   background-color: color-mix(in srgb, var(--surface-light), var(--surface-dark) 4%) !important;
 }
 
@@ -274,9 +284,9 @@ div.sourceCode {
   i, .bi { color: inherit !important; }
 
   &:hover {
-    border-color: var(--color-brand-deep) !important;
+    border-color: var(--color-accent-deep) !important;
     background-color: transparent !important; 
-    color: var(--color-brand-deep) !important;
+    color: var(--color-accent-deep) !important;
   }
 }
 
@@ -289,12 +299,11 @@ div.sourceCode {
   color: inherit !important; 
 }
 #quarto-margin-sidebar a:hover code {
-  color: var(--color-brand-deep) !important;
+  color: var(--color-accent-deep) !important;
 }
 
 // E. SYNTAX HIGHLIGHTING (Light Mode Optimized)
-// 🚨 Kritischer Bereich: Pastellfarben auf Weiß sind unlesbar.
-// Wir nutzen abgedunkelte Versionen.
+// Wir nutzen abgedunkelte Farben, damit der Text auf dem hellen Code-BG lesbar ist.
 
 .token.comment { 
     color: var(--text-secondary); 
@@ -302,23 +311,19 @@ div.sourceCode {
 }
 
 .token.string { 
-    // Success Color (#5EBFAD) ist zu hell.
-    // Wir nutzen eine dunklere Teal-Variante.
-    color: #2F7A6E; 
-    color: oklch(50% 0.12 170);
+    // Success Color als Basis, aber dunkler
+    color: var(--color-success); 
 } 
 
 .token.number { 
-    // Tertiary (#8F90B3) ist grenzwertig.
-    // Wir nutzen eine dunklere Violett-Variante.
-    color: #5D5E80;
-    color: oklch(45% 0.10 270);
+    // Tertiary Color (Lavender)
+    color: #6B5E85; // Fallback
+    color: oklch(50% 0.10 270);
 } 
 
 .token.keyword { 
-    // Brand Core (#81a1c1) unlesbar.
-    // Wir nutzen die Deep Brand Variante.
-    color: var(--color-brand-deep); 
+    // Accent Deep (Blue)
+    color: var(--color-accent-deep); 
     font-weight: bold; 
 } 
 
@@ -328,17 +333,16 @@ div.sourceCode {
 // -----------------------------------------------------------------------------
 
 a {
-  color: var(--text-primary); // Dunkler Text für Kontrast
+  color: var(--color-accent-deep); // Link Text muss dunkel sein
   text-decoration: none;
-  // Die Identität kommt über die Unterstreichung
-  border-bottom: 1px solid var(--color-brand-core); 
+  // Dekorative Unterstreichung in der hellen Akzentfarbe
+  border-bottom: 1px solid var(--color-accent); 
   transition: all 0.2s ease;
   
   &:hover { 
-    color: var(--text-primary); 
+    color: var(--color-accent-deep); 
     border-bottom-width: 2px;
-    border-bottom-color: var(--color-brand-deep);
-    background-color: rgba($brand-core, 0.15);
+    background-color: rgba($brand-accent, 0.15);
   }
 }
 
@@ -348,7 +352,7 @@ a {
     padding-bottom: 1.5rem;
 
     .navbar-brand {
-        color: var(--text-primary) !important;
+        color: var(--color-foundation) !important;
         font-weight: 700;
         letter-spacing: 0.05em;
     }
@@ -361,7 +365,7 @@ a {
         border-bottom: none; 
         
         &:hover, &.active {
-            color: var(--color-brand-deep) !important; // Deep Color statt Pastell
+            color: var(--color-accent-deep) !important; 
             background-color: transparent;
         }
     }
@@ -373,7 +377,7 @@ a {
     .quarto-navbar-tools a {
        color: var(--text-secondary) !important; 
        border-bottom: none;
-       &:hover { color: var(--color-brand-deep) !important; }
+       &:hover { color: var(--color-accent-deep) !important; }
     }
     
     .quarto-navbar-tools {
@@ -408,15 +412,15 @@ a {
 
 .callout {
   border: 1px solid var(--color-secondary);
-  border-left-color: var(--color-brand-core) !important; 
+  border-left-color: var(--color-accent) !important; 
   background-color: var(--surface-light); 
   color: var(--text-primary);
   border-radius: 4px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); 
 
   .callout-header {
-    background-color: rgba($brand-core, 0.15); // Pastell Background ok für Fläche
-    color: var(--color-brand-deep); // Text muss dunkel sein
+    background-color: rgba($brand-accent, 0.15); // Helle Fläche ok
+    color: var(--color-accent-deep); // Text dunkel
     font-family: var(--font-header);
     font-weight: $weight-bold;
     border-bottom: 1px solid rgba($color-secondary, 0.2);
@@ -434,7 +438,7 @@ a {
 
     &:hover {
       transform: translateY(-4px);
-      border-color: var(--color-brand-core);
+      border-color: var(--color-accent); // Akzent-Rahmen bei Hover
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
     }
 
@@ -445,7 +449,7 @@ a {
       a { 
         color: var(--text-primary); 
         border-bottom: none;
-        &:hover { color: var(--color-brand-deep); }
+        &:hover { color: var(--color-accent-deep); }
       }
     }
     
@@ -464,9 +468,9 @@ a {
       padding: 0.2em 0.6em;
       
       &:hover {
-        background: var(--color-brand-core); // Hintergrund darf hell sein
-        border-color: var(--color-brand-core);
-        color: var(--text-primary); // Text dunkel lassen oder sehr dunkles Weiß
+        background: var(--color-accent); 
+        border-color: var(--color-accent);
+        color: var(--text-on-dark); // Hier Text weiß machen
       }
     }
   }
@@ -484,6 +488,6 @@ a {
   a {
     color: var(--text-secondary);
     border-bottom: none;
-    &:hover { color: var(--color-brand-deep); }
+    &:hover { color: var(--color-accent-deep); }
   }
 }

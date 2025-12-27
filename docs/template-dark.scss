@@ -1,37 +1,32 @@
 /*-- scss:defaults --*/
 
 // -----------------------------------------------------------------------------
-// 1. AI GENERATED PALETTE (The "Iron & Clay" Dark Mode)
+// 1. AI GENERATED PALETTE (Hybrid Dark: Midnight Executive)
 // -----------------------------------------------------------------------------
 
 // 1. BRAND COLORS
-// Terracotta: Hier perfekt für Text & Links (L=60%)
-$brand-accent:        #d96e34; 
-
-// Foundation: Deepest Iron Navy (Background)
-$brand-foundation:    #15181E; 
+$brand-accent:        #81a1c1; // Nordic Blue (Hier perfekt für Links/Highlights!)
+$brand-foundation:    #161925; // Deepest Midnight Indigo (Main Background)
 
 // 2. SURFACES
-$surface-dark:        $brand-foundation; // Main Body
-$surface-light:       #252A33; // Lighter Iron (Cards/UI)
+$surface-light:       #24293E; // Lighter Indigo (Cards/UI)
+$surface-dark:        $brand-foundation; // Body Background
 
-// 3. HARMONY (Matsuda Type L - Adapted for Dark Mode)
-// Secondary: Luminous Teal (Aufgehellt für Glow-Effekte)
-$color-secondary:     #5DA8AD; 
-// Tertiary: Steel Grey Muted
-$color-tertiary:      #7A828F; 
+// 3. HARMONY (Matsuda Type L - The Kick)
+$color-secondary:     #C48DA8; // "Luminous Plum" (Aufgehellt für Dark Mode Glow)
+$color-tertiary:      #7B8FA6; // "Steel Blue Muted"
 
 // 4. FUNCTIONAL (CVD Safe & High Luminance)
-$color-success:       #2E8555; // Forest Green (leuchtet gut auf Dark)
-$color-error:         #D95D5D; // Brightened Crimson
+$color-success:       #5EBFAD; // Bright Jade
+$color-error:         #D06F59; // Muted Rust
 
 // 5. TYPOGRAPHY
-$text-primary:        #F2F4F7; // Snow White (High Contrast)
-$text-secondary:      #9CA3AF; // Iron Muted Grey (L=70%)
-$text-on-dark:        $text-primary;
+$text-primary:        #ECEFF4; // Snow White (High Contrast)
+$text-secondary:      #949BB0; // Indigo-Grey Muted (L=70% für Lesbarkeit)
+$text-on-dark:        #ECEFF4; 
 
 // -----------------------------------------------------------------------------
-// 2. TYPOGRAFIE DEFINITIONEN (ORIGINAL FONTS RESTORED)
+// 2. TYPOGRAFIE DEFINITIONEN (RESTORED ORIGINAL)
 // -----------------------------------------------------------------------------
 
 $weight-light:   300;
@@ -55,9 +50,9 @@ $size-skill:  0.75rem;
 // --- Page Layout & Colors ---
 $body-bg:       $surface-dark; 
 $body-color:    $text-primary;  
-$link-color:    $brand-accent; // Terracotta leuchtet auf Dunkel
+$link-color:    $brand-accent; // Nordic Blue leuchtet auf Dunkel
 
-// --- Fonts (STRICTLY ORIGINAL) ---
+// --- Fonts (RESTORED) ---
 $font-family-sans-serif: "Alegreya Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 $font-family-monospace:  "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 $headings-font-family:   "Exo 2", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -65,7 +60,7 @@ $headings-font-weight:   $weight-bold;
 $headings-color:         $text-primary; 
 
 $font-size-root:         $size-normal;
-$line-height-base:       1.7;
+$line-height-base:       1.7; // Original Line-Height für Alegreya
 
 // --- Navigation ---
 $navbar-bg:     $surface-dark; 
@@ -79,12 +74,12 @@ $footer-fg:     $text-secondary;
 // --- TOC ---
 $toc-color:           $text-secondary;
 $toc-font-size:       $size-label;
-$toc-active-border:   $color-secondary; // Der "Teal"-Kick im TOC
+$toc-active-border:   $color-secondary; // DYNAMIK: Plum Kick im Dark Mode TOC
 $toc-inactive-border: transparent;
 
 // --- Code Blocks ---
-// Mix: Surface Dark mit 5% Teal für Tiefe
-$code-block-bg:                #1B1F26; 
+// Mix: Surface Dark mit 5% Plum (Secondary) für Tiefe
+$code-block-bg:                #1E2230; 
 $code-block-border-left:       $brand-accent;
 $code-block-border-left-style: solid;
 $code-block-border-left-size:  4px;
@@ -95,7 +90,7 @@ $btn-code-copy-color:        $text-secondary;
 $btn-code-copy-color-active: $brand-accent;
 
 // --- Inline Code ---
-// Hintergrund: Teal (Secondary) mit Transparenz für den "Hybrid Vibe"
+// Hintergrund: Plum (Secondary) mit Transparenz für den "Hybrid Vibe"
 $code-bg:       rgba($color-secondary, 0.15); 
 $code-color:    $brand-accent; 
 
@@ -108,54 +103,50 @@ $callout-margin-bottom: 2rem;
 /*-- scss:rules --*/
 
 // -----------------------------------------------------------------------------
-// 4. IMPORTS & CSS VARIABLES
+// 4. IMPORTS & CSS VARIABLES (RESTORED ORIGINAL FONTS)
 // -----------------------------------------------------------------------------
 
 @import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 :root {
-  // 1. ACCENT (Terracotta)
-  // L=60% -> Ideal für Dark Mode UI
-  --color-accent:     #d96e34;
-  --color-accent:     oklch(60% 0.18 45);
+  // 1. ACCENT (Nordic Blue)
+  --color-accent:     #81a1c1;
+  --color-accent:     oklch(68.7% 0.076 244.7);
 
-  // 2. FOUNDATION (Abyssal Iron)
-  // Body Background (L=14%)
-  --color-foundation: #15181E;
-  --color-foundation: oklch(14% 0.03 260);
+  // 2. FOUNDATION (Deep Midnight Indigo)
+  --color-foundation: #161925;
+  --color-foundation: oklch(14% 0.04 275);
 
   // 3. SURFACES
   --surface-dark:     var(--color-foundation);
   
-  // Card Background (Lighter Iron, L=22%)
-  --surface-light:    #252A33;
-  --surface-light:    oklch(22% 0.04 260);
+  // Card Background (Lighter Indigo, L=22%)
+  --surface-light:    #24293E;
+  --surface-light:    oklch(22% 0.05 275);
 
   // 4. HARMONY (Matsuda Type L)
-  // Secondary: Luminous Teal (Hover/Active)
-  --color-secondary:  #5DA8AD;
-  --color-secondary:  oklch(65% 0.10 190); 
+  --color-secondary:  #C48DA8;
+  --color-secondary:  oklch(70% 0.12 330); 
   
-  // Tertiary: Steel Grey Muted
-  --color-tertiary:   #7A828F;
-  --color-tertiary:   oklch(60% 0.03 260);
+  --color-tertiary:   #7B8FA6;
+  --color-tertiary:   oklch(65% 0.05 240);
 
   // 5. FUNCTIONAL
-  --color-success:    #2E8555;
-  --color-success:    oklch(52% 0.14 150); // Forest Green
+  --color-success:    #5EBFAD;
+  --color-success:    oklch(72% 0.13 160); 
   
-  --color-error:      #D95D5D;
-  --color-error:      oklch(60% 0.18 20);  // Bright Rust
+  --color-error:      #D06F59;
+  --color-error:      oklch(65% 0.16 35);
 
   // 6. TYPOGRAPHY
-  --text-primary:     #F2F4F7; // Snow White
-  --text-secondary:   #9CA3AF; // Readable Iron-Grey
+  --text-primary:     #ECEFF4; 
+  --text-secondary:   #949BB0; 
   --text-on-dark:     var(--text-primary);
   
-  // Fonts (STRICTLY ORIGINAL)
+  // Fonts (RESTORED)
   --font-header: "Exo 2", sans-serif;        
   --font-text: "Alegreya Sans", sans-serif;  
-  --font-mono: "Space Mono", monospace;      
+  --font-mono: "Space Mono", monospace;  
 }
 
 body {
@@ -174,8 +165,8 @@ html {
 // -----------------------------------------------------------------------------
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-header); // Exo 2
-  letter-spacing: 0.02em; 
+  font-family: var(--font-header);
+  letter-spacing: 0.02em; // Original Spacing
   margin-top: 2rem;
   margin-bottom: 1rem;
   color: var(--text-primary);
@@ -185,13 +176,13 @@ h1 {
   font-size: $size-xl; 
   font-weight: $weight-black; 
   line-height: 1.1;
-  text-transform: uppercase; 
+  text-transform: uppercase; // Original Style
 }
 
 h2 { 
   font-size: $size-large; 
   font-weight: $weight-bold;
-  // Accent Color für die H2, um das Terracotta zu zelebrieren
+  // Accent Color für die H2, um Hierarchie zu schaffen
   color: var(--color-accent); 
 }
 
@@ -224,7 +215,7 @@ h2 {
     color: var(--text-secondary) !important;
     transition: all 0.2s ease;
     &:hover, &.active {
-      color: var(--color-secondary) !important; // Teal Kick
+      color: var(--color-secondary) !important; // DYNAMIK: Plum im Menü
       border-left-color: var(--color-secondary) !important; 
     }
   }
@@ -237,10 +228,10 @@ h2 {
 // A. INLINE CODE
 code:not(pre > code) {
   font-family: var(--font-mono); // Space Mono
-  // Terracotta Text
+  // Nordic Blue Text
   color: var(--color-accent) !important; 
   
-  // Background: Teal (Secondary) Transparenz
+  // Background: Plum (Secondary) Transparenz
   background-color: rgba($color-secondary, 0.15) !important; 
   padding: 0.2em 0.4em;
   border-radius: 4px;
@@ -258,13 +249,13 @@ code:not(pre > code) a {
 
 // B. CODE BLÖCKE
 div.sourceCode {
-  // Zarter Rahmen in Steel Grey
+  // Zarter Rahmen in Steel Blue
   border: 1px solid rgba($color-tertiary, 0.3); 
-  border-left-color: var(--color-accent) !important; // Orange Stripe
+  border-left-color: var(--color-accent) !important; 
   border-radius: 4px;
   
-  // Background: Mix Surface Dark + 5% Teal für Tiefe
-  background-color: mix($color-secondary, $surface-dark, 5%) !important;
+  // Background: Mix Surface Dark + 5% Plum für Tiefe
+  background-color: color-mix(in srgb, var(--surface-dark), var(--color-secondary) 5%) !important;
 }
 
 // C. COPY BUTTON
@@ -299,8 +290,8 @@ div.sourceCode {
   color: var(--color-secondary) !important;
 }
 
-// E. SYNTAX HIGHLIGHTING (Dark Mode Optimized)
-// Farben müssen auf #1B1F26 strahlen
+// E. SYNTAX HIGHLIGHTING (Matsuda L Dark Optimized)
+// Die Farben müssen auf dunklem Hintergrund strahlen
 
 .token.comment { 
     color: var(--text-secondary); 
@@ -308,17 +299,17 @@ div.sourceCode {
 }
 
 .token.string { 
-    // Forest Green (Success)
+    // Bright Jade
     color: var(--color-success); 
 } 
 
 .token.number { 
-    // Luminous Teal (The Kick!)
+    // Luminous Plum (The Kick!)
     color: var(--color-secondary); 
 } 
 
 .token.keyword { 
-    // Terracotta (Accent)
+    // Nordic Blue
     color: var(--color-accent); 
     font-weight: bold; 
 } 
@@ -329,7 +320,7 @@ div.sourceCode {
 // -----------------------------------------------------------------------------
 
 a {
-  color: var(--color-accent); // Link Text (Terracotta)
+  color: var(--color-accent); // Link Text
   text-decoration: none;
   // Unterstreichung
   border-bottom: 1px solid rgba($color-secondary, 0.5); 
@@ -338,7 +329,7 @@ a {
   &:hover { 
     color: var(--color-accent); 
     border-bottom-width: 2px;
-    border-bottom-color: var(--color-secondary); // Teal Hover
+    border-bottom-color: var(--color-secondary); // Plum Hover
     background-color: rgba($color-secondary, 0.1);
   }
 }
@@ -465,7 +456,7 @@ a {
       padding: 0.2em 0.6em;
       
       &:hover {
-        background: var(--color-secondary); // Kick: Teal bei Hover
+        background: var(--color-secondary); // Kick bei Hover
         border-color: var(--color-secondary);
         color: var(--text-on-dark); 
       }

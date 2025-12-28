@@ -19,7 +19,7 @@ if (!requireNamespace("devtools", quietly = TRUE)) {
 }
 
 # Install the acvt package from GitHub
-devtools::install_github("orehren/Academic-CVTemplate")
+devtools::install_github("orehren/acvt")
 ```
 
 ### 2. Restart RStudio

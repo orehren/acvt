@@ -25,7 +25,7 @@ This is the easiest and most powerful way to use the template. It installs all R
       install.packages("devtools")
     }
     # Install the package
-    devtools::install_github("orehren/acvt")
+    devtools::install_github("orehren/academicCVTemplate")
     ```
 
 2.  **Restart RStudio:**
@@ -40,10 +40,10 @@ If you are not using RStudio or prefer a manual setup, you can install the Quart
 
 ```bash
 # To create a new project with the template
-quarto use template orehren/acvt
+quarto use template orehren/academicCVTemplate
 
 # To add the extension to an existing project
-quarto add orehren/acvt
+quarto add orehren/academicCVTemplate
 ```
 
 **Note:** With this method, you must manually install the required R packages. This can easily be done with the project setup script included in this extension.

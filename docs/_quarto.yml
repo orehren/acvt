@@ -11,22 +11,28 @@ website:
     right:
       - href: index.qmd
         text: Home
-      - href: installation.qmd
-        text: Installation
-      - href: tutorial.qmd
-        text: How to get started
-      - href: data_integration.qmd
-        text: Data Integration
-      - href: shortcodes.qmd
-        text: Shortcodes
-      - href: styling.qmd
-        text: Styling
-      - href: structure.qmd
-        text: Structure
-      - href: update_template.qmd
-        text: Template Update
-      - href: yaml_reference.qmd
-        text: YAML Reference
+      - text: "How to get started"
+        menu:
+          - href: installation.qmd
+            text: Installation
+          - href: tutorial.qmd
+            text: Using the Template
+          - href: data_integration.qmd
+            text: Data Integration
+      - text: "Advanced Usage"
+        menu: 
+          - href: styling.qmd
+            text: Styling
+          - href: structure.qmd
+            text: Structure
+          - href: update_template.qmd
+            text: Template Update
+      - text: "References"
+        menu: 
+          - href: shortcodes.qmd
+            text: Shortcodes
+          - href: yaml_reference.qmd
+            text: YAML Reference
       - href: acknowledgements.qmd
         text: Acknowledgements
   search:
